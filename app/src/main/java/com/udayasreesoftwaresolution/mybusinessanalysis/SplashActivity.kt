@@ -80,21 +80,30 @@ class SplashActivity : AppCompatActivity(),
             val businessVersion = dataSnapShot.child(FireBaseConstants.BUSINESS_VERSION).getValue(Float::class.java)!!
             val clientVersion = dataSnapShot.child(FireBaseConstants.CLIENT_VERSION).getValue(Float::class.java)!!
             val purchaseVersion = dataSnapShot.child(FireBaseConstants.PURCHASE_VERSION).getValue(Float::class.java)!!
+            val businessNameVersion = dataSnapShot.child(FireBaseConstants.BUSINESS_NAME_VERSION).getValue(Float::class.java)!!
 
             if (sharedPreferenceUtils.getPaymentVersion()!! > paymentVersion) {
                 sharedPreferenceUtils.setPaymentVersion(paymentVersion)
+                fireBaseUtils.readPaymentFromFireBase()
             }
 
             if (sharedPreferenceUtils.getBusinessVersion()!! > businessVersion) {
                 sharedPreferenceUtils.setBusinessVersion(businessVersion)
+                fireBaseUtils.readBusinessFromFireBase()
             }
 
             if (sharedPreferenceUtils.getClientVersion()!! > clientVersion) {
                 sharedPreferenceUtils.setClientVersion(clientVersion)
+                fireBaseUtils.readClientFromFireBase()
             }
 
             if (sharedPreferenceUtils.getPurchaseVersion()!! > purchaseVersion) {
                 sharedPreferenceUtils.setPurchaseVersion(purchaseVersion)
+                fireBaseUtils.readPurchaseFromFireBase()
+            }
+
+            if (sharedPreferenceUtils.getBusinessNameVersion()!! > businessNameVersion) {
+                sharedPreferenceUtils.setBusinessNameVersion(businessNameVersion)
             }
 
         } catch (e: Exception) {
@@ -116,6 +125,10 @@ class SplashActivity : AppCompatActivity(),
 
     override fun readPurchaseDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Purchase Room database*/
+    }
+
+    override fun readBusinessNameDataListener(dataSnapShot: DataSnapshot) {
+
     }
 
     override fun writeVersionListener(status: Boolean) {

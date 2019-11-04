@@ -11,4 +11,5 @@ interface FireBaseInterface {
     fun readBusinessDataListener(dataSnapShot: DataSnapshot)
     fun readClientDataListener(dataSnapShot: DataSnapshot)
     fun readPurchaseDataListener(dataSnapShot: DataSnapshot)
+    fun readBusinessNameDataListener(dataSnapShot: DataSnapshot)
 }

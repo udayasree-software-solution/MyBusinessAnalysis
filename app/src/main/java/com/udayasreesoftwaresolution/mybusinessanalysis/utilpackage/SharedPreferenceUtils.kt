@@ -24,6 +24,7 @@ class SharedPreferenceUtils(val mContext: Context) {
     private val business_version = "BUSINESS_VERSION"
     private val client_version = "CLIENT_VERSION"
     private val purchase_version = "PURCHASE_VERSION"
+    private val business_name_version = "BUSINESS_NAME_VERSION"
 
     @Synchronized
     fun getInstance() : SharedPreferenceUtils {
@@ -143,19 +144,27 @@ class SharedPreferenceUtils(val mContext: Context) {
     }
 
     fun setClientVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(business_version, version)?.apply()
+        sharedPreferences.edit()?.putFloat(client_version, version)?.apply()
     }
 
     fun getClientVersion() : Float? {
-        return sharedPreferences.getFloat(business_version, 0.0f)
+        return sharedPreferences.getFloat(client_version, 0.0f)
     }
 
     fun setPurchaseVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(business_version, version)?.apply()
+        sharedPreferences.edit()?.putFloat(purchase_version, version)?.apply()
     }
 
     fun getPurchaseVersion() : Float? {
-        return sharedPreferences.getFloat(business_version, 0.0f)
+        return sharedPreferences.getFloat(purchase_version, 0.0f)
+    }
+
+    fun setBusinessNameVersion(version: Float) {
+        sharedPreferences.edit()?.putFloat(business_name_version, version)?.apply()
+    }
+
+    fun getBusinessNameVersion() : Float? {
+        return sharedPreferences.getFloat(business_name_version, 0.0f)
     }
 
     fun clearAlarmIDPreference() {

@@ -134,6 +134,25 @@ class FireBaseUtils(private val mContext : Context, private val mFireBaseInterfa
         }
     }
 
+    fun readBusinessNameFromFireBase() {
+        if (AppUtils.networkConnectivityCheck(mContext)) {
+            val fireBaseReference = FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.BUSINESS_NAME)
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    firebaseInterface.errorListener("Server connection failed. Please try again")
+                }
+
+                override fun onDataChange(dataSnapShot: DataSnapshot) {
+                    if (dataSnapShot.exists()) {
+                        firebaseInterface.readBusinessNameDataListener(dataSnapShot)
+                    }
+                }
+            })
+        }
+    }
+
     fun writePaymentToFireBase() {
 
     }
