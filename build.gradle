@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.google.gms:google-services:4.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,10 +20,29 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+    }
+    project.ext {
+        minSdkVersion = 18
+        targetSdkVersion = 28
+        compileSdkVersion = 28
+        versionCode = 1
+        versionName = "1.0"
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+ext {
+    appsupportversion = "28.0.0"
+    junitversion = "4.12"
+    runnerversion = "1.0.2"
+    espressoversion = "3.0.2"
+    roompersistanceversion = "1.1.1"
+    uilversion = "1.9.5"
+    firebasedatabase = "19.2.0"
+    firebaseauth = "19.1.0"
+    firebasestorage = "19.1.0"
+    firebaseanalytics = "17.2.1"
+    retrofit2version = "2.3.0"
 }
