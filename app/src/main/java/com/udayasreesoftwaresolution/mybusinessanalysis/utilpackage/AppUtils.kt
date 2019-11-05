@@ -14,6 +14,7 @@ import kotlin.collections.ArrayList
 
 class AppUtils {
     companion object {
+        @JvmField var outletValidity = false
         @JvmField var isAdminStatus = false
         @JvmField var isServiceRun = true
         @JvmField var OUTLET_NAME = ""

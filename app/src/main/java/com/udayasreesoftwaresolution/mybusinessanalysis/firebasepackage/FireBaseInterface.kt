@@ -3,9 +3,10 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage
 import com.google.firebase.database.DataSnapshot
 
 interface FireBaseInterface {
+    fun validityListener(isValidityExpired : Boolean)
+
     fun writeVersionListener(status : Boolean)
     fun readVersionListener(dataSnapShot: DataSnapshot)
-    fun errorListener(message : String)
 
     fun readPaymentDataListener(dataSnapShot: DataSnapshot)
     fun readBusinessDataListener(dataSnapShot: DataSnapshot)
