@@ -10,6 +10,9 @@ public class PaymentTable {
     @PrimaryKey(autoGenerate = true)
     private int slNo;
 
+    @ColumnInfo(name = "unique_key")
+    private String uniqueKey;
+
     @ColumnInfo(name = "client_name")
     private String clientName;
 
@@ -28,10 +31,9 @@ public class PaymentTable {
     @ColumnInfo(name = "pre_days")
     private int preDays;
 
-
-    public PaymentTable(int slNo, String clientName, String payAmount,
+    public PaymentTable(String uniqueKey, String clientName, String payAmount,
                         String chequeNumber, long dateInMillis, boolean paymentStatus, int preDays) {
-        this.slNo = slNo;
+        this.uniqueKey = uniqueKey;
         this.clientName = clientName;
         this.payAmount = payAmount;
         this.chequeNumber = chequeNumber;
@@ -46,6 +48,14 @@ public class PaymentTable {
 
     public void setSlNo(int slNo) {
         this.slNo = slNo;
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        this.uniqueKey = uniqueKey;
     }
 
     public String getClientName() {

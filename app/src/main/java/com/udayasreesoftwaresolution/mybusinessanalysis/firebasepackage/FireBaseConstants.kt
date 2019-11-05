@@ -13,7 +13,7 @@ class FireBaseConstants {
         val BUSINESS_VERSION = "Business Version"
         val CLIENT_VERSION = "Client Version"
         val PURCHASE_VERSION = "Purchase Version"
-        val BUSINESS_NAME_VERSION = "Business Name Version"
+        val BUSINESS_CATEGORY_VERSION = "Business Category Version"
 
         val TOTAL_AMOUNT = "Total Amount"
         val PAYABLE_AMOUNT = "Payable Amount"
@@ -29,6 +29,6 @@ class FireBaseConstants {
         val PAYMENT = "Payment"
         val BUSINESS = "Business"
         val PURCHASE = "Purchase"
-        val BUSINESS_NAME = "Business Names"
+        val BUSINESS_CATEGORY = "Business Category"
     }
 }

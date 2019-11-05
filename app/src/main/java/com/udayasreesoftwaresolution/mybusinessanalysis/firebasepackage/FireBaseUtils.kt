@@ -6,14 +6,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ValidityModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
+import java.math.BigDecimal
 
 class FireBaseUtils(
     private val mContext: Context,
     private val mFireBaseInterface: FireBaseInterface
 ) {
     private var fireBaseUtils: FireBaseUtils? = null
+
     @Synchronized
     fun getInstance(): FireBaseUtils {
         if (fireBaseUtils == null) {
@@ -27,7 +29,7 @@ class FireBaseUtils(
     }
 
     fun readValidityFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.VALIDITY)
@@ -65,7 +67,7 @@ class FireBaseUtils(
     }
 
     fun readVersionFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.VERSION)
@@ -94,20 +96,43 @@ class FireBaseUtils(
         }
     }
 
-    fun writeVersionToFireBase(version: Int, child: String) {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
-            FirebaseDatabase.getInstance()
+    private fun readVersionOfChildFromFireBase(child: String) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.VERSION)
                 .child(child)
-                .setValue(version) { error, _ ->
-                    mFireBaseInterface.writeVersionListener(error == null)
+
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        mContext,
+                        "Server connection failed. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+
+                override fun onDataChange(dataSnapShot: DataSnapshot) {
+                    if (dataSnapShot.exists()) {
+                        var version = dataSnapShot.getValue(Double::class.java)!!
+                        version += 0.001
+                        val bigDecimal = BigDecimal(version).setScale(3, BigDecimal.ROUND_HALF_UP)
+
+                        FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.VERSION)
+                            .child(child)
+                            .setValue(bigDecimal.toDouble()) { error, _ ->
+                                mFireBaseInterface.writeVersionListener(error == null)
+                            }
+                    }
+                }
+            })
         }
     }
 
     fun readPaymentFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.PAYMENT)
@@ -136,8 +161,22 @@ class FireBaseUtils(
         }
     }
 
+    fun writePaymentToFireBase(paymentModel: PaymentModel) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.PAYMENT)
+                .child(paymentModel.uniqueKey)
+                .setValue(paymentModel) {error, _ ->
+                    if (error == null){
+                        readVersionOfChildFromFireBase(FireBaseConstants.PAYMENT_VERSION)
+                    }
+                }
+        }
+    }
+
     fun readBusinessFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.BUSINESS)
@@ -166,8 +205,22 @@ class FireBaseUtils(
         }
     }
 
+    fun writeBusinessToFireBase(businessModel: BusinessModel) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.BUSINESS)
+                .child(businessModel.selectedDate)
+                .setValue(businessModel) {error, _ ->
+                    if (error == null){
+                        readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_VERSION)
+                    }
+                }
+        }
+    }
+
     fun readClientFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.CLIENT)
@@ -196,8 +249,22 @@ class FireBaseUtils(
         }
     }
 
+    fun writeClientToFireBase(clientModel: ClientModel) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.CLIENT)
+                .push()
+                .setValue(clientModel) {error, _ ->
+                    if (error == null){
+                        readVersionOfChildFromFireBase(FireBaseConstants.CLIENT_VERSION)
+                    }
+                }
+        }
+    }
+
     fun readPurchaseFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.PURCHASE)
@@ -226,11 +293,26 @@ class FireBaseUtils(
         }
     }
 
-    fun readBusinessNameFromFireBase() {
-        if (AppUtils.networkConnectivityCheck(mContext)) {
+    fun writePurchaseTOFireBase(purchaseModel: PurchaseModel) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.PURCHASE)
+                .child(purchaseModel.clientName)
+                .child(purchaseModel.timeInMillis.toString())
+                .setValue(purchaseModel) {error, _ ->
+                    if (error == null){
+                        readVersionOfChildFromFireBase(FireBaseConstants.PURCHASE_VERSION)
+                    }
+                }
+        }
+    }
+
+    fun readBusinessCategoryFromFireBase() {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
-                .child(FireBaseConstants.BUSINESS_NAME)
+                .child(FireBaseConstants.BUSINESS_CATEGORY)
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(
@@ -242,7 +324,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readBusinessNameDataListener(dataSnapShot)
+                        mFireBaseInterface.readBusinessCategoryDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -255,11 +337,17 @@ class FireBaseUtils(
         }
     }
 
-    fun writePaymentToFireBase() {
-
-    }
-
-    fun writeBusinessToFireBase(selectedDate: String) {
-
+    fun writeBusinessCategoryToFireBase(category : SingleEntityModel) {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .push()
+                .setValue(category) {error, _ ->
+                    if (error == null){
+                        readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
+                    }
+                }
+        }
     }
 }

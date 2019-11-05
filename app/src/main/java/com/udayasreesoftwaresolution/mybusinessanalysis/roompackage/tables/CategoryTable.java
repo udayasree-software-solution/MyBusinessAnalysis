@@ -12,6 +12,10 @@ public class CategoryTable {
     @ColumnInfo(name = "category_name")
     private String category_name;
 
+    public CategoryTable(String category_name) {
+        this.category_name = category_name;
+    }
+
     public CategoryTable(int slNo, String category_name) {
         this.slNo = slNo;
         this.category_name = category_name;
