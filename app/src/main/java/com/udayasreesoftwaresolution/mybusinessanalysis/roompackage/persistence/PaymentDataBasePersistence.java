@@ -1,7 +1,7 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.dao.PaymentDao;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PaymentTable;

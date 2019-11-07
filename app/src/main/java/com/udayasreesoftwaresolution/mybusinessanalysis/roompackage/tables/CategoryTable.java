@@ -1,8 +1,9 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 @Entity
 public class CategoryTable {
@@ -13,11 +14,6 @@ public class CategoryTable {
     private String category_name;
 
     public CategoryTable(String category_name) {
-        this.category_name = category_name;
-    }
-
-    public CategoryTable(int slNo, String category_name) {
-        this.slNo = slNo;
         this.category_name = category_name;
     }
 

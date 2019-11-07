@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':admin'
 rootProject.name='My Business Analysis'

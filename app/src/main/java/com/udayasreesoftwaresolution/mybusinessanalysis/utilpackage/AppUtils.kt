@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
 import java.text.SimpleDateFormat
@@ -49,34 +48,6 @@ class AppUtils {
             }
             return userId
         }
-
-        /*fun sortBusinessModelList(businessList : ArrayList<AmountViewModel>) : ArrayList<AmountViewModel> {
-            val newBusinessList = ArrayList<AmountViewModel>()
-            var businessExpenses : AmountViewModel? = null
-            var businessOutlet : AmountViewModel? = null
-            for (element in businessList) {
-                when(element.title) {
-                    "Expenses" -> {
-                        businessExpenses = element
-                    }
-
-                    OUTLET_NAME -> {
-                        businessOutlet = element
-                    }
-                }
-            }
-
-            if (businessExpenses != null && businessOutlet != null) {
-                newBusinessList.add(businessExpenses)
-                newBusinessList.add(businessOutlet)
-                for (element in businessList) {
-                    if (element.title != "Expenses" && element.title != OUTLET_NAME) {
-                        newBusinessList.add(element)
-                    }
-                }
-            }
-            return newBusinessList
-        }*/
 
         fun getTypeFace(context: Context, typefaceId : Int) : Typeface {
             var typeFaceName = ""

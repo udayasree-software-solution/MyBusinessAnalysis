@@ -1,7 +1,8 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
 @Entity
 public class TimeDataTable {
@@ -12,7 +13,7 @@ public class TimeDataTable {
     @ColumnInfo(name = "date_in_millis")
     private long date;
 
-    @ColumnInfo(name = "days")
+    @ColumnInfo(name = "pre_days")
     private int days;
 
     public TimeDataTable(int slNo, long date, int days) {

@@ -1,7 +1,7 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository;
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 

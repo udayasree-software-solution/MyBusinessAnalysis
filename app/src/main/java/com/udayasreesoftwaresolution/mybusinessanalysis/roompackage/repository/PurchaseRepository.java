@@ -1,8 +1,9 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository;
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.room.Room;
 import android.content.Context;
+
+import androidx.room.Room;
 
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence.PurchaseDataBasePersistance;
 
