@@ -1,6 +1,5 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
@@ -14,15 +13,9 @@ import com.google.firebase.database.DataSnapshot
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseInterface
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ClientModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.PaymentModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.SingleEntityModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.CategoryRepository
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.ClientRepository
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.PaymentRepository
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.PurchaseRepository
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.CategoryTable
-import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PaymentTable
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ImageLoaderUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.SharedPreferenceUtils
@@ -200,7 +193,16 @@ class SplashActivity : AppCompatActivity(),
     override fun readBusinessDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Business Room database*/
         try {
-
+            val businessRepository = BusinessRepository(this@SplashActivity)
+            businessRepository.clearDataBase()
+            for (element in dataSnapShot.children) {
+                val businessModel = element.getValue(BusinessModel::class.java)
+                if (businessModel != null) {
+                    with(businessModel){
+                        businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+                    }
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -215,7 +217,9 @@ class SplashActivity : AppCompatActivity(),
             for (element in dataSnapShot.children) {
                 val clientModel = element.getValue(ClientModel::class.java)
                 if (clientModel != null) {
-
+                    with(clientModel){
+                        clientRepository.insertClient(ClientsTable(clientName, category))
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -228,7 +232,15 @@ class SplashActivity : AppCompatActivity(),
         /*TODO: Delete Purchase Room database*/
         try {
             val purchaseRepository = PurchaseRepository(this@SplashActivity)
-
+            purchaseRepository.clearDataBase()
+            for (element in dataSnapShot.children) {
+                val purchaseModel = element.getValue(PurchaseModel::class.java)
+                if (purchaseModel != null) {
+                    with(purchaseModel) {
+                        purchaseRepository.insertPurchase(PurchaseTable(dateOfPurchase, clientName, billNo, billAmount, timeInMillis))
+                    }
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

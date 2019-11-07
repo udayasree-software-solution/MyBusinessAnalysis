@@ -11,13 +11,13 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
     @Insert
-    void insertClient(CategoryTable clientsTable);
+    void insertCategory(CategoryTable clientsTable);
 
     @Delete
-    void deleteClient(CategoryTable clientsTable);
+    void deleteCategory(CategoryTable clientsTable);
 
     @Update
-    void updateClient(CategoryTable clientsTable);
+    void updateCategory(CategoryTable clientsTable);
 
     @Query("SELECT * FROM CategoryTable ORDER BY category_name ASC")
     List<CategoryTable> queryCategoryList();

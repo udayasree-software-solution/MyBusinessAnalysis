@@ -4,25 +4,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class BusinessModel implements Parcelable {
-    private int order, amount;
+    private int ascOrder, amount;
     private String businessName, selectedDate;
     private long timeInMillis;
 
-    public BusinessModel(int order, String businessName, int amount, String selectedDate, long timeInMillis) {
-        this.order = order;
+    public BusinessModel(int ascOrder, String businessName, int amount, String selectedDate, long timeInMillis) {
+        this.ascOrder = ascOrder;
         this.businessName = businessName;
         this.amount = amount;
         this.selectedDate = selectedDate;
         this.timeInMillis = timeInMillis;
     }
 
-    public int getOrder() {
-        return order;
+    public int getAscOrder() {
+        return ascOrder;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setAscOrder(int ascOrder) {
+        this.ascOrder = ascOrder;
     }
+
 
     public String getBusinessName() {
         return businessName;
@@ -57,7 +58,7 @@ public class BusinessModel implements Parcelable {
     }
 
     protected BusinessModel(Parcel in) {
-        order = in.readInt();
+        ascOrder = in.readInt();
         businessName = in.readString();
         amount = in.readInt();
         selectedDate = in.readString();
@@ -66,7 +67,7 @@ public class BusinessModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(order);
+        dest.writeInt(ascOrder);
         dest.writeString(businessName);
         dest.writeInt(amount);
         dest.writeString(selectedDate);

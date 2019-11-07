@@ -23,7 +23,7 @@ public class CategoryRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                categoryDataBasePersistence.categoryDaoAccess().insertClient(categoryTable);
+                categoryDataBasePersistence.categoryDaoAccess().insertCategory(categoryTable);
                 return null;
             }
         }.execute();
@@ -33,7 +33,7 @@ public class CategoryRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                categoryDataBasePersistence.categoryDaoAccess().updateClient(categoryTable);
+                categoryDataBasePersistence.categoryDaoAccess().updateCategory(categoryTable);
                 return null;
             }
         }.execute();
@@ -43,7 +43,7 @@ public class CategoryRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                categoryDataBasePersistence.categoryDaoAccess().deleteClient(categoryTable);
+                categoryDataBasePersistence.categoryDaoAccess().deleteCategory(categoryTable);
                 return null;
             }
         }.execute();

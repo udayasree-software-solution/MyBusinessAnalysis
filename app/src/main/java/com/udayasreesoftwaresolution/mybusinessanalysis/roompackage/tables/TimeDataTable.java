@@ -7,27 +7,15 @@ import androidx.room.Entity;
 @Entity
 public class TimeDataTable {
 
-
-    private int slNo;
-
     @ColumnInfo(name = "date_in_millis")
     private long date;
 
     @ColumnInfo(name = "pre_days")
     private int days;
 
-    public TimeDataTable(int slNo, long date, int days) {
-        this.slNo = slNo;
+    public TimeDataTable(long date, int days) {
         this.date = date;
         this.days = days;
-    }
-
-    public int getSlNo() {
-        return slNo;
-    }
-
-    public void setSlNo(int slNo) {
-        this.slNo = slNo;
     }
 
     public long getDate() {

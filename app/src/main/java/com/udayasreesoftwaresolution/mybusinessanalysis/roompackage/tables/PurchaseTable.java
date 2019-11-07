@@ -26,8 +26,7 @@ public class PurchaseTable {
     @ColumnInfo(name = "time_in_millis")
     private long timeInMillis;
 
-    public PurchaseTable(int slNo, String dateOfPurchase, String clientName, String billNo, String billAmount, long timeInMillis) {
-        this.slNo = slNo;
+    public PurchaseTable(String dateOfPurchase, String clientName, String billNo, String billAmount, long timeInMillis) {
         this.dateOfPurchase = dateOfPurchase;
         this.clientName = clientName;
         this.billNo = billNo;

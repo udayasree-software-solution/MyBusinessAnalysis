@@ -15,8 +15,7 @@ public class ClientsTable {
     @ColumnInfo(name = "category")
     private String category;
 
-    public ClientsTable(int slNo, String client, String category) {
-        this.slNo = slNo;
+    public ClientsTable(String client, String category) {
         this.client = client;
         this.category = category;
     }

@@ -22,7 +22,7 @@ public class ClientRepository {
                 .build();
     }
 
-    public void insertTask(final ClientsTable clientsTable) {
+    public void insertClient(final ClientsTable clientsTable) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -32,7 +32,7 @@ public class ClientRepository {
         }.execute();
     }
 
-    public void updateTask(final ClientsTable clientsTable) {
+    public void updateClient(final ClientsTable clientsTable) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -42,7 +42,7 @@ public class ClientRepository {
         }.execute();
     }
 
-    public void deleteTask(final ClientsTable clientsTable) {
+    public void deleteClient(final ClientsTable clientsTable) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
