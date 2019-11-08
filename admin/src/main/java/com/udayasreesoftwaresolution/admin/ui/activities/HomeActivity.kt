@@ -1,6 +1,7 @@
 package com.udayasreesoftwaresolution.admin.ui.activities
 
 import android.content.Intent
+import android.graphics.Point
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -12,6 +13,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.udayasreesoftwaresolution.admin.R
 import com.udayasreesoftwaresolution.admin.ui.fragments.AddAdminFragment
+import com.udayasreesoftwaresolution.admin.utilspackage.AppUtils
 
 class HomeActivity : AppCompatActivity() {
 
@@ -27,8 +29,17 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        screenSize()
         initView()
+    }
+
+    private fun screenSize() {
+        val size = Point()
+        val w = windowManager
+
+        w.defaultDisplay.getSize(size)
+        AppUtils.SCREEN_WIDTH = size.x
+        AppUtils.SCREEN_HEIGHT = size.y
     }
 
     private fun initView() {

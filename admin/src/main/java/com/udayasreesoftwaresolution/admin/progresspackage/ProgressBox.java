@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -71,6 +70,11 @@ public class ProgressBox {
         return this;
     }
 
+    public ProgressBox setSize(int width, int height) {
+        mProgressDialog.setSize(width, height);
+        return this;
+    }
+
     private class ProgressDialog extends Dialog {
 
         private Indeterminate mIndeterminateView;
@@ -93,7 +97,7 @@ public class ProgressBox {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
-            setContentView(R.layout.kprogresshud_hud);
+            setContentView(R.layout.progress_box);
 
             Window window = getWindow();
             assert window != null;

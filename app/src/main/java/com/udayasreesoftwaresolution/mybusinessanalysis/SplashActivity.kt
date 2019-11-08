@@ -1,6 +1,8 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -38,11 +40,21 @@ class SplashActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        screenSize()
         if (AppUtils.networkConnectivityCheck(this)) {
             initView()
         } else {
             exitDialog("No Internet Connection", "Please connect to internet and try again", "Exit")
         }
+    }
+
+    private fun screenSize() {
+        val size = Point()
+        val w = windowManager
+
+        w.defaultDisplay.getSize(size)
+        AppUtils.SCREEN_WIDTH = size.x
+        AppUtils.SCREEN_HEIGHT = size.y
     }
 
     private fun initView() {
@@ -96,6 +108,7 @@ class SplashActivity : AppCompatActivity(),
                 /*TODO: Intent to HOME Activity*/
                 progressLayout.visibility = View.GONE
 
+                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
             }, 7000)
         }
     }

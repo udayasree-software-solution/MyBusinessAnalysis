@@ -82,6 +82,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
 
         fireBaseUtils = FireBaseUtils(activity!!, this).getInstance()
         progressBox = ProgressBox.create(activity)
+            /*.setSize((AppUtils.SCREEN_WIDTH * 0.1).toInt(), (AppUtils.SCREEN_WIDTH * 0.1).toInt())*/
         readOutletToFireBase()
     }
 
