@@ -49,9 +49,9 @@ class FireBaseUtils(
                         if (validityModel != null) {
                             AppUtils.getCurrentDate(true)
                             if (AppUtils.timeInMillis > validityModel.validityDate) {
-                                mFireBaseInterface.validityListener(true)
+                                mFireBaseInterface.onValiditySuccessListener(true)
                             } else {
-                                mFireBaseInterface.validityListener(false)
+                                mFireBaseInterface.onValiditySuccessListener(false)
                             }
                         }
                     } else {
@@ -83,7 +83,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readVersionListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadVersionListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -123,7 +123,7 @@ class FireBaseUtils(
                             .child(FireBaseConstants.VERSION)
                             .child(child)
                             .setValue(bigDecimal.toDouble()) { error, _ ->
-                                mFireBaseInterface.writeVersionListener(error == null)
+                                mFireBaseInterface.onSuccessWriteVersionListener(error == null)
                             }
                     }
                 }
@@ -140,7 +140,7 @@ class FireBaseUtils(
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readPaymentDataListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadPaymentDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -192,7 +192,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readBusinessDataListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadBusinessDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -236,7 +236,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readClientDataListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadClientDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -280,7 +280,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readPurchaseDataListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadPurchaseDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,
@@ -324,7 +324,7 @@ class FireBaseUtils(
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        mFireBaseInterface.readBusinessCategoryDataListener(dataSnapShot)
+                        mFireBaseInterface.onSuccessReadBusinessCategoryDataListener(dataSnapShot)
                     } else {
                         Toast.makeText(
                             mContext,

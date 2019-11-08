@@ -8,6 +8,9 @@ public class BusinessModel implements Parcelable {
     private String businessName, selectedDate;
     private long timeInMillis;
 
+    public BusinessModel() {
+    }
+
     public BusinessModel(int ascOrder, String businessName, int amount, String selectedDate, long timeInMillis) {
         this.ascOrder = ascOrder;
         this.businessName = businessName;

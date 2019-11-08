@@ -1,7 +1,6 @@
 package com.udayasreesoftwaresolution.admin.ui.fragments
 
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +13,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.admin.R
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseConstants
+import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseInterface
+import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseUtils
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.ValidityModel
+import com.udayasreesoftwaresolution.admin.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.admin.retorfit.ApiClient
 import com.udayasreesoftwaresolution.admin.retorfit.ApiInterface
 import com.udayasreesoftwaresolution.admin.retorfit.model.PostOffice
@@ -21,11 +24,10 @@ import com.udayasreesoftwaresolution.admin.retorfit.model.ZipcodeModel
 import com.udayasreesoftwaresolution.admin.ui.models.SingleEntityModel
 import com.udayasreesoftwaresolution.admin.ui.models.UserSignInModel
 import com.udayasreesoftwaresolution.admin.utilspackage.AppUtils
-import com.udayasreesoftwaresolution.admin.utilspackage.ConstantUtils
 import retrofit2.Call
 import retrofit2.Callback
 
-class AddAdminFragment : Fragment(), View.OnClickListener {
+class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
 
     private lateinit var userTitleText: TextView
     private lateinit var userNameText: EditText
@@ -37,11 +39,11 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
     private lateinit var userAdminCodeText: EditText
     private lateinit var userAddBtn: Button
 
-    private lateinit var progressBox: ProgressDialog
+    private lateinit var fireBaseUtils: FireBaseUtils
+    private lateinit var progressBox: ProgressBox
 
     private lateinit var outletNameList: ArrayList<String>
     private var isOutletSelected = false
-    private var isZipcodeSuccess = false
     private var outletName = ""
     private var outletCode = ""
 
@@ -78,37 +80,21 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
         userAddBtn.setOnClickListener(this)
         userPinCodeBtn.setOnClickListener(this)
 
-        progressBox = ProgressDialog(activity)
-        progressBox.setMessage("Connecting to server. Please Wait")
-        progressBox.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        progressBox.setCancelable(false)
-
+        fireBaseUtils = FireBaseUtils(activity!!, this).getInstance()
+        progressBox = ProgressBox.create(activity)
         readOutletToFireBase()
-    }
-
-    private fun show() {
-        dismiss()
-        if (progressBox != null && !progressBox.isShowing) {
-            progressBox.show()
-        }
-    }
-
-    private fun dismiss() {
-        if (progressBox != null && progressBox.isShowing) {
-            progressBox.dismiss()
-        }
     }
 
     private fun readOutletToFireBase() {
         if (AppUtils.networkConnectivityCheck(context!!)) {
-            show()
+            progressBox.show()
             val firebaseReference = FirebaseDatabase.getInstance()
                 .getReference(FireBaseConstants.ADMIN)
                 .child(FireBaseConstants.OUTLET)
 
             firebaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    dismiss()
+                    progressBox.dismiss()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
@@ -120,7 +106,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                         outletNameList.add(element.inputData)
                     }
                     setupOutletTextView(outletNameList)
-                    dismiss()
+                    progressBox.dismiss()
                 }
             })
         }
@@ -172,6 +158,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                     if (error == null) {
                         writeUserToFirebase(userSignInModel)
                     } else {
+                        progressBox.dismiss()
                         Toast.makeText(
                             context,
                             "Fail to create user. Please try again",
@@ -192,7 +179,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    dismiss()
+                    progressBox.dismiss()
                 }
 
                 override fun onDataChange(snapShot: DataSnapshot) {
@@ -205,7 +192,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                             userAddressText.setText("")
                             userAdminCodeText.setText("")
                             userPincodeText.setText("")
-                            dismiss()
+                            progressBox.dismiss()
                             Toast.makeText(
                                 context,
                                 "Admin details already exist",
@@ -230,57 +217,10 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                     .child(userMobile)
                     .setValue(userSignInModel) { error, _ ->
                         if (error == null) {
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.PAYMENT_VERSION)
-                                .setValue(0.0)
-
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.PAYABLE_AMOUNT)
-                                .setValue(0)
-
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.PAID_AMOUNT)
-                                .setValue(0)
-
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.EXPENSES_AMOUNT)
-                                .setValue(0)
-
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.GROSS_AMOUNT)
-                                .setValue(0)
-
-                            com.google.firebase.database.FirebaseDatabase.getInstance()
-                                .getReference(userSignInModel.userOutlet)
-                                .child(FireBaseConstants.TOTAL_AMOUNT)
-                                .child(FireBaseConstants.PURCHASE_AMOUNT)
-                                .setValue(0)
-
-                            userNameText.setText("")
-                            userMobileText.setText("")
-                            userOutletText.setText("")
-                            userAddressText.setText("")
-                            userAdminCodeText.setText("")
-                            userPincodeText.setText("")
-                            dismiss()
-                            android.widget.Toast.makeText(
-                                context,
-                                "Successfully Created Admin",
-                                android.widget.Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            AppUtils.OUTLET_NAME = userOutlet
+                            fireBaseUtils.writeValidityToFireBase(userOutlet, AppUtils.getValidityDataModel())
                         } else {
-                            dismiss()
+                            progressBox.dismiss()
                             android.widget.Toast.makeText(
                                 context,
                                 "Fail to create user. Please try again",
@@ -290,17 +230,18 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                         }
                     }
             }
+        } else {
+            progressBox.dismiss()
         }
     }
 
     private fun getZipCodeAddress(zipcode: String) {
         if (AppUtils.networkConnectivityCheck(context!!) && zipcode.isNotEmpty() || zipcode.isNotBlank()) {
-            show()
+            progressBox.show()
             val apiInterface = ApiClient.getZipCodeApiClient().create(ApiInterface::class.java)
             val call = apiInterface.getZipCodeAddress(zipcode)
             call.enqueue(object : Callback<ZipcodeModel> {
                 override fun onFailure(call: Call<ZipcodeModel>, t: Throwable) {
-                    isZipcodeSuccess = false
                     Toast.makeText(context!!, "Error while fetching address. Please enter address", Toast.LENGTH_SHORT).show()
                     addressFunc()
                 }
@@ -318,12 +259,11 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                                 val addressList = ArrayList<String>()
                                 for (element in postOffice) {
                                     with(element) {
-                                        addressList.add("$name, $division,\n$state, $country,\npincode - $zipcode")
+                                        addressList.add("$name, $division,\n$state, $country")
                                     }
                                 }
 
                                 if (addressList.isNotEmpty()) {
-                                    isZipcodeSuccess = true
                                     setupAddressTextView(addressList)
                                 }
                             }
@@ -364,7 +304,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
             setText("")
             isFocusable = true
         }
-        dismiss()
+        progressBox.dismiss()
     }
 
     override fun onClick(v: View?) {
@@ -386,10 +326,8 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                 if (userName.isNotEmpty() && mobile.isNotEmpty() && mobile.length == 10 && outletName.isNotEmpty()
                     && address.isNotEmpty() && adminCode.isNotEmpty() && adminCode.length == 6
                 ) {
-                    show()
-                    if (!isZipcodeSuccess){
-                        address.plus(" pincode - ${userPincodeText.text.toString()}")
-                    }
+                    progressBox.show()
+                    address.plus(", pincode - ${userPincodeText.text.toString()}")
                     val userSignInModel =
                         UserSignInModel(
                             AppUtils.fireBaseChildId(outletCode),
@@ -432,6 +370,28 @@ class AddAdminFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun onValiditySuccessListener() {
+
+        fireBaseUtils.initVersionToFireBase(AppUtils.OUTLET_NAME)
+        fireBaseUtils.initTotalToFireBase(AppUtils.OUTLET_NAME)
+
+        userNameText.setText("")
+        userMobileText.setText("")
+        userOutletText.setText("")
+        userAddressText.setText("")
+        userAdminCodeText.setText("")
+        userPincodeText.setText("")
+        progressBox.dismiss()
+        android.widget.Toast.makeText(
+            context,
+            "Successfully Created Admin",
+            android.widget.Toast.LENGTH_SHORT
+        )
+            .show()
+
+        AppUtils.OUTLET_NAME = ""
     }
 
 }

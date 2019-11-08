@@ -6,6 +6,9 @@ import android.os.Parcelable;
 public class ClientModel implements Parcelable {
     private String clientName, category;
 
+    public ClientModel() {
+    }
+
     public ClientModel(String clientName, String category) {
         this.clientName = clientName;
         this.category = category;

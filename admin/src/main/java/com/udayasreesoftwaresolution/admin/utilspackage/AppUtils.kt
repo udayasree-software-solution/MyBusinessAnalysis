@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import android.widget.Toast
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.ValidityModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -81,6 +82,18 @@ class AppUtils {
             }
             timeInMillis = calendar.timeInMillis
             return simpleDateFormat.format(timeInMillis)
+        }
+
+        fun getValidityDataModel() : ValidityModel {
+            val calendar = Calendar.getInstance()
+            calendar.timeZone = TimeZone.getTimeZone("Asia/Calcutta")
+            val startDateMillis = calendar.timeInMillis
+            calendar.time = Date()
+            calendar.add(Calendar.MONTH, 6)
+            val endDateMillis = calendar.timeInMillis
+            val differenceMillis = endDateMillis - startDateMillis
+            val totalDays : Int = ((differenceMillis / (1000 * 60 * 60 * 24)).toInt())
+            return ValidityModel(startDateMillis, endDateMillis, 0, totalDays)
         }
 
         fun networkConnectivityCheck(context: Context): Boolean {

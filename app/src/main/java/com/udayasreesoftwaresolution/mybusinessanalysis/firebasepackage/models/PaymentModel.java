@@ -9,6 +9,9 @@ public class PaymentModel implements Parcelable {
     private boolean payStatus;
     private int preDays;
 
+    public PaymentModel() {
+    }
+
     public PaymentModel(String uniqueKey, String clientName, String payAmount,
                         String chequeNumber, long dateInMillis, boolean payStatus, int preDays) {
         this.uniqueKey = uniqueKey;

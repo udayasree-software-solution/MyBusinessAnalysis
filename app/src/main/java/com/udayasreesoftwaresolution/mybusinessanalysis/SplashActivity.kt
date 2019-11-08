@@ -100,7 +100,7 @@ class SplashActivity : AppCompatActivity(),
         }
     }
 
-    override fun validityListener(isValidityExpired: Boolean) {
+    override fun onValiditySuccessListener(isValidityExpired: Boolean) {
         if (isValidityExpired) {
             exitDialog(
                 "Renewal Premium",
@@ -113,7 +113,7 @@ class SplashActivity : AppCompatActivity(),
     }
 
     /*TODO:  Interface Implementation*/
-    override fun readVersionListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadVersionListener(dataSnapShot: DataSnapshot) {
         try {
             val paymentVersion = dataSnapShot.child(FireBaseConstants.PAYMENT_VERSION).getValue(Double::class.java)!!
             val businessVersion = dataSnapShot.child(FireBaseConstants.BUSINESS_VERSION).getValue(Double::class.java)!!
@@ -161,7 +161,7 @@ class SplashActivity : AppCompatActivity(),
         }
     }
 
-    override fun readPaymentDataListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadPaymentDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Payment Room database*/
         try {
             val paymentRepository = PaymentRepository(this@SplashActivity)
@@ -190,7 +190,7 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun readBusinessDataListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadBusinessDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Business Room database*/
         try {
             val businessRepository = BusinessRepository(this@SplashActivity)
@@ -209,7 +209,7 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun readClientDataListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadClientDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Client Room database*/
         try {
             val clientRepository = ClientRepository(this@SplashActivity)
@@ -228,7 +228,7 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun readPurchaseDataListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadPurchaseDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Delete Purchase Room database*/
         try {
             val purchaseRepository = PurchaseRepository(this@SplashActivity)
@@ -247,7 +247,7 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun readBusinessCategoryDataListener(dataSnapShot: DataSnapshot) {
+    override fun onSuccessReadBusinessCategoryDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Business Name Version [KKC, Socks etc]*/
         try {
             val categoryRepository = CategoryRepository(this@SplashActivity)
@@ -265,7 +265,7 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun writeVersionListener(status: Boolean) {
+    override fun onSuccessWriteVersionListener(status: Boolean) {
 
     }
 }

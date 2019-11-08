@@ -3,10 +3,6 @@ package com.udayasreesoftwaresolution.admin.firebasepackage
 class FireBaseConstants {
     companion object {
         val VALIDITY = "Validity"
-        val PURCHASE_DATE = "Purchase Date"
-        val VALIDITY_DATE = "Validity Date"
-        val VALIDITY_DAYS = "Validity Days"
-        val VALIDITY_AMOUNT = "Validity Amount"
 
         val VERSION = "Version"
         val PAYMENT_VERSION = "Payment Version"
@@ -20,7 +16,6 @@ class FireBaseConstants {
         val PAID_AMOUNT = "Paid Amount"
         val EXPENSES_AMOUNT = "Expenses Amount"
         val GROSS_AMOUNT = "Gross Amount"
-        val NET_AMOUNT = "Net Amount"
         val PURCHASE_AMOUNT = "Purchase Amount"
 
         val USERS = "Users"
