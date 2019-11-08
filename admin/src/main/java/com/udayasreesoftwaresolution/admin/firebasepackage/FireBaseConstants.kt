@@ -1,4 +1,4 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage
+package com.udayasreesoftwaresolution.admin.firebasepackage
 
 class FireBaseConstants {
     companion object {
@@ -30,6 +30,8 @@ class FireBaseConstants {
         val BUSINESS = "Business"
         val PURCHASE = "Purchase"
         val BUSINESS_CATEGORY = "Business Category"
+
+        val ADMIN = "Admin"
 
         @JvmField
         val DEFAULT_LOGO =

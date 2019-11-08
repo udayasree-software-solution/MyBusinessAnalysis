@@ -2,6 +2,7 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 
 class SharedPreferenceUtils(val mContext: Context) {
     private var sharedPreferenceUtils: SharedPreferenceUtils? = null
@@ -116,7 +117,7 @@ class SharedPreferenceUtils(val mContext: Context) {
     }
 
     fun getOutletLogoUrl() : String? {
-        return sharedPreferences.getString(outlet_logo_url, ConstantUtils.DEFAULT_LOGO)
+        return sharedPreferences.getString(outlet_logo_url, FireBaseConstants.DEFAULT_LOGO)
     }
 
     fun setOutletBannerUrl(url : String) {
@@ -124,7 +125,7 @@ class SharedPreferenceUtils(val mContext: Context) {
     }
 
     fun getOutletBannerUrl() : String? {
-        return sharedPreferences.getString(outlet_banner_url, ConstantUtils.DEFAULT_BANNER)
+        return sharedPreferences.getString(outlet_banner_url, FireBaseConstants.DEFAULT_BANNER)
     }
 
     fun setPaymentVersion(version: Float) {

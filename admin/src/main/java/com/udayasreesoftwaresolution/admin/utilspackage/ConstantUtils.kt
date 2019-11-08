@@ -1,4 +1,4 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage
+package com.udayasreesoftwaresolution.admin.utilspackage
 
 class ConstantUtils {
     companion object {
@@ -32,8 +32,5 @@ class ConstantUtils {
         val MONTSERRAT = 3
         @JvmField
         val SUNDAPRADA = -1
-
-        @JvmField
-        val ADMIN = "Admin"
     }
 }
