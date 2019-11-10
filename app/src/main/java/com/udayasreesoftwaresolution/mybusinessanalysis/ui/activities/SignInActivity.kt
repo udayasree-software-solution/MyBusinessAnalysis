@@ -256,6 +256,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             setResult(Activity.RESULT_OK)
         } else {
             progressBox.dismiss()
+            Toast.makeText(this, "Invalid Verification Code", Toast.LENGTH_SHORT).show()
         }
     }
 

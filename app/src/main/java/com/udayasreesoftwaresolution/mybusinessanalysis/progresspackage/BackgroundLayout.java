@@ -1,19 +1,3 @@
-/*
- *    Copyright 2015 Kaopiz Software Co., Ltd.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage;
 
 import android.annotation.TargetApi;
@@ -46,7 +30,6 @@ class BackgroundLayout extends LinearLayout {
         init();
     }
 
-    @SuppressWarnings("deprecation")
     private void init() {
         int color = getContext().getResources().getColor(R.color.kprogresshud_default_color);
         initBackground(color, mCornerRadius);
@@ -57,12 +40,7 @@ class BackgroundLayout extends LinearLayout {
         drawable.setShape(GradientDrawable.RECTANGLE);
         drawable.setColor(color);
         drawable.setCornerRadius(cornerRadius);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            setBackground(drawable);
-        } else {
-            //noinspection deprecation
-            setBackgroundDrawable(drawable);
-        }
+        setBackground(drawable);
     }
 
     public void setCornerRadius(float radius) {
