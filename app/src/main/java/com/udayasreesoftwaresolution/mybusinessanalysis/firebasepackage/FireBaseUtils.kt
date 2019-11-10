@@ -47,7 +47,7 @@ class FireBaseUtils(
                     if (dataSnapShot.exists()) {
                         val validityModel = dataSnapShot.getValue(ValidityModel::class.java)
                         if (validityModel != null) {
-                            AppUtils.getCurrentDate(true)
+                            AppUtils.getCurrentDate(false)
                             if (AppUtils.timeInMillis > validityModel.validityDate) {
                                 mFireBaseInterface.onValiditySuccessListener(true)
                             } else {

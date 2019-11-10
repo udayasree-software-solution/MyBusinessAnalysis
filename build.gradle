@@ -49,5 +49,5 @@ ext {
     firebaseauth = "19.1.0"
     firebasestorage = "19.1.0"
     firebaseanalytics = "17.2.1"
-    retrofit2version = "2.3.0"
+    retrofit2version = '2.6.2'
 }

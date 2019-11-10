@@ -88,14 +88,6 @@ class SharedPreferenceUtils(val mContext: Context) {
         return sharedPreferences.getString(user_signin_code_firebase, "")
     }
 
-    fun setUserConfirmationStatus(isConfirm : Boolean) {
-        sharedPreferences.edit()?.putBoolean(user_confirmation_status, isConfirm)?.apply()
-    }
-
-    fun getUserConfirmationStatus() : Boolean {
-        return sharedPreferences.getBoolean(user_confirmation_status, false)
-    }
-
     fun setMobileNumber(mobile : String) {
         sharedPreferences.edit()?.putString(user_mobile_number, mobile)?.apply()
     }

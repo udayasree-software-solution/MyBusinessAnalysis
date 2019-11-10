@@ -15,14 +15,13 @@ import com.udayasreesoftwaresolution.admin.R
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseInterface
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseUtils
-import com.udayasreesoftwaresolution.admin.firebasepackage.models.ValidityModel
 import com.udayasreesoftwaresolution.admin.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.admin.retorfit.ApiClient
 import com.udayasreesoftwaresolution.admin.retorfit.ApiInterface
 import com.udayasreesoftwaresolution.admin.retorfit.model.PostOffice
 import com.udayasreesoftwaresolution.admin.retorfit.model.ZipcodeModel
-import com.udayasreesoftwaresolution.admin.ui.models.SingleEntityModel
-import com.udayasreesoftwaresolution.admin.ui.models.UserSignInModel
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.SingleEntityModel
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.UserSignInModel
 import com.udayasreesoftwaresolution.admin.utilspackage.AppUtils
 import retrofit2.Call
 import retrofit2.Callback

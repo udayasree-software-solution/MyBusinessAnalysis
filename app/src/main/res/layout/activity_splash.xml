@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity">
+    tools:context=".ui.activities.SplashActivity">
     <ImageView
         android:id="@+id/splash_banner_img_id"
         android:scaleType="fitXY"
@@ -25,37 +25,4 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <androidx.cardview.widget.CardView
-        android:id="@+id/splash_progress_layout_id"
-        app:cardCornerRadius="6dp"
-        app:cardElevation="6dp"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:gravity="center"
-            android:background="@android:color/transparent">
-            <ProgressBar
-                android:indeterminate="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="Please Wait"
-                android:typeface="serif"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="Connecting to server"
-                android:typeface="serif"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 </RelativeLayout>

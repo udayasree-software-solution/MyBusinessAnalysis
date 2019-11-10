@@ -1,4 +1,4 @@
-package com.udayasreesoftwaresolution.admin.ui.models;
+package com.udayasreesoftwaresolution.admin.firebasepackage.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

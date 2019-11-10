@@ -5,13 +5,8 @@ class ConstantUtils {
         @JvmField
         val TASK_SLNO = "task_slno"
         @JvmField
-        val PAY_LIST_CODE = 1
-        @JvmField
-        val PERMISSION_REQUESTED = 2
-        @JvmField
-        val PERMISSION_GALLERY = 3
-        @JvmField
-        val PERMISSION_BUSINESS = 4
+        val SIGNIN_REQUEST_CODE = 1
+
 
         @JvmField
         val DATE_FORMAT = "MMMM dd, yyyy (EEEE)"

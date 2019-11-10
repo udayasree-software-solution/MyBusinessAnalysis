@@ -1,7 +1,8 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis
+package com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.udayasreesoftwaresolution.mybusinessanalysis.R
 
 class HomeActivity : AppCompatActivity() {
 

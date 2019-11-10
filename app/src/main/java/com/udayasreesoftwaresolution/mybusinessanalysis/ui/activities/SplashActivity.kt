@@ -1,24 +1,25 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis
+package com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities
 
-import android.content.DialogInterface
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import com.google.firebase.database.DataSnapshot
+import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseInterface
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ImageLoaderUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.SharedPreferenceUtils
 
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity(),
     private lateinit var outletBanner: ImageView
     private lateinit var outletLogo: ImageView
     private lateinit var outletName: TextView
-    private lateinit var progressLayout: CardView
+    private lateinit var progressBox: ProgressBox
 
     private lateinit var sharedPreferenceUtils: SharedPreferenceUtils
     private lateinit var imageLoaderUtils: ImageLoaderUtils
@@ -61,30 +62,25 @@ class SplashActivity : AppCompatActivity(),
         outletBanner = findViewById(R.id.splash_banner_img_id)
         outletLogo = findViewById(R.id.splash_logo_img_id)
         outletName = findViewById(R.id.splash_outlet_name_id)
-        progressLayout = findViewById(R.id.splash_progress_layout_id)
 
         imageLoaderUtils = ImageLoaderUtils(
             this@SplashActivity
         ).getInstance()
         imageLoaderUtils.setupImageLoader()
         sharedPreferenceUtils = SharedPreferenceUtils(this@SplashActivity).getInstance()
-
-        progressLayout.visibility = View.VISIBLE
+        progressBox = ProgressBox.create(this)
 
         AppUtils.OUTLET_NAME = sharedPreferenceUtils.getOutletName()!!
         imageLoaderUtils.displayImage(sharedPreferenceUtils.getOutletBannerUrl()!!, outletBanner)
         imageLoaderUtils.displayRoundImage(sharedPreferenceUtils.getOutletLogoUrl()!!, outletLogo)
-        outletName.setText(AppUtils.OUTLET_NAME)
+        outletName.text = AppUtils.OUTLET_NAME
+        fireBaseUtils = FireBaseUtils(this@SplashActivity, this).getInstance()
 
         if (sharedPreferenceUtils.getUserSignInStatus() && AppUtils.OUTLET_NAME.isNotEmpty()) {
-            fireBaseUtils = FireBaseUtils(
-                this@SplashActivity,
-                this
-            ).getInstance()
+            progressBox.show()
             fireBaseUtils.readValidityFromFireBase()
         } else {
-            progressLayout.visibility = View.GONE
-            /*TODO: Intent to SignIn Activity*/
+            startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
         }
     }
 
@@ -92,10 +88,10 @@ class SplashActivity : AppCompatActivity(),
         val builder = AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(posBtn, DialogInterface.OnClickListener { dialog, _ ->
+            .setPositiveButton(posBtn) { dialog, _ ->
                 dialog.dismiss()
                 finishAffinity()
-            })
+            }
         builder.create().show()
     }
 
@@ -106,7 +102,7 @@ class SplashActivity : AppCompatActivity(),
             totalServerExecuted = 0
             Handler().postDelayed({
                 /*TODO: Intent to HOME Activity*/
-                progressLayout.visibility = View.GONE
+                progressBox.dismiss()
 
                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
             }, 7000)
@@ -115,9 +111,10 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onValiditySuccessListener(isValidityExpired: Boolean) {
         if (isValidityExpired) {
+            progressBox.dismiss()
             exitDialog(
                 "Renewal Premium",
-                "Your premium to access this application has expired. Please Renewal your premium to continue",
+                "Your premium to access the application has expired. Please Renewal your premium to continue",
                 "Okay"
             )
         } else {
@@ -280,5 +277,13 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onSuccessWriteVersionListener(status: Boolean) {
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ConstantUtils.SIGNIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            progressBox.show()
+            fireBaseUtils.readValidityFromFireBase()
+        }
     }
 }
