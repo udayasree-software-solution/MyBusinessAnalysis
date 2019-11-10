@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DataSnapshot
@@ -27,12 +28,16 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var loginOutletName: AutoCompleteTextView
     private lateinit var loginBtn: Button
 
+    private lateinit var verifyLayout : FrameLayout
+    private lateinit var verifyAnimLayout : FrameLayout
+    private lateinit var verifyEditText : EditText
+    private lateinit var verifyButton : Button
+
     private lateinit var sharedPreferenceUtils : SharedPreferenceUtils
     private lateinit var progressBox : ProgressBox
 
     private var outletName = ""
     private var outletCode = ""
-    private var isDialogVerified = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,14 +68,21 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         loginMobile = findViewById(R.id.login_mobile_id)
         loginOutletName = findViewById(R.id.login_outlet_name_id)
         loginBtn = findViewById(R.id.login_login_btn_id)
+
+        verifyLayout = findViewById(R.id.login_verify_layout)
+        verifyAnimLayout = findViewById(R.id.login_verify_dialog)
+        verifyEditText = findViewById(R.id.login_verify_code_id)
+        verifyButton = findViewById(R.id.login_verify_btn_id)
+
         findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.SUNDAPRADA)
 
         loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
         loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
 
         loginBtn.setOnClickListener(this)
-
+        verifyButton.setOnClickListener(this)
         progressBox = ProgressBox.create(this)
+        verifyLayout.visibility = View.GONE
 
         readOutletFromFireBase()
     }
@@ -150,12 +162,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
                                     sharedPreferenceUtils.setAdminStatus(admin)
 
-                                    loginUserName.setText("")
-                                    loginMobile.setText("")
-                                    loginOutletName.setText("")
-                                    progressBox.dismiss()
-                                    sharedPreferenceUtils.setUserSignInStatus(true)
-                                    setResult(Activity.RESULT_OK)
+                                    verifyLayout.visibility = View.VISIBLE
+                                    verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity,
+                                        R.anim.bottom_to_top)
                                 } else {
                                     Toast.makeText(this@SignInActivity, "User details doesn't match", Toast.LENGTH_SHORT).show()
                                 }
@@ -235,10 +244,29 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun verifyDialog() {
+        progressBox.show()
+        val verifyCode = verifyEditText.text.toString()
+        if (verifyCode.isNotEmpty() && verifyCode == sharedPreferenceUtils.getSignInCode()) {
+            loginUserName.setText("")
+            loginMobile.setText("")
+            loginOutletName.setText("")
+            progressBox.dismiss()
+            sharedPreferenceUtils.setUserSignInStatus(true)
+            setResult(Activity.RESULT_OK)
+        } else {
+            progressBox.dismiss()
+        }
+    }
+
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.login_login_btn_id -> {
                 signInValidation()
+            }
+
+            R.id.login_verify_btn_id -> {
+                verifyDialog()
             }
         }
     }

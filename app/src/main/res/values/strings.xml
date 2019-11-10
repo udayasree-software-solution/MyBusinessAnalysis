@@ -7,4 +7,6 @@
     <string name="user_name">User Name</string>
     <string name="contact">Contact</string>
     <string name="outlet_name">Outlet Name</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="verify">Verify</string>
 </resources>
