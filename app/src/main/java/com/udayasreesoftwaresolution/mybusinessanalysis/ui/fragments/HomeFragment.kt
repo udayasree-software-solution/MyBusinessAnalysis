@@ -82,8 +82,8 @@ class HomeFragment : Fragment() {
             totalValue += total.total
         }
         for (element in totalAmountList) {
-            var percentage = 10000f
-            if (element.total > 0) {
+            var percentage = 0.1f
+            if (element.total > 0f) {
                 percentage = ((element.total / totalValue) * 100).toFloat()
             }
             calculatePercentage.add(PieEntry(percentage, element.title))

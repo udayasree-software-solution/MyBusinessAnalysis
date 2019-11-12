@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 
-class SharedPreferenceUtils(val mContext: Context) {
+class AppSharedPreference(val mContext: Context) {
 
-    private var sharedPreferences : SharedPreferences = mContext.getSharedPreferences("REMINDER_PREFERENCE", Context.MODE_PRIVATE)
+    private var sharedPreferences : SharedPreferences = mContext.getSharedPreferences("APP_PREFERENCE", Context.MODE_PRIVATE)
 
     private val alarm_manager_ids = "ALARM_MANAGER_IDS"
     private val user_signin_status = "USER_SIGN_IN_STATUS"
@@ -19,13 +19,6 @@ class SharedPreferenceUtils(val mContext: Context) {
     private val user_admin_status = "USER_ADMIN_STATUS"
     private val outlet_logo_url = "OUTLET_LOGO_URL"
     private val outlet_banner_url = "OUTLET_BANNER_URL"
-
-    private val payment_version = "PAYMENT_VERSION"
-    private val business_version = "BUSINESS_VERSION"
-    private val client_version = "CLIENT_VERSION"
-    private val purchase_version = "PURCHASE_VERSION"
-    private val business_name_version = "BUSINESS_NAME_VERSION"
-
 
 
     fun setAlarmIds(ids : String){
@@ -106,46 +99,6 @@ class SharedPreferenceUtils(val mContext: Context) {
 
     fun getOutletBannerUrl() : String? {
         return sharedPreferences.getString(outlet_banner_url, FireBaseConstants.DEFAULT_BANNER)
-    }
-
-    fun setPaymentVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(payment_version, version)?.apply()
-    }
-
-    fun getPaymentVersion() : Float? {
-        return sharedPreferences.getFloat(payment_version, 0.0f)
-    }
-
-    fun setBusinessVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(business_version, version)?.apply()
-    }
-
-    fun getBusinessVersion() : Float? {
-        return sharedPreferences.getFloat(business_version, 0.0f)
-    }
-
-    fun setClientVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(client_version, version)?.apply()
-    }
-
-    fun getClientVersion() : Float? {
-        return sharedPreferences.getFloat(client_version, 0.0f)
-    }
-
-    fun setPurchaseVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(purchase_version, version)?.apply()
-    }
-
-    fun getPurchaseVersion() : Float? {
-        return sharedPreferences.getFloat(purchase_version, 0.0f)
-    }
-
-    fun setBusinessNameVersion(version: Float) {
-        sharedPreferences.edit()?.putFloat(business_name_version, version)?.apply()
-    }
-
-    fun getBusinessNameVersion() : Float? {
-        return sharedPreferences.getFloat(business_name_version, 0.0f)
     }
 
     fun clearAlarmIDPreference() {

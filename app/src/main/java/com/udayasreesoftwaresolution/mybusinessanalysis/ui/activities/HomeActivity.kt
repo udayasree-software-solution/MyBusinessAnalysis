@@ -32,7 +32,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.SharedPreferenceUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 
 class HomeActivity : AppCompatActivity() {
 
@@ -59,7 +59,7 @@ class HomeActivity : AppCompatActivity() {
     private var isPaid = false
     private var isPurchaseAdd = false
 
-    private lateinit var sharedPreferenceUtils: SharedPreferenceUtils
+    private lateinit var appSharedPreference: AppSharedPreference
     private lateinit var progressBox: ProgressBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +75,9 @@ class HomeActivity : AppCompatActivity() {
     private fun initView() {
         initRoomDBRepository()
         amountViewModelList = ArrayList<AmountViewModel>()
-        sharedPreferenceUtils = SharedPreferenceUtils(this)
-        AppUtils.isAdminStatus = sharedPreferenceUtils.getAdminStatus()
-        AppUtils.OUTLET_NAME = sharedPreferenceUtils.getOutletName() ?: ""
+        appSharedPreference = AppSharedPreference(this)
+        AppUtils.isAdminStatus = appSharedPreference.getAdminStatus()
+        AppUtils.OUTLET_NAME = appSharedPreference.getOutletName() ?: ""
 
         progressBox = ProgressBox.create(this)
 
@@ -162,19 +162,19 @@ class HomeActivity : AppCompatActivity() {
         val headerBanner: ImageView = headerView.findViewById(R.id.nav_header_banner)
         val headerProfile: ImageView = headerView.findViewById(R.id.nav_header_profile)
 
-        imageLoader.displayImage(sharedPreferenceUtils.getOutletBannerUrl(), headerBanner, displayOptions)
-        imageLoader.displayImage(sharedPreferenceUtils.getOutletLogoUrl(), headerProfile, roundDisplayOptions)
+        imageLoader.displayImage(appSharedPreference.getOutletBannerUrl(), headerBanner, displayOptions)
+        imageLoader.displayImage(appSharedPreference.getOutletLogoUrl(), headerProfile, roundDisplayOptions)
 
         val nameHeader = headerView.findViewById<TextView>(R.id.nav_header_name)
-        nameHeader.text = sharedPreferenceUtils.getUserName()
+        nameHeader.text = appSharedPreference.getUserName()
         nameHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
 
         val mobileHeader = headerView.findViewById<TextView>(R.id.nav_header_mobile)
-        mobileHeader.text = sharedPreferenceUtils.getMobileNumber()
+        mobileHeader.text = appSharedPreference.getMobileNumber()
         mobileHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
 
         val outletHeader = headerView.findViewById<TextView>(R.id.nav_header_outletname)
-        outletHeader.text = sharedPreferenceUtils.getOutletName()
+        outletHeader.text = appSharedPreference.getOutletName()
         outletHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
     }
 
@@ -197,32 +197,39 @@ class HomeActivity : AppCompatActivity() {
             when (menu.itemId) {
                 R.id.menu_drawable_home -> {
                     FRAGMENT_POSITION = 0
+                    navToolbar.title = "Home"
                     CalculateTotalTask().execute()
                 }
 
                 R.id.menu_drawable_amount -> {
                     FRAGMENT_POSITION = 1
                     isPaid = false
+                    navToolbar.title = "Payable/Paid"
                 }
 
                 R.id.menu_drawable_todaybusiness -> {
                     FRAGMENT_POSITION = 2
+                    navToolbar.title = "Business"
                 }
 
                 R.id.menu_drawable_purchase -> {
                     FRAGMENT_POSITION = 3
+                    navToolbar.title = "Purchase"
                 }
 
                 R.id.menu_outlet_setup_client -> {
                     FRAGMENT_POSITION = 4
+                    navToolbar.title = "Outlet"
                 }
 
                 R.id.menu_drawable_client -> {
                     FRAGMENT_POSITION = 5
+                    navToolbar.title = "Clients"
                 }
 
                 R.id.menu_drawable_users -> {
                     FRAGMENT_POSITION = 6
+                    navToolbar.title = "Users"
                 }
             }
             drawerLayout.closeDrawers()
@@ -232,36 +239,6 @@ class HomeActivity : AppCompatActivity() {
 
     private fun launchFragment(fragment: Fragment?) {
         clearBackStack()
-        when (FRAGMENT_POSITION) {
-            0 -> {
-                navToolbar.title = "Home"
-            }
-
-            1 -> {
-                navToolbar.title = "Payable/Paid"
-            }
-
-            2 -> {
-                navToolbar.title = "Business"
-            }
-
-            3 -> {
-                navToolbar.title = "Purchase"
-            }
-
-            4 -> {
-                navToolbar.title = "Outlet"
-            }
-
-            5 -> {
-                navToolbar.title = "Clients"
-            }
-
-            6 -> {
-                navToolbar.title = "Users"
-            }
-        }
-
         if (fragment != null) {
             supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -285,8 +262,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg p0: Void?): ArrayList<AmountViewModel> {
-            val payableTotal = paymentRepository.queryTotalPayAmount(false)
-            val paidTotal = paymentRepository.queryTotalPayAmount(true)
+            val paymentList : ArrayList<Int> = paymentRepository.queryTotalPayAmount()
+            val payableTotal = paymentList[0]
+            val paidTotal = paymentList[1]
             val purchaseTotal = purchaseRepository.queryPurchaseTotalAmount()
             val businessTotal = businessRepository.queryBusinessAmount()
             val expensesTotal = businessTotal[0]

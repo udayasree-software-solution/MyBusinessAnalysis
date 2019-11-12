@@ -9,6 +9,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence.
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PaymentTable;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.TimeDataTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("StaticFieldLeak")
@@ -68,13 +69,19 @@ public class PaymentRepository {
         return paymentDataBasePersistence.paymentDaoAccess().queryPaymentDateByStatus(isStatus);
     }
 
-    public int queryTotalPayAmount(final boolean isStatus) {
-        List<String> amount = paymentDataBasePersistence.paymentDaoAccess().queryPayAmount(isStatus);
-        int total = 0;
-        for (String value : amount) {
-            total += Integer.parseInt(value);
+    public ArrayList<Integer> queryTotalPayAmount() {
+        List<PaymentTable> table = paymentDataBasePersistence.paymentDaoAccess().queryPayAmount();
+        ArrayList<Integer> totals = new ArrayList<Integer>();
+        int payableTotal = 0;
+        int paidTotal = 0;
+        for (PaymentTable element : table) {
+            if (element.getPaymentStatus()) {
+                paidTotal += Integer.parseInt(element.getPayAmount());
+            } else {
+                payableTotal += Integer.parseInt(element.getPayAmount());
+            }
         }
-        return total;
+        return totals;
     }
 
     public void clearDataBase() {

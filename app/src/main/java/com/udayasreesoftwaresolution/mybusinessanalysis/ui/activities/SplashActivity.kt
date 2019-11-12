@@ -18,10 +18,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.*
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ImageLoaderUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.SharedPreferenceUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.*
 
 class SplashActivity : AppCompatActivity(),
     FireBaseInterface {
@@ -31,7 +28,8 @@ class SplashActivity : AppCompatActivity(),
     private lateinit var outletName: TextView
     private lateinit var progressBox: ProgressBox
 
-    private lateinit var sharedPreferenceUtils: SharedPreferenceUtils
+    private lateinit var appSharedPreference: AppSharedPreference
+    private lateinit var versionSharedPreference: VersionSharedPreference
     private lateinit var imageLoaderUtils: ImageLoaderUtils
     private lateinit var fireBaseUtils: FireBaseUtils
 
@@ -63,20 +61,19 @@ class SplashActivity : AppCompatActivity(),
         outletLogo = findViewById(R.id.splash_logo_img_id)
         outletName = findViewById(R.id.splash_outlet_name_id)
 
-        imageLoaderUtils = ImageLoaderUtils(
-            this@SplashActivity
-        ).getInstance()
+        imageLoaderUtils = ImageLoaderUtils(this@SplashActivity)
         imageLoaderUtils.setupImageLoader()
-        sharedPreferenceUtils = SharedPreferenceUtils(this@SplashActivity)
+        appSharedPreference = AppSharedPreference(this@SplashActivity)
+        versionSharedPreference = VersionSharedPreference(this@SplashActivity)
         progressBox = ProgressBox.create(this)
 
-        AppUtils.OUTLET_NAME = sharedPreferenceUtils.getOutletName()!!
-        imageLoaderUtils.displayImage(sharedPreferenceUtils.getOutletBannerUrl()!!, outletBanner)
-        imageLoaderUtils.displayRoundImage(sharedPreferenceUtils.getOutletLogoUrl()!!, outletLogo)
+        AppUtils.OUTLET_NAME = appSharedPreference.getOutletName()!!
+        imageLoaderUtils.displayImage(appSharedPreference.getOutletBannerUrl()!!, outletBanner)
+        imageLoaderUtils.displayRoundImage(appSharedPreference.getOutletLogoUrl()!!, outletLogo)
         outletName.text = AppUtils.OUTLET_NAME
         fireBaseUtils = FireBaseUtils(this@SplashActivity, this).getInstance()
 
-        if (sharedPreferenceUtils.getUserSignInStatus() && AppUtils.OUTLET_NAME.isNotEmpty()) {
+        if (appSharedPreference.getUserSignInStatus() && AppUtils.OUTLET_NAME.isNotEmpty()) {
             progressBox.show()
             fireBaseUtils.readValidityFromFireBase()
         } else {
@@ -132,33 +129,33 @@ class SplashActivity : AppCompatActivity(),
             val businessNameVersion =
                 dataSnapShot.child(FireBaseConstants.BUSINESS_CATEGORY_VERSION).getValue(Double::class.java)!!
 
-            if (sharedPreferenceUtils.getPaymentVersion()!! > paymentVersion.toFloat()) {
+            if (versionSharedPreference.getPaymentVersion()!! > paymentVersion.toFloat()) {
                 totalServerConnected++
-                sharedPreferenceUtils.setPaymentVersion(paymentVersion.toFloat())
+                versionSharedPreference.setPaymentVersion(paymentVersion.toFloat())
                 fireBaseUtils.readPaymentFromFireBase()
             }
 
-            if (sharedPreferenceUtils.getBusinessVersion()!! > businessVersion.toFloat()) {
+            if (versionSharedPreference.getBusinessVersion()!! > businessVersion.toFloat()) {
                 totalServerConnected++
-                sharedPreferenceUtils.setBusinessVersion(businessVersion.toFloat())
+                versionSharedPreference.setBusinessVersion(businessVersion.toFloat())
                 fireBaseUtils.readBusinessFromFireBase()
             }
 
-            if (sharedPreferenceUtils.getClientVersion()!! > clientVersion.toFloat()) {
+            if (versionSharedPreference.getClientVersion()!! > clientVersion.toFloat()) {
                 totalServerConnected++
-                sharedPreferenceUtils.setClientVersion(clientVersion.toFloat())
+                versionSharedPreference.setClientVersion(clientVersion.toFloat())
                 fireBaseUtils.readClientFromFireBase()
             }
 
-            if (sharedPreferenceUtils.getPurchaseVersion()!! > purchaseVersion.toFloat()) {
+            if (versionSharedPreference.getPurchaseVersion()!! > purchaseVersion.toFloat()) {
                 totalServerConnected++
-                sharedPreferenceUtils.setPurchaseVersion(purchaseVersion.toFloat())
+                versionSharedPreference.setPurchaseVersion(purchaseVersion.toFloat())
                 fireBaseUtils.readPurchaseFromFireBase()
             }
 
-            if (sharedPreferenceUtils.getBusinessNameVersion()!! > businessNameVersion.toFloat()) {
+            if (versionSharedPreference.getBusinessNameVersion()!! > businessNameVersion.toFloat()) {
                 totalServerConnected++
-                sharedPreferenceUtils.setBusinessNameVersion(businessNameVersion.toFloat())
+                versionSharedPreference.setBusinessNameVersion(businessNameVersion.toFloat())
                 fireBaseUtils.readBusinessCategoryFromFireBase()
             }
 

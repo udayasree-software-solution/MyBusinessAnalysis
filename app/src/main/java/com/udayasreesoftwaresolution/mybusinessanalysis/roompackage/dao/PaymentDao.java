@@ -31,6 +31,6 @@ public interface PaymentDao {
     @Query("SELECT slNo, date_in_millis, pre_days FROM PaymentTable WHERE payment_status =:isStatus ORDER BY date_in_millis ASC")
     List<TimeDataTable> queryPaymentDateByStatus(boolean isStatus);
 
-    @Query("SELECT pay_amount FROM PaymentTable WHERE payment_status =:isStatus ORDER BY date_in_millis ASC")
-    List<String> queryPayAmount(boolean isStatus);
+    @Query("SELECT * FROM PaymentTable ORDER BY date_in_millis ASC")
+    List<PaymentTable> queryPayAmount();
 }

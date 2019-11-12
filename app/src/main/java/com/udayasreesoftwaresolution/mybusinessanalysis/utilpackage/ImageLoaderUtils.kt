@@ -11,22 +11,9 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 
 class ImageLoaderUtils(val mContext : Context) {
 
-    private var imageLoaderUtils : ImageLoaderUtils? = null
-
     private lateinit var imageLoader : ImageLoader
     private lateinit var displayOptions: DisplayImageOptions
     private lateinit var roundDisplayOptions: DisplayImageOptions
-
-    @Synchronized
-    fun getInstance() : ImageLoaderUtils {
-        if (imageLoaderUtils == null) {
-            imageLoaderUtils =
-                ImageLoaderUtils(
-                    mContext.applicationContext
-                )
-        }
-        return imageLoaderUtils as ImageLoaderUtils
-    }
 
     fun setupImageLoader() {
         roundDisplayOptions = DisplayImageOptions.Builder()

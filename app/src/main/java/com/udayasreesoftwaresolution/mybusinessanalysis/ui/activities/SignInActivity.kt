@@ -18,7 +18,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.U
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
-import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.SharedPreferenceUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 
 class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -32,7 +32,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var verifyEditText : EditText
     private lateinit var verifyButton : Button
 
-    private lateinit var sharedPreferenceUtils : SharedPreferenceUtils
+    private lateinit var appSharedPreference : AppSharedPreference
     private lateinit var progressBox : ProgressBox
 
     private var outletName = ""
@@ -73,7 +73,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         verifyButton = findViewById(R.id.login_verify_btn_id)
 
         findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.SUNDAPRADA)
-        sharedPreferenceUtils = SharedPreferenceUtils(this)
+        appSharedPreference = AppSharedPreference(this)
         loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
         loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
 
@@ -150,7 +150,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         val model = snapShot.getValue(UserSignInModel::class.java)
                         if (model != null) {
                             val sharedPreferenceUtils =
-                                SharedPreferenceUtils(this@SignInActivity)
+                                AppSharedPreference(this@SignInActivity)
                             with(model) {
                                 if (userSignInModel.userOutlet == userOutlet && userSignInModel.userName == userName) {
                                     sharedPreferenceUtils.setUserName(userName)
@@ -246,12 +246,12 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private fun verifyDialog() {
         progressBox.show()
         val verifyCode = verifyEditText.text.toString()
-        if (verifyCode.isNotEmpty() && verifyCode == sharedPreferenceUtils.getSignInCode()) {
+        if (verifyCode.isNotEmpty() && verifyCode == appSharedPreference.getSignInCode()) {
             loginUserName.setText("")
             loginMobile.setText("")
             loginOutletName.setText("")
             progressBox.dismiss()
-            sharedPreferenceUtils.setUserSignInStatus(true)
+            appSharedPreference.setUserSignInStatus(true)
             setResult(Activity.RESULT_OK)
         } else {
             progressBox.dismiss()
