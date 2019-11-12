@@ -9,4 +9,15 @@
     <string name="outlet_name">Outlet Name</string>
     <string name="verification_code">Verification Code</string>
     <string name="verify">Verify</string>
+    <string name="home">Home</string>
+    <string name="users">Users</string>
+    <string name="payable_paid_amount">Payable/Paid Amount</string>
+    <string name="today_business">Today Business</string>
+    <string name="purchase">Purchase</string>
+    <string name="my_outlet_analysis">My Outlet Analysis</string>
+    <string name="my_clients">My Clients</string>
+    <string name="outlet_settings">Outlet Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

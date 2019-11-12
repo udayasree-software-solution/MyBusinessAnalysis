@@ -56,6 +56,15 @@ public class PurchaseRepository {
         return purchaseDataBasePersistance.purchaseDaoAccess().queryPurchaseList();
     }
 
+    public int queryPurchaseTotalAmount() {
+        List<String> amount = purchaseDataBasePersistance.purchaseDaoAccess().queryPurchaseAmount();
+        int total = 0;
+        for (String value : amount) {
+            total += Integer.parseInt(value);
+        }
+        return total;
+    }
+
     public void clearDataBase() {
         purchaseDataBasePersistance.isOpen();
         purchaseDataBasePersistance.clearAllTables();

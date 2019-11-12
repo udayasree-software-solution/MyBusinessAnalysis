@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import androidx.room.Room;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence.BusinessDataBasePersistence;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable;
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("StaticFieldLeak")
@@ -51,6 +53,26 @@ public class BusinessRepository {
 
     public List<BusinessTable> queryBusinessByDate(String selectedDate) {
         return businessDataBasePersistence.businessDaoAccess().queryBusinessListByDate(selectedDate);
+    }
+
+    public List<Integer> queryBusinessAmount() {
+        List<Integer> totals = new ArrayList<>();
+        int expenses = 0;
+        int total = 0;
+        List<BusinessTable> amount = businessDataBasePersistence.businessDaoAccess().queryBusinessList();
+        for (BusinessTable element : amount) {
+            switch (element.getBusinessName()) {
+                case ConstantUtils.EXPENSES:
+                    expenses += element.getAmount();
+                    break;
+                    default:
+                        total += element.getAmount();
+                        break;
+            }
+        }
+        totals.add(expenses);
+        totals.add(total);
+        return totals;
     }
 
     public void clearDataBase() {

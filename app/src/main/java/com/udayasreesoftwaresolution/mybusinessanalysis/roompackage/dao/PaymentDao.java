@@ -13,6 +13,12 @@ public interface PaymentDao {
     @Insert
     void insertPaymentDetails(PaymentTable paymentTable);
 
+    @Update
+    void updateTask(PaymentTable taskDataTable);
+
+    @Delete
+    void deleteTask(PaymentTable taskDataTable);
+
     @Query("SELECT * FROM PaymentTable ORDER BY date_in_millis ASC")
     List<PaymentTable> queryAllPaymentDetails();
 
@@ -25,9 +31,6 @@ public interface PaymentDao {
     @Query("SELECT slNo, date_in_millis, pre_days FROM PaymentTable WHERE payment_status =:isStatus ORDER BY date_in_millis ASC")
     List<TimeDataTable> queryPaymentDateByStatus(boolean isStatus);
 
-    @Update
-    void updateTask(PaymentTable taskDataTable);
-
-    @Delete
-    void deleteTask(PaymentTable taskDataTable);
+    @Query("SELECT pay_amount FROM PaymentTable WHERE payment_status =:isStatus ORDER BY date_in_millis ASC")
+    List<String> queryPayAmount(boolean isStatus);
 }

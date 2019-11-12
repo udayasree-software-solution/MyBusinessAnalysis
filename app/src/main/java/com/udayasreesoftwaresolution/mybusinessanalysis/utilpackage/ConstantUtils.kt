@@ -6,7 +6,8 @@ class ConstantUtils {
         val TASK_SLNO = "task_slno"
         @JvmField
         val SIGNIN_REQUEST_CODE = 1
-
+        @JvmField
+        val PERMISSION_REQUESTED = 2
 
         @JvmField
         val DATE_FORMAT = "MMMM dd, yyyy (EEEE)"
@@ -28,7 +29,6 @@ class ConstantUtils {
         @JvmField
         val SUNDAPRADA = -1
 
-        @JvmField
-        val ADMIN = "Admin"
+        const val EXPENSES = "Expenses"
     }
 }

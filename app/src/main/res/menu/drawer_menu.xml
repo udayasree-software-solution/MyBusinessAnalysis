@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_drawable_home"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="@string/home" />
+
+        <item
+            android:id="@+id/menu_drawable_users"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="@string/users"
+            />
+    </group>
+
+    <item android:title="@string/app_name">
+        <menu>
+            <item
+                android:id="@+id/menu_drawable_amount"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/payable_paid_amount" />
+
+            <item
+                android:id="@+id/menu_drawable_todaybusiness"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/today_business" />
+
+            <item
+                android:id="@+id/menu_drawable_purchase"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/purchase" />
+        </menu>
+    </item>
+
+    <item android:title="@string/my_outlet_analysis">
+        <menu>
+            <item
+                android:id="@+id/menu_drawable_client"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/my_clients" />
+
+            <item
+                android:id="@+id/menu_outlet_setup_client"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/outlet_settings" />
+        </menu>
+    </item>
+</menu>

@@ -17,6 +17,9 @@ public interface BusinessDao {
     @Update
     void updateBusiness(BusinessTable businessTable);
 
+    @Query("SELECT * FROM BusinessTable ORDER BY time_in_millis ASC")
+    List<BusinessTable> queryBusinessList();
+
     @Query("SELECT * FROM BusinessTable WHERE selected_date =:selectedDate ORDER BY time_in_millis ASC")
     List<BusinessTable> queryBusinessListByDate(String selectedDate);
 }

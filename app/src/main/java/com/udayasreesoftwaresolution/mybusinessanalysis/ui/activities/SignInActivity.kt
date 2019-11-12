@@ -28,7 +28,6 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var loginOutletName: AutoCompleteTextView
     private lateinit var loginBtn: Button
 
-    private lateinit var verifyLayout : FrameLayout
     private lateinit var verifyAnimLayout : FrameLayout
     private lateinit var verifyEditText : EditText
     private lateinit var verifyButton : Button
@@ -69,20 +68,19 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         loginOutletName = findViewById(R.id.login_outlet_name_id)
         loginBtn = findViewById(R.id.login_login_btn_id)
 
-        verifyLayout = findViewById(R.id.login_verify_layout)
         verifyAnimLayout = findViewById(R.id.login_verify_dialog)
         verifyEditText = findViewById(R.id.login_verify_code_id)
         verifyButton = findViewById(R.id.login_verify_btn_id)
 
         findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.SUNDAPRADA)
-
+        sharedPreferenceUtils = SharedPreferenceUtils(this)
         loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
         loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
 
         loginBtn.setOnClickListener(this)
         verifyButton.setOnClickListener(this)
         progressBox = ProgressBox.create(this)
-        verifyLayout.visibility = View.GONE
+        verifyAnimLayout.visibility = View.GONE
 
         readOutletFromFireBase()
     }
@@ -91,7 +89,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         if (AppUtils.networkConnectivityCheck(this)) {
             progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
-                .getReference(ConstantUtils.ADMIN)
+                .getReference(FireBaseConstants.ADMIN)
                 .child(FireBaseConstants.OUTLET)
 
             fireBaseReference.addValueEventListener(object : ValueEventListener {
@@ -152,7 +150,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         val model = snapShot.getValue(UserSignInModel::class.java)
                         if (model != null) {
                             val sharedPreferenceUtils =
-                                SharedPreferenceUtils(this@SignInActivity).getInstance()
+                                SharedPreferenceUtils(this@SignInActivity)
                             with(model) {
                                 if (userSignInModel.userOutlet == userOutlet && userSignInModel.userName == userName) {
                                     sharedPreferenceUtils.setUserName(userName)
@@ -162,9 +160,10 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
                                     sharedPreferenceUtils.setAdminStatus(admin)
 
-                                    verifyLayout.visibility = View.VISIBLE
+                                    progressBox.dismiss()
                                     verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity,
                                         R.anim.bottom_to_top)
+                                    verifyAnimLayout.visibility = View.VISIBLE
                                 } else {
                                     Toast.makeText(this@SignInActivity, "User details doesn't match", Toast.LENGTH_SHORT).show()
                                 }

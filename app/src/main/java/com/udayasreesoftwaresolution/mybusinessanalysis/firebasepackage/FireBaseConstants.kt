@@ -27,6 +27,8 @@ class FireBaseConstants {
         val PURCHASE = "Purchase"
         val BUSINESS_CATEGORY = "Business Category"
 
+        val ADMIN = "Admin"
+
         @JvmField
         val DEFAULT_LOGO =
             "https://firebasestorage.googleapis.com/v0/b/my-business-analysis.appspot.com/o/default%2Fdefault_logo.png?alt=media&token=c3f7155d-10c5-4cfa-81c3-83ec5a89ff9b"

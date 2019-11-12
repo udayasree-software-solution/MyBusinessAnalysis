@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 
 class SharedPreferenceUtils(val mContext: Context) {
-    private var sharedPreferenceUtils: SharedPreferenceUtils? = null
 
     private var sharedPreferences : SharedPreferences = mContext.getSharedPreferences("REMINDER_PREFERENCE", Context.MODE_PRIVATE)
 
@@ -26,17 +25,6 @@ class SharedPreferenceUtils(val mContext: Context) {
     private val client_version = "CLIENT_VERSION"
     private val purchase_version = "PURCHASE_VERSION"
     private val business_name_version = "BUSINESS_NAME_VERSION"
-
-    @Synchronized
-    fun getInstance() : SharedPreferenceUtils {
-        if (sharedPreferenceUtils == null){
-            sharedPreferenceUtils =
-                SharedPreferenceUtils(
-                    mContext.applicationContext
-                )
-        }
-        return sharedPreferenceUtils as SharedPreferenceUtils
-    }
 
 
 

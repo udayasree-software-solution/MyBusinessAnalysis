@@ -84,55 +84,46 @@
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
-            android:id="@+id/login_verify_layout"
-            android:background="@android:color/transparent"
-            android:clickable="false"
-            android:focusableInTouchMode="false"
+            android:id="@+id/login_verify_dialog"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/darker_gray"
+            android:layout_gravity="bottom"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <FrameLayout
-                android:id="@+id/login_verify_dialog"
-                android:background="@android:color/darker_gray"
-                android:layout_gravity="bottom"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:background="@android:color/white"
                 android:padding="5dp"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <LinearLayout
-                    android:background="@android:color/white"
-                    android:padding="@dimen/margin_16dp"
-                    android:orientation="vertical"
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <com.google.android.material.textfield.TextInputLayout
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                <EditText
+                        android:id="@+id/login_verify_code_id"
+                        android:hint="@string/verification_code"
                         android:textAlignment="center"
+                        android:maxLength="6"
+                        android:inputType="number"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                    <EditText
-                            android:id="@+id/login_verify_code_id"
-                            android:hint="@string/verification_code"
-                            android:textAlignment="center"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    <Button
-                            android:id="@+id/login_verify_btn_id"
-                            android:layout_marginTop="5dp"
-                            android:text="@string/verify"
-                            android:textColor="@android:color/white"
-                            android:maxLength="6"
-                            android:background="@android:color/holo_purple"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textStyle="bold"
-                            android:layout_gravity="end"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-        </FrameLayout>
+                        android:layout_height="wrap_content"/>
+                <TextView
+                        android:id="@+id/login_verify_btn_id"
+                        android:text="@string/verify"
+                        android:textColor="@android:color/white"
+                        android:background="@android:color/holo_purple"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textStyle="bold"
+                        android:padding="3dp"
+                        android:layout_gravity="end"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
     </FrameLayout>
-
 </RelativeLayout>

@@ -68,6 +68,15 @@ public class PaymentRepository {
         return paymentDataBasePersistence.paymentDaoAccess().queryPaymentDateByStatus(isStatus);
     }
 
+    public int queryTotalPayAmount(final boolean isStatus) {
+        List<String> amount = paymentDataBasePersistence.paymentDaoAccess().queryPayAmount(isStatus);
+        int total = 0;
+        for (String value : amount) {
+            total += Integer.parseInt(value);
+        }
+        return total;
+    }
+
     public void clearDataBase() {
         paymentDataBasePersistence.isOpen();
         paymentDataBasePersistence.clearAllTables();

@@ -67,7 +67,7 @@ class SplashActivity : AppCompatActivity(),
             this@SplashActivity
         ).getInstance()
         imageLoaderUtils.setupImageLoader()
-        sharedPreferenceUtils = SharedPreferenceUtils(this@SplashActivity).getInstance()
+        sharedPreferenceUtils = SharedPreferenceUtils(this@SplashActivity)
         progressBox = ProgressBox.create(this)
 
         AppUtils.OUTLET_NAME = sharedPreferenceUtils.getOutletName()!!

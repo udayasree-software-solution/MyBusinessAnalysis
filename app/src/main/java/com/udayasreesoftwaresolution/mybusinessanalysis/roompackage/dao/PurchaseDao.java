@@ -19,4 +19,7 @@ public interface PurchaseDao {
 
     @Query("SELECT * FROM PurchaseTable ORDER BY time_in_millis ASC")
     List<PurchaseTable> queryPurchaseList();
+
+    @Query("SELECT bill_amount FROM PurchaseTable ORDER BY time_in_millis ASC")
+    List<String> queryPurchaseAmount();
 }
