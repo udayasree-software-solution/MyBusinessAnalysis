@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/margin_16dp"
         android:background="@android:color/white"
-        tools:context=".AddPaymentFragment">
+        tools:context=".ui.fragments.AddPaymentFragment">
 
     <ScrollView
             android:layout_above="@+id/remainder_task_btn_id"

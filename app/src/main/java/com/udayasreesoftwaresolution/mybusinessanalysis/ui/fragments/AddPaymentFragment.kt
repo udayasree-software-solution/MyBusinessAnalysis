@@ -1,9 +1,9 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis
+package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ClientModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.PaymentModel
@@ -47,27 +48,37 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private var _selectedDateInMills: Long = 0
     private var _companyName: String = ""
-    private var _categoryName : String = ""
+    private var _categoryName: String = ""
     private var _selectedDays: String = ""
     private var _chequeNo: String = ""
     private var _payableAmount: String = ""
-    private var isModify = false
     private var _uniqueKeys = ""
     private lateinit var clientTableList: ArrayList<ClientsTable>
-    private lateinit var categoryTableList : ArrayList<CategoryTable>
+    private lateinit var categoryTableList: ArrayList<CategoryTable>
     private lateinit var clientsName: ArrayList<String>
 
     private lateinit var title: TextView
     private lateinit var companyName: AutoCompleteTextView
     private lateinit var selectDate: EditText
     private lateinit var taskRemindDaySpinner: Spinner
-    private lateinit var categorySpinner : Spinner
+    private lateinit var categorySpinner: Spinner
     private lateinit var taskChequeNo: EditText
     private lateinit var taskAmount: EditText
     private lateinit var addTaskBtn: Button
 
+    private lateinit var addPaymentInterface : AddPaymentInterface
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            addPaymentInterface = context as AddPaymentInterface
+        } catch (e: ClassCastException) {
+            throw ClassCastException(context.toString().plus(" must implement PaymentFragment"))
+        }
+    }
+
     companion object {
-        fun getInstance(slNo: Int): AddPaymentFragment {
+        fun newInstance(slNo: Int): AddPaymentFragment {
             val fragment = AddPaymentFragment()
             val args = Bundle()
             args.putInt(ARG_SLNO, slNo)
@@ -76,7 +87,11 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_add_payment, container, false)
         initView(view)
         return view
@@ -116,12 +131,14 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
 
         override fun doInBackground(vararg p0: Void?): Boolean {
-            categoryTableList = CategoryRepository(activity!!).queryClientNamesList() as ArrayList<CategoryTable>
+            categoryTableList =
+                CategoryRepository(activity!!).queryClientNamesList() as ArrayList<CategoryTable>
             return true
         }
 
         override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
+            categoryDataSpinner()
             ReadClientTaskAsync().execute()
         }
     }
@@ -129,7 +146,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     inner class ReadClientTaskAsync() : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg p0: Void?): Boolean {
-            clientTableList = ClientRepository(activity).queryClientNamesList() as ArrayList<ClientsTable>
+            clientTableList =
+                ClientRepository(activity).queryClientNamesList() as ArrayList<ClientsTable>
             for (value in clientTableList) {
                 clientsName.add(value.client)
             }
@@ -179,7 +197,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         for (value in categoryTableList) {
             category.add(value.category_name)
         }
-        val categoryAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, category)
+        val categoryAdapter =
+            ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, category)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskRemindDaySpinner.adapter = categoryAdapter
         taskRemindDaySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -217,7 +236,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private fun setupClientTextView(name: String) {
         if (clientsName.isNotEmpty()) {
-            val arrayAdapter = ArrayAdapter(activity!!, android.R.layout.select_dialog_item, clientsName)
+            val arrayAdapter =
+                ArrayAdapter(activity!!, android.R.layout.select_dialog_item, clientsName)
             companyName.threshold = 1
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             companyName.setAdapter(arrayAdapter)
@@ -252,7 +272,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun readVersionOfChildFromFireBase(child : String) {
+    private fun readVersionOfChildFromFireBase(child: String) {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
@@ -311,7 +331,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         datePicker.show()
     }
 
-    private fun readAmountFromFireBase(modified : Boolean, pay : Int) {
+    private fun readAmountFromFireBase(modified: Boolean, pay: Int) {
         if (AppUtils.networkConnectivityCheck(activity!!)) {
             progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
@@ -325,8 +345,13 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        var payable = dataSnapShot.child(FireBaseConstants.PAYABLE_AMOUNT).getValue(Int::class.java)!!
-                        if (modified){ payable += pay }else{ payable -= pay }
+                        var payable =
+                            dataSnapShot.child(FireBaseConstants.PAYABLE_AMOUNT).getValue(Int::class.java)!!
+                        if (modified) {
+                            payable += pay
+                        } else {
+                            payable -= pay
+                        }
                         FirebaseDatabase.getInstance()
                             .getReference(AppUtils.OUTLET_NAME)
                             .child(FireBaseConstants.TOTAL_AMOUNT)
@@ -338,16 +363,32 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun writePaymentToFireBase(paymentModel: PaymentModel) {
+    private fun writePaymentToFireBase(paymentModel: PaymentModel, isInsert: Boolean) {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.PAYMENT)
                 .child(paymentModel.uniqueKey)
-                .setValue(paymentModel) {error, _ ->
-                    if (error == null){
+                .setValue(paymentModel) { error, _ ->
+                    if (error == null) {
+                        if (isInsert) {
+                            PaymentRepository(activity!!).insertTask(_modifyTaskDataTable)
+                        } else {
+                            PaymentRepository(activity!!).updateTask(_modifyTaskDataTable)
+                        }
                         readVersionOfChildFromFireBase(FireBaseConstants.PAYMENT_VERSION)
-                        clearInputs()
+                        Handler().postDelayed({
+                            clearInputs()
+                            if (!isInsert) {
+                                addPaymentInterface.onSuccessfulModified()
+                            }
+                        }, 4000)
+                    } else {
+                        Toast.makeText(
+                            activity!!,
+                            "Unable to connect to server",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         }
@@ -369,11 +410,12 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     }
                 }
                 if (!isFound) {
-                    if (_categoryName != selectCategory){
+                    if (_categoryName != selectCategory) {
                         val model = ClientModel(_companyName, _categoryName)
                         writeClientToFireBase(model)
                     } else {
-                        Toast.makeText(activity!!, "Please Select category", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity!!, "Please Select category", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
@@ -394,16 +436,19 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             _modifyTaskDataTable?.paymentStatus = false
             _modifyTaskDataTable?.preDays = _selectedDays.toInt()
 
-            _uniqueKeys = if (_uniqueKeys.isNotEmpty()) { _uniqueKeys } else { AppUtils.uniqueKey() }
-
-            if (isInsert) {
-                PaymentRepository(activity!!).insertTask(_modifyTaskDataTable)
+            _uniqueKeys = if (_uniqueKeys.isNotEmpty()) {
+                _uniqueKeys
             } else {
-                PaymentRepository(activity!!).updateTask(_modifyTaskDataTable)
+                AppUtils.uniqueKey()
             }
-
-            writePaymentToFireBase(PaymentModel(_uniqueKeys, _companyName, _payableAmount, _chequeNo, _selectedDateInMills,
-                false, _selectedDays.toInt()))
+            Handler().postDelayed({
+                writePaymentToFireBase(
+                    PaymentModel(
+                        _uniqueKeys, _companyName, _payableAmount, _chequeNo, _selectedDateInMills,
+                        false, _selectedDays.toInt()
+                    )
+                , isInsert)
+            }, 7000)
         } else {
             if (_chequeNo.isEmpty() || _chequeNo.isBlank()) {
                 taskChequeNo.error = "Enter Valid Cheque Number"
@@ -426,9 +471,6 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
         _companyName = ""
         progressBox.dismiss()
-        if (!isInsert) {
-
-        }
     }
 
     private fun clearInputs() {
@@ -456,7 +498,10 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                         "Apply Changes" -> {
                             if (_modifyTaskDataTable != null) {
                                 progressBox.show()
-                                readAmountFromFireBase(false, _modifyTaskDataTable!!.payAmount.toInt())
+                                readAmountFromFireBase(
+                                    false,
+                                    _modifyTaskDataTable!!.payAmount.toInt()
+                                )
                                 Handler().postDelayed({
                                     addTaskToDB(false)
                                 }, 7000)
@@ -470,5 +515,9 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    interface AddPaymentInterface {
+        fun onSuccessfulModified()
     }
 }

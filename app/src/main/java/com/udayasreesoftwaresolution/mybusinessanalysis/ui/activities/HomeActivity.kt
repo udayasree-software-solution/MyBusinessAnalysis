@@ -29,13 +29,14 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.HomeFragmen
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddPaymentFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.PaymentFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 @SuppressLint("StaticFieldLeak")
-class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface {
+class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddPaymentFragment.AddPaymentInterface {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -291,7 +292,12 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface {
 
     override fun paymentActionListener(slNo: Int) {
         clearBackStack()
-        
+        launchFragment(AddPaymentFragment.newInstance(slNo))
+    }
+
+    override fun onSuccessfulModified() {
+        clearBackStack()
+        launchFragment(AddPaymentFragment.newInstance(-1))
     }
 
     private fun clearBackStack() {
