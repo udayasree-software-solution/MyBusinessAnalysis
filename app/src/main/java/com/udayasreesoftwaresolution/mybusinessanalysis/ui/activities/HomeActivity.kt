@@ -27,14 +27,15 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.HomeFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.PaymentFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
-
-class HomeActivity : AppCompatActivity() {
+@SuppressLint("StaticFieldLeak")
+class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -54,13 +55,10 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var amountViewModelList: ArrayList<AmountViewModel>
     private var FRAGMENT_POSITION = 0
-    private var isOneTime = true
-
     private var isPaid = false
-    private var isPurchaseAdd = false
 
     private lateinit var appSharedPreference: AppSharedPreference
-    private lateinit var progressBox: ProgressBox
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +77,7 @@ class HomeActivity : AppCompatActivity() {
         AppUtils.isAdminStatus = appSharedPreference.getAdminStatus()
         AppUtils.OUTLET_NAME = appSharedPreference.getOutletName() ?: ""
 
-        progressBox = ProgressBox.create(this)
+        progressDialog = ProgressDialog(this)
 
         drawerLayout = findViewById(R.id.home_nav_drawer_id)
         navigationView = findViewById(R.id.home_nav_view_id)
@@ -93,7 +91,7 @@ class HomeActivity : AppCompatActivity() {
         setupNavigationHeader()
 
         /*TODO: calculate total from Room DB*/
-        CalculateTotalTask().execute()
+        HomeAsyncTask().execute()
     }
 
     private fun initRoomDBRepository() {
@@ -198,7 +196,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.menu_drawable_home -> {
                     FRAGMENT_POSITION = 0
                     navToolbar.title = "Home"
-                    CalculateTotalTask().execute()
+                    HomeAsyncTask().execute()
                 }
 
                 R.id.menu_drawable_amount -> {
@@ -253,12 +251,11 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    inner class CalculateTotalTask : AsyncTask<Void, Void, ArrayList<AmountViewModel>>() {
+    inner class HomeAsyncTask : AsyncTask<Void, Void, ArrayList<AmountViewModel>>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            progressBox.show()
+            progressDialog.show()
         }
 
         override fun doInBackground(vararg p0: Void?): ArrayList<AmountViewModel> {
@@ -285,12 +282,16 @@ class HomeActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: ArrayList<AmountViewModel>?) {
             super.onPostExecute(result)
-            progressBox.dismiss()
+            progressDialog.dismiss()
             if (result != null && result.isNotEmpty()){
                 launchFragment(HomeFragment.newInstance(result))
             }
         }
+    }
 
+    override fun paymentActionListener(slNo: Int) {
+        clearBackStack()
+        
     }
 
     private fun clearBackStack() {
@@ -307,7 +308,7 @@ class HomeActivity : AppCompatActivity() {
         if (FRAGMENT_POSITION > 0) {
             FRAGMENT_POSITION = 0
             clearBackStack()
-            CalculateTotalTask().execute()
+            HomeAsyncTask().execute()
         } else {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)

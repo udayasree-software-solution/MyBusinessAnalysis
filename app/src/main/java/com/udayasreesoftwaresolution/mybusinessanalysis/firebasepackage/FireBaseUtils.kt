@@ -10,23 +10,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import java.math.BigDecimal
 
-class FireBaseUtils(
-    private val mContext: Context,
-    private val mFireBaseInterface: FireBaseInterface
-) {
-    private var fireBaseUtils: FireBaseUtils? = null
-
-    @Synchronized
-    fun getInstance(): FireBaseUtils {
-        if (fireBaseUtils == null) {
-            fireBaseUtils =
-                FireBaseUtils(
-                    mContext.applicationContext,
-                    mFireBaseInterface
-                )
-        }
-        return fireBaseUtils as FireBaseUtils
-    }
+class FireBaseUtils(private val mContext: Context, private val mFireBaseInterface: FireBaseInterface) {
 
     fun readValidityFromFireBase() {
         if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
@@ -293,7 +277,7 @@ class FireBaseUtils(
         }
     }
 
-    fun writePurchaseTOFireBase(purchaseModel: PurchaseModel) {
+    fun writePurchaseToFireBase(purchaseModel: PurchaseModel) {
         if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)

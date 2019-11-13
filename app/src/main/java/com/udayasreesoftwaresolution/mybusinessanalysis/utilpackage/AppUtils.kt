@@ -64,6 +64,9 @@ class AppUtils {
                 3 -> {
                     typeFaceName = "montserrat_regular_Editor.ttf"
                 }
+                4 -> {
+                    typeFaceName = "Satisfy-Regular.ttf"
+                }
                 else -> {
                     typeFaceName = "sundaprada.ttf"
                 }

@@ -16,7 +16,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountViewAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 
@@ -28,7 +28,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var pieChartView : PieChart
-    private lateinit var progressBox : ProgressBox
+    private lateinit var progressDialog : ProgressDialog
 
     companion object {
         fun newInstance(totalAmountList : ArrayList<AmountViewModel>) : HomeFragment {
@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
     private fun initView(view: View) {
         recyclerView = view.findViewById(R.id.frag_home_recycler_id)
         pieChartView = view.findViewById(R.id.frag_home_piechart_id)
-        progressBox = ProgressBox.create(activity)
+        progressDialog = ProgressDialog(activity)
         setupRecyclerView()
     }
 
@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
         val bundle = arguments
         if (bundle != null) {
             if (bundle.containsKey(ARG_AMOUNTS)) {
-                progressBox.show()
+                progressDialog.show()
                 val totalAmountList  = bundle.getParcelableArrayList<AmountViewModel>(ARG_AMOUNTS)
                 if (totalAmountList != null && totalAmountList.isNotEmpty()) {
                     setupPieChart(totalAmountList)
@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
                     recyclerView.adapter = homeAdapter
                     homeAdapter.notifyDataSetChanged()
                 }
-                progressBox.dismiss()
+                progressDialog.dismiss()
             }
         }
     }

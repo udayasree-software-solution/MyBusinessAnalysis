@@ -4,7 +4,6 @@ import com.google.firebase.database.DataSnapshot
 
 interface FireBaseInterface {
     fun onValiditySuccessListener(isValidityExpired : Boolean)
-
     fun onSuccessWriteVersionListener(status : Boolean)
     fun onSuccessReadVersionListener(dataSnapShot: DataSnapshot)
 

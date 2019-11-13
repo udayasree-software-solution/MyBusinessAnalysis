@@ -16,6 +16,9 @@ public class PaymentTable {
     @ColumnInfo(name = "client_name")
     private String clientName;
 
+    @ColumnInfo(name = "category_name")
+    private String categoryName;
+
     @ColumnInfo(name = "pay_amount")
     private String payAmount;
 
@@ -31,10 +34,12 @@ public class PaymentTable {
     @ColumnInfo(name = "pre_days")
     private int preDays;
 
-    public PaymentTable(String uniqueKey, String clientName, String payAmount,
-                        String chequeNumber, long dateInMillis, boolean paymentStatus, int preDays) {
+    public PaymentTable(int slNo, String uniqueKey, String clientName, String categoryName,
+                        String payAmount, String chequeNumber, long dateInMillis, boolean paymentStatus, int preDays) {
+        this.slNo = slNo;
         this.uniqueKey = uniqueKey;
         this.clientName = clientName;
+        this.categoryName = categoryName;
         this.payAmount = payAmount;
         this.chequeNumber = chequeNumber;
         this.dateInMillis = dateInMillis;
@@ -64,6 +69,14 @@ public class PaymentTable {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getPayAmount() {

@@ -5,7 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="notifications_admin_channel_name" translatable="false">Global channel</string>
-    <string name="notifications_admin_channel_description" translatable="false">Notifications sent from the app admin</string>
+    <string name="notifications_admin_channel_description" translatable="false">Notifications sent from the app admin
+    </string>
 
     <string name="sign_in_user">Sign-in User</string>
     <string name="user_name">User Name</string>
@@ -24,4 +25,17 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading</string>
+    <string name="data_is_empty">Data is Empty</string>
+    <string name="paid">Paid</string>
+    <string name="paid_amount">Paid Amount</string>
+    <string name="payable">Payable Amount</string>
+    <string name="modify">Modify</string>
+    <string name="delete">Delete</string>
+    <string name="selected_date">Selected Date</string>
+    <string name="cheque_number">Cheque Number</string>
+    <string name="create_new_payment">Create New Payment</string>
+    <string name="client_name">Client Name</string>
+    <string name="payable_amount">Payable Amount</string>
+    <string name="create_payment">Create Payment</string>
 </resources>

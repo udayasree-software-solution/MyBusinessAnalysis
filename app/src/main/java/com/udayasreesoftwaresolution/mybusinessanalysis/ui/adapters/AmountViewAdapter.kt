@@ -2,8 +2,6 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +22,7 @@ class AmountViewAdapter(val context : Context, val amountViewModelList : ArrayLi
     : RecyclerView.Adapter<AmountViewAdapter.HomeHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): HomeHolder {
-        return HomeHolder(LayoutInflater.from(this.context).inflate(R.layout.adapter_home_layout, parent, false))
+        return HomeHolder(LayoutInflater.from(this.context).inflate(R.layout.adapter_home, parent, false))
     }
 
     override fun getItemCount(): Int {
