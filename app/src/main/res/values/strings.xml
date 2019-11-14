@@ -38,4 +38,6 @@
     <string name="client_name">Client Name</string>
     <string name="payable_amount">Payable Amount</string>
     <string name="create_payment">Create Payment</string>
+    <string name="category_name">Category Name</string>
+    <string name="chart_data_is_empty">Chart data is empty</string>
 </resources>

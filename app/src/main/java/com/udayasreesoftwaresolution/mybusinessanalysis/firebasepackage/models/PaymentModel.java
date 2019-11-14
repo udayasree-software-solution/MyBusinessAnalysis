@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class PaymentModel implements Parcelable {
-    private String uniqueKey, clientName, payAmount, chequeNumber;
+    private String uniqueKey, clientName, categoryName, payAmount, chequeNumber;
     private long dateInMillis;
     private boolean payStatus;
     private int preDays;
@@ -12,10 +12,11 @@ public class PaymentModel implements Parcelable {
     public PaymentModel() {
     }
 
-    public PaymentModel(String uniqueKey, String clientName, String payAmount,
+    public PaymentModel(String uniqueKey, String clientName, String categoryName, String payAmount,
                         String chequeNumber, long dateInMillis, boolean payStatus, int preDays) {
         this.uniqueKey = uniqueKey;
         this.clientName = clientName;
+        this.categoryName = categoryName;
         this.payAmount = payAmount;
         this.chequeNumber = chequeNumber;
         this.dateInMillis = dateInMillis;
@@ -26,6 +27,7 @@ public class PaymentModel implements Parcelable {
     protected PaymentModel(Parcel in) {
         uniqueKey = in.readString();
         clientName = in.readString();
+        categoryName = in.readString();
         payAmount = in.readString();
         chequeNumber = in.readString();
         dateInMillis = in.readLong();
@@ -37,6 +39,7 @@ public class PaymentModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uniqueKey);
         dest.writeString(clientName);
+        dest.writeString(categoryName);
         dest.writeString(payAmount);
         dest.writeString(chequeNumber);
         dest.writeLong(dateInMillis);
@@ -75,6 +78,14 @@ public class PaymentModel implements Parcelable {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getPayAmount() {

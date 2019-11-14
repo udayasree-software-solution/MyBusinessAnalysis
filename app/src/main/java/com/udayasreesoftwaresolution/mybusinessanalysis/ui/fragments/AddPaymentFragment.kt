@@ -20,7 +20,8 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ClientModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.PaymentModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.SingleEntityModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.CategoryRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.ClientRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.PaymentRepository
@@ -37,14 +38,13 @@ import kotlin.collections.ArrayList
 
 private const val ARG_SLNO = "slno"
 
-@SuppressLint("StaticFieldLeak")
+@SuppressLint("StaticFieldLeak", "SetTextI18n")
 class AddPaymentFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var progressBox: ProgressDialog
+    private lateinit var progressBox: ProgressBox
     private var _modifyTaskDataTable: PaymentTable? = null
     private var isTaskAddedStatus = false
     private val selectDays = "Select Days"
-    private val selectCategory = "Select Category"
 
     private var _selectedDateInMills: Long = 0
     private var _companyName: String = ""
@@ -53,20 +53,24 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     private var _chequeNo: String = ""
     private var _payableAmount: String = ""
     private var _uniqueKeys = ""
+
+    private var isClientSelected = false
+    private var isCategorySelected = false
     private lateinit var clientTableList: ArrayList<ClientsTable>
-    private lateinit var categoryTableList: ArrayList<CategoryTable>
     private lateinit var clientsName: ArrayList<String>
+    private lateinit var categoryTableList: ArrayList<CategoryTable>
+    private lateinit var categorysName: ArrayList<String>
 
     private lateinit var title: TextView
     private lateinit var companyName: AutoCompleteTextView
+    private lateinit var categoryAutoText: AutoCompleteTextView
     private lateinit var selectDate: EditText
     private lateinit var taskRemindDaySpinner: Spinner
-    private lateinit var categorySpinner: Spinner
     private lateinit var taskChequeNo: EditText
     private lateinit var taskAmount: EditText
     private lateinit var addTaskBtn: Button
 
-    private lateinit var addPaymentInterface : AddPaymentInterface
+    private lateinit var addPaymentInterface: AddPaymentInterface
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -101,13 +105,13 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         title = view.findViewById(R.id.remainder_task_title_id)
         companyName = view.findViewById(R.id.remainder_task_company_id)
         taskRemindDaySpinner = view.findViewById(R.id.remainder_task_remind_id)
-        categorySpinner = view.findViewById(R.id.remainder_task_category_id)
+        categoryAutoText = view.findViewById(R.id.remainder_task_category_id)
         selectDate = view.findViewById(R.id.remainder_task_date_id)
         taskChequeNo = view.findViewById(R.id.remainder_task_cheque_id)
         taskAmount = view.findViewById(R.id.remainder_task_amount_id)
         addTaskBtn = view.findViewById(R.id.remainder_task_btn_id)
 
-        progressBox = ProgressDialog(activity)
+        progressBox = ProgressBox(activity)
 
         selectDate.setOnClickListener(this)
         addTaskBtn.setOnClickListener(this)
@@ -120,7 +124,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         ReadCategoryTaskAsync().execute()
     }
 
-    inner class ReadCategoryTaskAsync() : AsyncTask<Void, Void, Boolean>() {
+    inner class ReadCategoryTaskAsync : AsyncTask<Void, Void, Boolean>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -128,22 +132,25 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             clientTableList = ArrayList()
             categoryTableList = ArrayList()
             clientsName = ArrayList()
+            categorysName = ArrayList()
         }
 
         override fun doInBackground(vararg p0: Void?): Boolean {
             categoryTableList =
                 CategoryRepository(activity!!).queryClientNamesList() as ArrayList<CategoryTable>
+            for (value in categoryTableList) {
+                categorysName.add(value.category_name)
+            }
             return true
         }
 
         override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
-            categoryDataSpinner()
             ReadClientTaskAsync().execute()
         }
     }
 
-    inner class ReadClientTaskAsync() : AsyncTask<Void, Void, Boolean>() {
+    inner class ReadClientTaskAsync : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg p0: Void?): Boolean {
             clientTableList =
@@ -156,11 +163,13 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
         override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
+            setupClientTextView()
+            setupCategoryTextView()
             val slNo = arguments?.getInt(ARG_SLNO)!!
             if (slNo >= 0) {
                 MenuTaskAsync(slNo).execute()
             } else {
-                progressBox.show()
+                progressBox.dismiss()
             }
         }
     }
@@ -182,29 +191,12 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         val daysAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, days)
         daysAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskRemindDaySpinner.adapter = daysAdapter
+        daysAdapter.notifyDataSetChanged()
         taskRemindDaySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
 
             override fun onItemSelected(adapter: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 _selectedDays = adapter?.selectedItem.toString()
-            }
-        }
-    }
-
-    private fun categoryDataSpinner() {
-        val category = ArrayList<String>()
-        category.add(selectCategory)
-        for (value in categoryTableList) {
-            category.add(value.category_name)
-        }
-        val categoryAdapter =
-            ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, category)
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        taskRemindDaySpinner.adapter = categoryAdapter
-        taskRemindDaySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-            override fun onItemSelected(adapter: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                _categoryName = adapter?.selectedItem.toString()
             }
         }
     }
@@ -221,20 +213,41 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                 with(result) {
                     _modifyTaskDataTable = result
                     val simpleDateFormat = SimpleDateFormat(ConstantUtils.DATE_FORMAT, Locale.US)
-                    selectDate.setText(simpleDateFormat.format(Date(dateInMillis.toLong())))
+                    selectDate.setText(simpleDateFormat.format(Date(dateInMillis)))
                     taskChequeNo.setText(chequeNumber)
                     taskAmount.setText(payAmount)
                     taskRemindDaySpinner.setSelection(preDays)
                     addTaskBtn.text = "Apply Changes"
                     _uniqueKeys = uniqueKey
-                    setupClientTextView(clientName)
+
+                    if (categoryName != "NA") {
+                        for (i in categorysName.indices) {
+                            if (categorysName[i] == categoryName) {
+                                categoryAutoText.setText(categoryName)
+                                _categoryName = categoryName
+                                isCategorySelected = true
+                                break
+                            }
+                        }
+                    }
+
+                    if (clientName != "NA") {
+                        for (i in clientsName.indices) {
+                            if (clientsName[i] == clientName) {
+                                companyName.setText(clientName)
+                                _companyName = clientName
+                                isClientSelected = true
+                                break
+                            }
+                        }
+                    }
                 }
                 progressBox.dismiss()
             }
         }
     }
 
-    private fun setupClientTextView(name: String) {
+    private fun setupClientTextView() {
         if (clientsName.isNotEmpty()) {
             val arrayAdapter =
                 ArrayAdapter(activity!!, android.R.layout.select_dialog_item, clientsName)
@@ -244,15 +257,25 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             companyName.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, position, _ ->
                     _companyName = arrayAdapter.getItem(position)!!
+                    isClientSelected = true
                 }
             arrayAdapter.notifyDataSetChanged()
-            if (name != "NA") {
-                for (i in clientsName.indices) {
-                    if (clientsName[i] == name) {
-                        companyName.setText(name)
-                        _companyName = name
-                        break
-                    }
+        }
+    }
+
+    private fun setupCategoryTextView() {
+        if (categorysName.isNotEmpty()) {
+            val categoryAdapter =
+                ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categorysName)
+            categoryAutoText.threshold = 1
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            categoryAutoText.setAdapter(categoryAdapter)
+            categoryAdapter.notifyDataSetChanged()
+            categoryAutoText.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+                override fun onItemSelected(adapter: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    _categoryName = adapter?.selectedItem.toString()
+                    isCategorySelected = true
                 }
             }
         }
@@ -267,6 +290,20 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                 .setValue(clientModel) { error, _ ->
                     if (error == null) {
                         readVersionOfChildFromFireBase(FireBaseConstants.CLIENT_VERSION)
+                    }
+                }
+        }
+    }
+
+    private fun writeCategoryToFireBase(category: SingleEntityModel) {
+        if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .push()
+                .setValue(category) { error, _ ->
+                    if (error == null) {
+                        readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
                     }
                 }
         }
@@ -295,11 +332,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                         val bigDecimal = BigDecimal(version).setScale(3, BigDecimal.ROUND_HALF_UP)
 
                         fireBaseReference
-                            .setValue(bigDecimal.toDouble()) { error, _ ->
-                                if (error == null) {
-
-                                }
-                            }
+                            .setValue(bigDecimal.toDouble())
                     }
                 }
             })
@@ -382,6 +415,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                             if (!isInsert) {
                                 addPaymentInterface.onSuccessfulModified()
                             }
+                            _companyName = ""
+                            progressBox.dismiss()
                         }, 4000)
                     } else {
                         Toast.makeText(
@@ -389,88 +424,88 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                             "Unable to connect to server",
                             Toast.LENGTH_SHORT
                         ).show()
+                        _companyName = ""
+                        progressBox.dismiss()
                     }
                 }
         }
     }
 
     private fun addTaskToDB(isInsert: Boolean) {
-        if (_companyName != companyName.text.toString()) {
-            _companyName = ""
+
+        if (!isCategorySelected) {
+            _categoryName = categoryAutoText.text.toString()
+            writeCategoryToFireBase(SingleEntityModel(_categoryName))
+            CategoryRepository(activity!!).insertTask(CategoryTable(_categoryName))
         }
 
-        if (_companyName.isEmpty()) {
+        if (!isClientSelected) {
             _companyName = companyName.text.toString()
             if (_companyName.isNotEmpty()) {
-                var isFound = false
                 for (element in clientsName) {
                     if (_companyName.toLowerCase() == element.toLowerCase()) {
-                        isFound = true
+                        val model = ClientModel(_companyName, _categoryName)
+                        writeClientToFireBase(model)
+                        ClientRepository(activity).insertClient(ClientsTable(_companyName, _categoryName))
                         break
                     }
                 }
-                if (!isFound) {
-                    if (_categoryName != selectCategory) {
-                        val model = ClientModel(_companyName, _categoryName)
-                        writeClientToFireBase(model)
-                    } else {
-                        Toast.makeText(activity!!, "Please Select category", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+            }
+        }
+        Handler().postDelayed({
+            _chequeNo = taskChequeNo.text.toString()
+            _payableAmount = taskAmount.text.toString()
+
+            if (_selectedDays != selectDays && _categoryName.isNotEmpty() && _companyName.isNotEmpty() &&
+                _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()
+            ) {
+                readAmountFromFireBase(true, _payableAmount.toInt())
+
+                _modifyTaskDataTable?.clientName = _companyName
+                _modifyTaskDataTable?.categoryName = _categoryName
+                _modifyTaskDataTable?.payAmount = _payableAmount
+                _modifyTaskDataTable?.chequeNumber = _chequeNo
+                _modifyTaskDataTable?.dateInMillis = _selectedDateInMills
+                _modifyTaskDataTable?.paymentStatus = false
+                _modifyTaskDataTable?.preDays = _selectedDays.toInt()
+
+                _uniqueKeys = if (_uniqueKeys.isNotEmpty()) {
+                    _uniqueKeys
+                } else {
+                    AppUtils.uniqueKey()
                 }
-            }
-        }
-        _chequeNo = taskChequeNo.text.toString()
-        _payableAmount = taskAmount.text.toString()
-
-        if (_selectedDays != selectDays && _categoryName != selectCategory && _companyName.isNotEmpty() &&
-            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()
-        ) {
-            readAmountFromFireBase(true, _payableAmount.toInt())
-
-            _modifyTaskDataTable?.clientName = _companyName
-            _modifyTaskDataTable?.categoryName = _categoryName
-            _modifyTaskDataTable?.payAmount = _payableAmount
-            _modifyTaskDataTable?.chequeNumber = _chequeNo
-            _modifyTaskDataTable?.dateInMillis = _selectedDateInMills
-            _modifyTaskDataTable?.paymentStatus = false
-            _modifyTaskDataTable?.preDays = _selectedDays.toInt()
-
-            _uniqueKeys = if (_uniqueKeys.isNotEmpty()) {
-                _uniqueKeys
-            } else {
-                AppUtils.uniqueKey()
-            }
-            Handler().postDelayed({
-                writePaymentToFireBase(
-                    PaymentModel(
-                        _uniqueKeys, _companyName, _payableAmount, _chequeNo, _selectedDateInMills,
-                        false, _selectedDays.toInt()
+                Handler().postDelayed({
+                    writePaymentToFireBase(
+                        PaymentModel(
+                            _uniqueKeys, _companyName, _categoryName, _payableAmount, _chequeNo, _selectedDateInMills,
+                            false, _selectedDays.toInt()
+                        )
+                        , isInsert
                     )
-                , isInsert)
-            }, 7000)
-        } else {
-            if (_chequeNo.isEmpty() || _chequeNo.isBlank()) {
-                taskChequeNo.error = "Enter Valid Cheque Number"
+                }, 2000)
+            } else {
+                if (_chequeNo.isEmpty() || _chequeNo.isBlank()) {
+                    taskChequeNo.error = "Enter Valid Cheque Number"
+                }
+                if (_selectedDateInMills == 0L) {
+                    selectDate.error = "Select Valid Date"
+                }
+                if (_payableAmount.isEmpty() || _payableAmount.isBlank()) {
+                    taskAmount.error = "Enter Valid Amount"
+                }
+                if (_companyName.isBlank() || _companyName.isEmpty()) {
+                    companyName.error = "Select Company Name"
+                }
+                if (_selectedDays.isBlank() || _selectedDays.isEmpty() || _selectedDays == selectDays) {
+                    Toast.makeText(activity!!, "Please Select days", Toast.LENGTH_SHORT).show()
+                }
+                if (_categoryName.isBlank() || _categoryName.isEmpty()) {
+                    Toast.makeText(activity!!, "Select Category", Toast.LENGTH_SHORT).show()
+                }
+                _companyName = ""
+                progressBox.dismiss()
             }
-            if (_selectedDateInMills == 0L) {
-                selectDate.error = "Select Valid Date"
-            }
-            if (_payableAmount.isEmpty() || _payableAmount.isBlank()) {
-                taskAmount.error = "Enter Valid Amount"
-            }
-            if (_companyName.isBlank() || _companyName.isEmpty()) {
-                companyName.error = "Select Company Name"
-            }
-            if (_selectedDays.isBlank() || _selectedDays.isEmpty() || _selectedDays == selectDays) {
-                Toast.makeText(activity!!, "Please Select days", Toast.LENGTH_SHORT).show()
-            }
-            if (_categoryName.isBlank() || _categoryName.isEmpty() || _categoryName == selectCategory) {
-                Toast.makeText(activity!!, "Please Select category", Toast.LENGTH_SHORT).show()
-            }
-        }
-        _companyName = ""
-        progressBox.dismiss()
+        }, 7000)
     }
 
     private fun clearInputs() {

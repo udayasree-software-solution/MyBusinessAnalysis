@@ -29,7 +29,7 @@ class PaymentAdapter(
     }
 
     override fun getItemCount(): Int {
-        return taskList.size ?: 0
+        return taskList.size
     }
 
     @SuppressLint("SetTextI18n")

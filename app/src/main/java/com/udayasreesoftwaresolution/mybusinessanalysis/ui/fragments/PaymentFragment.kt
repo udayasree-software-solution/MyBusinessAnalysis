@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.PaymentModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.PaymentRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PaymentTable
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.PaymentAdapter
@@ -38,8 +38,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 @SuppressLint("StaticFieldLeak")
 class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInterface {
@@ -53,7 +51,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
     private lateinit var paidText: TextView
     private lateinit var paymentFAB: FloatingActionButton
     private lateinit var animation: Animation
-    private lateinit var progressBox: ProgressDialog
+    private lateinit var progressBox: ProgressBox
     private lateinit var paymentInterface: PaymentInterface
 
     private lateinit var editPaymentTable : PaymentTable
@@ -68,7 +66,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
     }
 
     companion object {
-        fun getInstance(): Fragment {
+        fun newInstance(): Fragment {
             return PaymentFragment()
         }
     }
@@ -93,7 +91,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
         cardView = view.findViewById(R.id.frag_payment_card_id)
 
         cardView.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.12).toInt()
-        progressBox = ProgressDialog(activity)
+        progressBox = ProgressBox(activity)
 
         paymentRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -272,7 +270,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                 val simpleDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.US)
                 val payedDate = simpleDateFormat.format(calendar.time)
                 with(editPaymentTable) {
-                    writePaymentToFireBase(PaymentModel(uniqueKey, clientName.plus("[$payedDate]"),
+                    writePaymentToFireBase(PaymentModel(uniqueKey, clientName.plus("[$payedDate]"), categoryName,
                         payAmount, chequeNumber, dateInMillis, true, preDays))
                 }
                 editPaymentTable.paymentStatus = true

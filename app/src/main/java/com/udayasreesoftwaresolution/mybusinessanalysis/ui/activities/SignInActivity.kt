@@ -16,7 +16,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.SingleEntityModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.UserSignInModel
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
@@ -34,7 +34,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var verifyButton : TextView
 
     private lateinit var appSharedPreference : AppSharedPreference
-    private lateinit var progressDialog : ProgressDialog
+    private lateinit var progressBox : ProgressBox
 
     private var outletName = ""
     private var outletCode = ""
@@ -80,7 +80,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
         loginBtn.setOnClickListener(this)
         verifyButton.setOnClickListener(this)
-        progressDialog = ProgressDialog(this)
+        progressBox = ProgressBox(this)
         verifyAnimLayout.visibility = View.GONE
 
         readOutletFromFireBase()
@@ -88,14 +88,14 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun readOutletFromFireBase() {
         if (AppUtils.networkConnectivityCheck(this)) {
-            progressDialog.show()
+            progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(FireBaseConstants.ADMIN)
                 .child(FireBaseConstants.OUTLET)
 
             fireBaseReference.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    progressDialog.dismiss()
+                    progressBox.dismiss()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
@@ -108,7 +108,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         outletName.add(element.inputData)
                     }
                     setupOutletTextView(outletName)
-                    progressDialog.dismiss()
+                    progressBox.dismiss()
                 }
             })
         }
@@ -143,7 +143,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    progressDialog.dismiss()
+                    progressBox.dismiss()
                 }
 
                 override fun onDataChange(snapShot: DataSnapshot) {
@@ -161,7 +161,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
                                     sharedPreferenceUtils.setAdminStatus(admin)
 
-                                    progressDialog.dismiss()
+                                    progressBox.dismiss()
                                     verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity,
                                         R.anim.bottom_to_top)
                                     verifyAnimLayout.visibility = View.VISIBLE
@@ -192,7 +192,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         if (error == null) {
                             readUserFromFireBase(userSignInModel)
                         } else {
-                            progressDialog.dismiss()
+                            progressBox.dismiss()
                             Toast.makeText(
                                 this@SignInActivity,
                                 "Fail to create user. Please try again",
@@ -219,7 +219,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             if (userName.isNotEmpty() && userMobile.isNotEmpty() && userMobile.length == 10
                 && outletName.isNotEmpty() && outletCode.isNotEmpty() && userId.isNotEmpty() && verificationCode.isNotEmpty()
             ) {
-                progressDialog.show()
+                progressBox.show()
                 val userSignInModel =
                     UserSignInModel(
                         userId,
@@ -245,17 +245,19 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun verifyDialog() {
-        progressDialog.show()
+        progressBox.show()
         val verifyCode = verifyEditText.text.toString()
         if (verifyCode.isNotEmpty() && verifyCode == appSharedPreference.getSignInCode()) {
             loginUserName.setText("")
             loginMobile.setText("")
             loginOutletName.setText("")
-            progressDialog.dismiss()
+            progressBox.dismiss()
             appSharedPreference.setUserSignInStatus(true)
+            AppUtils.OUTLET_NAME = appSharedPreference.getOutletName()!!
             setResult(Activity.RESULT_OK)
+            finish()
         } else {
-            progressDialog.dismiss()
+            progressBox.dismiss()
             Toast.makeText(this, "Invalid Verification Code", Toast.LENGTH_SHORT).show()
         }
     }

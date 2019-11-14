@@ -20,11 +20,7 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
@@ -39,11 +35,7 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
                             }
                         }
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })
@@ -58,22 +50,14 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadVersionListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })
@@ -89,11 +73,7 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
@@ -107,7 +87,7 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
                             .child(FireBaseConstants.VERSION)
                             .child(child)
                             .setValue(bigDecimal.toDouble()) { error, _ ->
-                                mFireBaseInterface.onSuccessWriteVersionListener(error == null)
+
                             }
                     }
                 }
@@ -126,20 +106,12 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadPaymentDataListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
             })
         }
@@ -167,22 +139,14 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadBusinessDataListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })
@@ -211,22 +175,14 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadClientDataListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })
@@ -255,22 +211,14 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadPurchaseDataListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })
@@ -299,22 +247,14 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
                 .child(FireBaseConstants.BUSINESS_CATEGORY)
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        mContext,
-                        "Server connection failed. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    mFireBaseInterface.onFailureFireBaseListener()
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
                         mFireBaseInterface.onSuccessReadBusinessCategoryDataListener(dataSnapShot)
                     } else {
-                        Toast.makeText(
-                            mContext,
-                            "Server connection failed. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        mFireBaseInterface.onFailureFireBaseListener()
                     }
                 }
             })

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
@@ -16,19 +17,18 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountViewAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 
 
 private const val ARG_AMOUNTS = "total_amount"
-private const val ARG_PARAM2 = "param2"
-
 class HomeFragment : Fragment() {
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var pieChartView : PieChart
-    private lateinit var progressDialog : ProgressDialog
+    private lateinit var pieEmpty : TextView
+    private lateinit var progressBox : ProgressBox
 
     companion object {
         fun newInstance(totalAmountList : ArrayList<AmountViewModel>) : HomeFragment {
@@ -52,7 +52,8 @@ class HomeFragment : Fragment() {
     private fun initView(view: View) {
         recyclerView = view.findViewById(R.id.frag_home_recycler_id)
         pieChartView = view.findViewById(R.id.frag_home_piechart_id)
-        progressDialog = ProgressDialog(activity)
+        pieEmpty = view.findViewById(R.id.frag_home_piechart_empty_id)
+        progressBox = ProgressBox(activity)
         setupRecyclerView()
     }
 
@@ -60,7 +61,7 @@ class HomeFragment : Fragment() {
         val bundle = arguments
         if (bundle != null) {
             if (bundle.containsKey(ARG_AMOUNTS)) {
-                progressDialog.show()
+                progressBox.show()
                 val totalAmountList  = bundle.getParcelableArrayList<AmountViewModel>(ARG_AMOUNTS)
                 if (totalAmountList != null && totalAmountList.isNotEmpty()) {
                     setupPieChart(totalAmountList)
@@ -70,23 +71,33 @@ class HomeFragment : Fragment() {
                     recyclerView.adapter = homeAdapter
                     homeAdapter.notifyDataSetChanged()
                 }
-                progressDialog.dismiss()
+                progressBox.dismiss()
             }
         }
     }
 
     private fun setupPieChart(totalAmountList: ArrayList<AmountViewModel>) {
         val calculatePercentage = ArrayList<PieEntry>()
+        var isAmountNotFount = true
         var totalValue = 0
         for (total in totalAmountList) {
             totalValue += total.total
         }
         for (element in totalAmountList) {
-            var percentage = 0.1f
+            var percentage = 0f
             if (element.total > 0f) {
+                isAmountNotFount = false
                 percentage = ((element.total / totalValue) * 100).toFloat()
             }
             calculatePercentage.add(PieEntry(percentage, element.title))
+        }
+
+        if (isAmountNotFount) {
+            pieEmpty.visibility = View.VISIBLE
+            pieChartView.visibility = View.GONE
+        } else {
+            pieEmpty.visibility = View.GONE
+            pieChartView.visibility = View.VISIBLE
         }
         val pieDataSet = PieDataSet(calculatePercentage, "")
         pieDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()

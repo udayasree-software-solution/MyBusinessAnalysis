@@ -15,7 +15,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBase
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseInterface
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
-import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressDialog
+import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.*
@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity(),
     private lateinit var outletBanner: ImageView
     private lateinit var outletLogo: ImageView
     private lateinit var outletName: TextView
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressBox: ProgressBox
 
     private lateinit var appSharedPreference: AppSharedPreference
     private lateinit var versionSharedPreference: VersionSharedPreference
@@ -65,7 +65,7 @@ class SplashActivity : AppCompatActivity(),
         imageLoaderUtils.setupImageLoader()
         appSharedPreference = AppSharedPreference(this@SplashActivity)
         versionSharedPreference = VersionSharedPreference(this@SplashActivity)
-        progressDialog = ProgressDialog(this)
+        progressBox = ProgressBox(this)
 
         AppUtils.OUTLET_NAME = appSharedPreference.getOutletName()!!
         imageLoaderUtils.displayImage(appSharedPreference.getOutletBannerUrl()!!, outletBanner)
@@ -77,10 +77,11 @@ class SplashActivity : AppCompatActivity(),
         )
 
         if (appSharedPreference.getUserSignInStatus() && AppUtils.OUTLET_NAME.isNotEmpty()) {
-            progressDialog.show()
+            progressBox.show()
             fireBaseUtils.readValidityFromFireBase()
         } else {
             startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
@@ -100,17 +101,19 @@ class SplashActivity : AppCompatActivity(),
         if (totalServerExecuted >= totalServerConnected) {
             totalServerConnected = 0
             totalServerExecuted = 0
-            progressDialog.dismiss()
             Handler().postDelayed({
                 /*TODO: Intent to HOME Activity*/
+                progressBox.dismiss()
                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                finish()
             }, 7000)
         }
     }
 
     override fun onValiditySuccessListener(isValidityExpired: Boolean) {
         if (isValidityExpired) {
-            progressDialog.dismiss()
+            progressBox.dismiss()
             exitDialog(
                 "Renewal Premium",
                 "Your premium to access the application has expired. Please Renewal your premium to continue",
@@ -183,6 +186,7 @@ class SplashActivity : AppCompatActivity(),
                             PaymentTable(
                                 uniqueKey,
                                 clientName,
+                                categoryName,
                                 payAmount,
                                 chequeNumber,
                                 dateInMillis,
@@ -274,14 +278,15 @@ class SplashActivity : AppCompatActivity(),
         saveDetailsToDB()
     }
 
-    override fun onSuccessWriteVersionListener(status: Boolean) {
-
+    override fun onFailureFireBaseListener() {
+        progressBox.dismiss()
+        exitDialog("Server Connection Fail!","Unable to connect to server. Please check your internet connection","Exit")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ConstantUtils.SIGNIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            progressDialog.show()
+            progressBox.show()
             fireBaseUtils.readValidityFromFireBase()
         }
     }
