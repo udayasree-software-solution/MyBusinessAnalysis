@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.dao.BusinessDao;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable;
 
-@Database(entities = BusinessTable.class, version = 1, exportSchema = false)
+@Database(entities = BusinessTable.class, version = 2, exportSchema = false)
 public abstract class BusinessDataBasePersistence extends RoomDatabase {
     public abstract BusinessDao businessDaoAccess();
 }

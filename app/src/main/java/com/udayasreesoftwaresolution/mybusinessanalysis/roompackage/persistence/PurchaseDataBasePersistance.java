@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.dao.PurchaseDao;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PurchaseTable;
 
-@Database(entities = PurchaseTable.class, version = 1, exportSchema = false)
+@Database(entities = PurchaseTable.class, version = 2, exportSchema = false)
 public abstract class PurchaseDataBasePersistance extends RoomDatabase {
     public abstract PurchaseDao purchaseDaoAccess();
 }
