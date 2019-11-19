@@ -23,6 +23,7 @@ public class ProgressBox {
     }
 
     public void show() {
+        dismiss();
         if (progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.show();
         }

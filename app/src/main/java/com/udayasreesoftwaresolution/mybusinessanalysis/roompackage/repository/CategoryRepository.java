@@ -54,8 +54,14 @@ public class CategoryRepository {
     }
 
     public void clearDataBase() {
-        categoryDataBasePersistence.isOpen();
-        categoryDataBasePersistence.clearAllTables();
-        categoryDataBasePersistence.close();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                categoryDataBasePersistence.isOpen();
+                categoryDataBasePersistence.clearAllTables();
+                categoryDataBasePersistence.close();
+                return null;
+            }
+        }.execute();
     }
 }

@@ -34,6 +34,9 @@ public class PaymentTable {
     @ColumnInfo(name = "pre_days")
     private int preDays;
 
+    public PaymentTable() {
+    }
+
     public PaymentTable(String uniqueKey, String clientName, String categoryName,
                         String payAmount, String chequeNumber, long dateInMillis, boolean paymentStatus, int preDays) {
         this.uniqueKey = uniqueKey;

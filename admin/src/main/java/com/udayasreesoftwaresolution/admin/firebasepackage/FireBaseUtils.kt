@@ -2,9 +2,14 @@ package com.udayasreesoftwaresolution.admin.firebasepackage
 
 import android.content.Context
 import android.widget.Toast
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.SingleEntityModel
 import com.udayasreesoftwaresolution.admin.firebasepackage.models.ValidityModel
 import com.udayasreesoftwaresolution.admin.utilspackage.AppUtils
+import java.math.BigDecimal
 
 class FireBaseUtils(val mContext: Context, val fireBaseInterface : FireBaseInterface) {
     private var fireBaseUtils: FireBaseUtils? = null
@@ -56,7 +61,13 @@ class FireBaseUtils(val mContext: Context, val fireBaseInterface : FireBaseInter
                 .setValue(0)
 
             fireBaseReference.child(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
-                .setValue(0)
+                .setValue(0.001)
+
+            FirebaseDatabase.getInstance()
+                .getReference(outletName)
+                .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .push()
+                .setValue(SingleEntityModel(outletName))
         }
     }
 

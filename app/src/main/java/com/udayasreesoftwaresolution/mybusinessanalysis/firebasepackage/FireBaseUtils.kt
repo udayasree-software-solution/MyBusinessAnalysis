@@ -260,18 +260,4 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
             })
         }
     }
-
-    fun writeBusinessCategoryToFireBase(category : SingleEntityModel) {
-        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
-            FirebaseDatabase.getInstance()
-                .getReference(AppUtils.OUTLET_NAME)
-                .child(FireBaseConstants.BUSINESS_CATEGORY)
-                .push()
-                .setValue(category) {error, _ ->
-                    if (error == null){
-                        readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
-                    }
-                }
-        }
-    }
 }

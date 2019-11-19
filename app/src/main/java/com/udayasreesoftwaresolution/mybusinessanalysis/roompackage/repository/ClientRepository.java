@@ -57,8 +57,14 @@ public class ClientRepository {
     }
 
     public void clearDataBase() {
-        clientDataBasePersistence.isOpen();
-        clientDataBasePersistence.clearAllTables();
-        clientDataBasePersistence.close();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                clientDataBasePersistence.isOpen();
+                clientDataBasePersistence.clearAllTables();
+                clientDataBasePersistence.close();
+                return null;
+            }
+        }.execute();
     }
 }

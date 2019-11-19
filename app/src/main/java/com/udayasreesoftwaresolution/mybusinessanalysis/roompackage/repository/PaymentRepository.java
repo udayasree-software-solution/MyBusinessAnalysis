@@ -20,6 +20,7 @@ public class PaymentRepository {
     public PaymentRepository(Context context) {
         paymentDataBasePersistence = Room.databaseBuilder(context, PaymentDataBasePersistence.class,
                 "Payment_database")
+                .allowMainThreadQueries()
                 .build();
     }
 
@@ -81,12 +82,20 @@ public class PaymentRepository {
                 payableTotal += Integer.parseInt(element.getPayAmount());
             }
         }
+        totals.add(payableTotal);
+        totals.add(paidTotal);
         return totals;
     }
 
     public void clearDataBase() {
-        paymentDataBasePersistence.isOpen();
-        paymentDataBasePersistence.clearAllTables();
-        paymentDataBasePersistence.close();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                paymentDataBasePersistence.isOpen();
+                paymentDataBasePersistence.clearAllTables();
+                paymentDataBasePersistence.close();
+                return null;
+            }
+        }.execute();
     }
 }

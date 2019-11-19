@@ -76,8 +76,14 @@ public class BusinessRepository {
     }
 
     public void clearDataBase() {
-        businessDataBasePersistence.isOpen();
-        businessDataBasePersistence.clearAllTables();
-        businessDataBasePersistence.close();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                businessDataBasePersistence.isOpen();
+                businessDataBasePersistence.clearAllTables();
+                businessDataBasePersistence.close();
+                return null;
+            }
+        }.execute();
     }
 }

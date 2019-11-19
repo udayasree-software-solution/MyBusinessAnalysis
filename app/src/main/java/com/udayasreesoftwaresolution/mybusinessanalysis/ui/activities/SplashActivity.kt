@@ -1,8 +1,10 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Point
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
@@ -134,31 +136,31 @@ class SplashActivity : AppCompatActivity(),
             val businessNameVersion =
                 dataSnapShot.child(FireBaseConstants.BUSINESS_CATEGORY_VERSION).getValue(Double::class.java)!!
 
-            if (versionSharedPreference.getPaymentVersion()!! > paymentVersion.toFloat()) {
+            if (paymentVersion.toFloat() > versionSharedPreference.getPaymentVersion()!!) {
                 totalServerConnected++
                 versionSharedPreference.setPaymentVersion(paymentVersion.toFloat())
                 fireBaseUtils.readPaymentFromFireBase()
             }
 
-            if (versionSharedPreference.getBusinessVersion()!! > businessVersion.toFloat()) {
+            if (businessVersion.toFloat() > versionSharedPreference.getBusinessVersion()!!) {
                 totalServerConnected++
                 versionSharedPreference.setBusinessVersion(businessVersion.toFloat())
                 fireBaseUtils.readBusinessFromFireBase()
             }
 
-            if (versionSharedPreference.getClientVersion()!! > clientVersion.toFloat()) {
+            if (clientVersion.toFloat() > versionSharedPreference.getClientVersion()!!) {
                 totalServerConnected++
                 versionSharedPreference.setClientVersion(clientVersion.toFloat())
                 fireBaseUtils.readClientFromFireBase()
             }
 
-            if (versionSharedPreference.getPurchaseVersion()!! > purchaseVersion.toFloat()) {
+            if (purchaseVersion.toFloat() > versionSharedPreference.getPurchaseVersion()!!) {
                 totalServerConnected++
                 versionSharedPreference.setPurchaseVersion(purchaseVersion.toFloat())
                 fireBaseUtils.readPurchaseFromFireBase()
             }
 
-            if (versionSharedPreference.getBusinessNameVersion()!! > businessNameVersion.toFloat()) {
+            if (businessNameVersion.toFloat() > versionSharedPreference.getBusinessNameVersion()!!) {
                 totalServerConnected++
                 versionSharedPreference.setBusinessNameVersion(businessNameVersion.toFloat())
                 fireBaseUtils.readBusinessCategoryFromFireBase()
@@ -178,25 +180,27 @@ class SplashActivity : AppCompatActivity(),
         try {
             val paymentRepository = PaymentRepository(this@SplashActivity)
             paymentRepository.clearDataBase()
-            for (element in dataSnapShot.children) {
-                val paymentModel = element.getValue(PaymentModel::class.java)
-                if (paymentModel != null) {
-                    with(paymentModel) {
-                        paymentRepository.insertTask(
-                            PaymentTable(
-                                uniqueKey,
-                                clientName,
-                                categoryName,
-                                payAmount,
-                                chequeNumber,
-                                dateInMillis,
-                                payStatus,
-                                preDays
+            Handler().postDelayed({
+                for (element in dataSnapShot.children) {
+                    val paymentModel = element.getValue(PaymentModel::class.java)
+                    if (paymentModel != null) {
+                        with(paymentModel) {
+                            paymentRepository.insertTask(
+                                PaymentTable(
+                                    uniqueKey,
+                                    clientName,
+                                    categoryName,
+                                    payAmount,
+                                    chequeNumber,
+                                    dateInMillis,
+                                    payStatus,
+                                    preDays
+                                )
                             )
-                        )
+                        }
                     }
                 }
-            }
+            },3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -208,14 +212,16 @@ class SplashActivity : AppCompatActivity(),
         try {
             val businessRepository = BusinessRepository(this@SplashActivity)
             businessRepository.clearDataBase()
-            for (element in dataSnapShot.children) {
-                val businessModel = element.getValue(BusinessModel::class.java)
-                if (businessModel != null) {
-                    with(businessModel){
-                        businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+            Handler().postDelayed({
+                for (element in dataSnapShot.children) {
+                    val businessModel = element.getValue(BusinessModel::class.java)
+                    if (businessModel != null) {
+                        with(businessModel){
+                            businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+                        }
                     }
                 }
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -227,14 +233,16 @@ class SplashActivity : AppCompatActivity(),
         try {
             val clientRepository = ClientRepository(this@SplashActivity)
             clientRepository.clearDataBase()
-            for (element in dataSnapShot.children) {
-                val clientModel = element.getValue(ClientModel::class.java)
-                if (clientModel != null) {
-                    with(clientModel){
-                        clientRepository.insertClient(ClientsTable(clientName, category))
+            Handler().postDelayed({
+                for (element in dataSnapShot.children) {
+                    val clientModel = element.getValue(ClientModel::class.java)
+                    if (clientModel != null) {
+                        with(clientModel){
+                            clientRepository.insertClient(ClientsTable(clientName, category))
+                        }
                     }
                 }
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -246,14 +254,16 @@ class SplashActivity : AppCompatActivity(),
         try {
             val purchaseRepository = PurchaseRepository(this@SplashActivity)
             purchaseRepository.clearDataBase()
-            for (element in dataSnapShot.children) {
-                val purchaseModel = element.getValue(PurchaseModel::class.java)
-                if (purchaseModel != null) {
-                    with(purchaseModel) {
-                        purchaseRepository.insertPurchase(PurchaseTable(dateOfPurchase, clientName, billNo, billAmount, timeInMillis))
+             Handler().postDelayed({
+                for (element in dataSnapShot.children) {
+                    val purchaseModel = element.getValue(PurchaseModel::class.java)
+                    if (purchaseModel != null) {
+                        with(purchaseModel) {
+                            purchaseRepository.insertPurchase(PurchaseTable(dateOfPurchase, clientName, billNo, billAmount, timeInMillis))
+                        }
                     }
                 }
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -265,13 +275,14 @@ class SplashActivity : AppCompatActivity(),
         try {
             val categoryRepository = CategoryRepository(this@SplashActivity)
             categoryRepository.clearDataBase()
-            categoryRepository.insertTask(CategoryTable(AppUtils.OUTLET_NAME))
-            for (element in dataSnapShot.children) {
-                val entityModel = element.getValue(SingleEntityModel::class.java)
-                if (entityModel != null) {
-                    categoryRepository.insertTask(CategoryTable(entityModel.inputData))
+            Handler().postDelayed({
+                for (element in dataSnapShot.children) {
+                    val entityModel = element.getValue(SingleEntityModel::class.java)
+                    if (entityModel != null) {
+                        categoryRepository.insertTask(CategoryTable(entityModel.inputData))
+                    }
                 }
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }

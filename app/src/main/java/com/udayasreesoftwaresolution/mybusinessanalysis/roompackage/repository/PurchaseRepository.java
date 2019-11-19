@@ -66,8 +66,14 @@ public class PurchaseRepository {
     }
 
     public void clearDataBase() {
-        purchaseDataBasePersistance.isOpen();
-        purchaseDataBasePersistance.clearAllTables();
-        purchaseDataBasePersistance.close();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                purchaseDataBasePersistance.isOpen();
+                purchaseDataBasePersistance.clearAllTables();
+                purchaseDataBasePersistance.close();
+                return null;
+            }
+        }.execute();
     }
 }

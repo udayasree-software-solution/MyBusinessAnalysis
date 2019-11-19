@@ -87,9 +87,9 @@ class HomeFragment : Fragment() {
             var percentage = 0f
             if (element.total > 0f) {
                 isAmountNotFount = false
-                percentage = ((element.total / totalValue) * 100).toFloat()
+                percentage = ((element.total * 100) / totalValue).toFloat()
+                calculatePercentage.add(PieEntry(percentage, element.title))
             }
-            calculatePercentage.add(PieEntry(percentage, element.title))
         }
 
         if (isAmountNotFount) {
