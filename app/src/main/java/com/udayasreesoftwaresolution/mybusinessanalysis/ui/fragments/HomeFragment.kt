@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.LargeValueFormatter
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
@@ -79,18 +80,21 @@ class HomeFragment : Fragment() {
     private fun setupPieChart(totalAmountList: ArrayList<AmountViewModel>) {
         val calculatePercentage = ArrayList<PieEntry>()
         var isAmountNotFount = true
-        var totalValue = 0
+        /*var totalValue = 0
         for (total in totalAmountList) {
             totalValue += total.total
-        }
+        }*/
         for (element in totalAmountList) {
-            var percentage = 0f
+            //var percentage = 0f
             if (element.total > 0f) {
                 isAmountNotFount = false
-                percentage = ((element.total * 100) / totalValue).toFloat()
-                calculatePercentage.add(PieEntry(percentage, element.title))
+                //percentage = ((element.total * 100) / totalValue).toFloat()
+                //calculatePercentage.add(PieEntry(percentage, element.title))
+                calculatePercentage.add(PieEntry(element.total.toFloat(), element.title))
             }
         }
+
+
 
         if (isAmountNotFount) {
             pieEmpty.visibility = View.VISIBLE
@@ -102,13 +106,13 @@ class HomeFragment : Fragment() {
         val pieDataSet = PieDataSet(calculatePercentage, "")
         pieDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
 
-        pieDataSet.sliceSpace = 2f
+        pieDataSet.sliceSpace = 3f
         pieDataSet.valueTextSize = 15f
 
         val pieData = PieData(pieDataSet)
         pieData.setValueTextSize(13f)
         pieData.setValueTextColor(Color.DKGRAY)
-        pieData.setValueFormatter(LargeValueFormatter())
+        pieData.setValueFormatter(PercentFormatter(pieChartView))
 
         /*val legend = pieChartView.legend
         legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
@@ -116,6 +120,7 @@ class HomeFragment : Fragment() {
         legend.orientation = Legend.LegendOrientation.VERTICAL
         legend.setDrawInside(false)*/
 
+        pieChartView.setUsePercentValues(true)
         pieChartView.legend.isEnabled = false
         pieChartView.data = pieData
         pieChartView.description.isEnabled = false

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/window_background"
+                tools:context=".AddBusinessFragment">
+
+    <LinearLayout
+            android:id="@+id/business_add_date_layout"
+            android:weightSum="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_weight="0.85"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+            <EditText
+                    android:id="@+id/business_add_date_id"
+                    android:hint="@string/selected_date"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+                android:src="@android:drawable/ic_menu_my_calendar"
+                android:layout_weight="0.15"
+                android:tint="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <ScrollView
+            android:id="@+id/business_scroll_id"
+            android:layout_below="@+id/business_add_date_layout"
+            android:layout_above="@+id/business_add_save_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:padding="6dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                    android:id="@+id/business_add_insert_id"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <ImageView
+                    android:id="@+id/business_add_include_id"
+                    android:src="@android:drawable/ic_input_add"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+            android:id="@+id/business_add_save_id"
+            android:layout_alignParentBottom="true"
+            android:text="@string/save_business"
+            android:layout_gravity="bottom"
+            android:textColor="@android:color/white"
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</RelativeLayout>

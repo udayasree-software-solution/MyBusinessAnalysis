@@ -63,7 +63,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     private lateinit var categorysName: ArrayList<String>
 
     private lateinit var title: TextView
-    private lateinit var companyName: AutoCompleteTextView
+    private lateinit var companyAutoText: AutoCompleteTextView
     private lateinit var categoryAutoText: AutoCompleteTextView
     private lateinit var selectDate: EditText
     private lateinit var taskRemindDaySpinner: Spinner
@@ -104,7 +104,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private fun initView(view: View) {
         title = view.findViewById(R.id.remainder_task_title_id)
-        companyName = view.findViewById(R.id.remainder_task_company_id)
+        companyAutoText = view.findViewById(R.id.remainder_task_company_id)
         taskRemindDaySpinner = view.findViewById(R.id.remainder_task_remind_id)
         categoryAutoText = view.findViewById(R.id.remainder_task_category_id)
         selectDate = view.findViewById(R.id.remainder_task_date_id)
@@ -174,6 +174,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             setupCategoryTextView()
             val slNo = arguments?.getInt(ARG_SLNO)!!
             progressBox.dismiss()
+            _modifyTaskDataTable = PaymentTable()
             if (slNo >= 0) {
                 isNewPayment = false
                 MenuTaskAsync(slNo).execute()
@@ -230,9 +231,13 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     selectDate.setText(simpleDateFormat.format(Date(dateInMillis)))
                     taskChequeNo.setText(chequeNumber)
                     taskAmount.setText(payAmount)
+                    _selectedDateInMills = dateInMillis
+                    companyAutoText.setText(clientName)
+                    categoryAutoText.setText(categoryName)
                     taskRemindDaySpinner.setSelection(preDays)
                     addTaskBtn.text = "Apply Changes"
                     _uniqueKeys = uniqueKey
+                    _selectedDays = selectDays
 
                     if (categoryName != "NA") {
                         for (i in categorysName.indices) {
@@ -248,7 +253,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     if (clientName != "NA") {
                         for (i in clientsName.indices) {
                             if (clientsName[i] == clientName) {
-                                companyName.setText(clientName)
+                                companyAutoText.setText(clientName)
                                 _companyName = clientName
                                 isClientSelected = true
                                 break
@@ -265,10 +270,10 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         if (clientsName.isNotEmpty()) {
             val arrayAdapter =
                 ArrayAdapter(activity!!, android.R.layout.select_dialog_item, clientsName)
-            companyName.threshold = 1
+            companyAutoText.threshold = 1
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            companyName.setAdapter(arrayAdapter)
-            companyName.onItemClickListener =
+            companyAutoText.setAdapter(arrayAdapter)
+            companyAutoText.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _, position, _ ->
                     _companyName = arrayAdapter.getItem(position)!!
                     isClientSelected = true
@@ -419,10 +424,11 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                 .child(paymentModel.uniqueKey)
                 .setValue(paymentModel) { error, _ ->
                     if (error == null) {
+                        val paymentRepo = PaymentRepository(activity)
                         if (isNewPayment) {
-                            PaymentRepository(activity!!).insertTask(_modifyTaskDataTable)
+                            paymentRepo.insertTask(_modifyTaskDataTable)
                         } else {
-                            PaymentRepository(activity!!).updateTask(_modifyTaskDataTable)
+                            paymentRepo.updateTask(_modifyTaskDataTable)
                         }
                         readVersionOfChildFromFireBase(FireBaseConstants.PAYMENT_VERSION)
                         Handler().postDelayed({
@@ -466,7 +472,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkClientAvailable() {
-        _companyName = companyName.text.toString().trim()
+        _companyName = companyAutoText.text.toString().trim()
         var isNotFound = true
         if (_companyName.isNotEmpty()) {
             for (element in clientsName) {
@@ -510,6 +516,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             } else {
                 AppUtils.uniqueKey()
             }
+            _modifyTaskDataTable?.uniqueKey = _uniqueKeys
             Handler().postDelayed({
                 writePaymentToFireBase(
                     PaymentModel(
@@ -529,7 +536,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                 taskAmount.error = "Enter Valid Amount"
             }
             if (_companyName.isBlank() || _companyName.isEmpty()) {
-                companyName.error = "Select Company Name"
+                companyAutoText.error = "Select Company Name"
             }
             if (_selectedDays.isBlank() || _selectedDays.isEmpty() || _selectedDays == selectDays) {
                 Toast.makeText(activity!!, "Please Select days", Toast.LENGTH_SHORT).show()
@@ -546,7 +553,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     private fun clearInputs() {
         taskChequeNo.setText("")
         taskAmount.setText("")
-        companyName.setText("")
+        companyAutoText.setText("")
+        categoryAutoText.setText("")
         taskRemindDaySpinner.setSelection(0)
         setCurrentDate()
     }

@@ -40,4 +40,5 @@
     <string name="create_payment">Create Payment</string>
     <string name="category_name">Category Name</string>
     <string name="chart_data_is_empty">Chart data is empty</string>
+    <string name="save_business">Save Business</string>
 </resources>

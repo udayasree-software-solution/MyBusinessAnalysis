@@ -34,10 +34,12 @@ class AmountViewAdapter(val context : Context, val amountViewModelList : ArrayLi
             holder.homeTitle.text = title.toUpperCase()
             holder.homeTotal.text = "₹ ${NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(total)}/-"
             if (title == "Expenses Amount") {
-                holder.homeCardLayout.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
-            } else {
-                holder.homeCardLayout.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_green_light))
-            }
+                holder.homeTitle.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
+                holder.homeTotal.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
+                //holder.homeCardLayout.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
+            }/* else {
+                //holder.homeCardLayout.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_green_light))
+            }*/
         }
     }
 

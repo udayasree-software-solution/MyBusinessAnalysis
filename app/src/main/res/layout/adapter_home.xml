@@ -10,7 +10,6 @@
             android:id="@+id/row_home_card_layout_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp"
             app:cardElevation="6dp">
 
         <LinearLayout
@@ -31,7 +30,7 @@
                     android:padding="5dp"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@color/colorPrimary"/>
 
             <TextView
                     android:id="@+id/row_home_total_id"
@@ -41,7 +40,7 @@
                     android:padding="5dp"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@color/colorPrimary"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
