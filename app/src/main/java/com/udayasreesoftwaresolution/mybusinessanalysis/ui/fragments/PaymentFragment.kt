@@ -61,7 +61,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
         try {
             paymentInterface = context as PaymentInterface
         } catch (e: ClassCastException) {
-            throw ClassCastException(context.toString().plus(" must implement PaymentFragment"))
+            throw ClassCastException(context.toString().plus(" must implement PaymentFragment Interface"))
         }
     }
 

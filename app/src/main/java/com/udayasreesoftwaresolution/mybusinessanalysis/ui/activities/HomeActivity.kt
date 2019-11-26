@@ -25,6 +25,8 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
+import com.udayasreesoftwaresolution.mybusinessanalysis.AddBusinessFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.BusinessListFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.HomeFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
@@ -37,7 +39,8 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtil
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 
 @SuppressLint("StaticFieldLeak")
-class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddPaymentFragment.AddPaymentInterface {
+class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddPaymentFragment.AddPaymentInterface,
+    BusinessListFragment.BusinessListInterface {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -204,7 +207,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_drawable_todaybusiness -> {
                     mFragmentPosition = 2
-                    supportActionBar?.title = "Business"
+                    businessListFragmentLaunch()
                 }
 
                 R.id.menu_drawable_purchase -> {
@@ -246,11 +249,6 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
                 .addToBackStack(fragment::class.java.simpleName)
                 .commit()
         }
-    }
-
-    private fun payablePaidFragmentLaunch() {
-        supportActionBar?.title = "Payable/Paid"
-        launchFragment(PaymentFragment.newInstance())
     }
 
     inner class HomeAsyncTask : AsyncTask<Void, Void, ArrayList<AmountViewModel>>() {
@@ -299,15 +297,29 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
     }
 
     override fun paymentActionListener(slNo: Int) {
-        clearBackStack()
         supportActionBar?.title = "Payment"
         mFragmentPosition = 100
         launchFragment(AddPaymentFragment.newInstance(slNo))
     }
 
+    private fun payablePaidFragmentLaunch() {
+        supportActionBar?.title = "Payable/Paid"
+        launchFragment(PaymentFragment.newInstance())
+    }
+
+    private fun businessListFragmentLaunch() {
+        supportActionBar?.title = "Business"
+        launchFragment(BusinessListFragment.newInstance())
+    }
+
     override fun onSuccessfulModified() {
-        clearBackStack()
         payablePaidFragmentLaunch()
+    }
+
+    override fun addBusinessFragmentListener() {
+        supportActionBar?.title = "Business"
+        mFragmentPosition = 101
+        launchFragment(AddBusinessFragment.newInstance())
     }
 
     private fun clearBackStack() {
@@ -324,12 +336,14 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         var backPress = true
         if (mFragmentPosition == 100) {
             mFragmentPosition = 1
-            clearBackStack()
             payablePaidFragmentLaunch()
+            backPress = false
+        } else if (mFragmentPosition == 101) {
+            mFragmentPosition = 2
+            businessListFragmentLaunch()
             backPress = false
         } else if (mFragmentPosition > 0) {
             mFragmentPosition = 0
-            clearBackStack()
             HomeAsyncTask().execute()
             backPress = false
         }
