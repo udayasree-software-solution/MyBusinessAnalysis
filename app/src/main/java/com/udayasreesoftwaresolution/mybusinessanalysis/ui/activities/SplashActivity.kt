@@ -276,12 +276,17 @@ class SplashActivity : AppCompatActivity(),
             val categoryRepository = CategoryRepository(this@SplashActivity)
             categoryRepository.clearDataBase()
             Handler().postDelayed({
+                categoryRepository.insertTask(CategoryTable("Expenses"))
+                categoryRepository.insertTask(CategoryTable(AppUtils.OUTLET_NAME))
                 for (element in dataSnapShot.children) {
                     val entityModel = element.getValue(SingleEntityModel::class.java)
                     if (entityModel != null) {
-                        categoryRepository.insertTask(CategoryTable(entityModel.inputData))
+                        if (entityModel.inputData != AppUtils.OUTLET_NAME) {
+                            categoryRepository.insertTask(CategoryTable(entityModel.inputData))
+                        }
                     }
                 }
+
             }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()

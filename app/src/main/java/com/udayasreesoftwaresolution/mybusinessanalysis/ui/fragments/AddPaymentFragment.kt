@@ -140,7 +140,9 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             categoryTableList =
                 CategoryRepository(activity!!).queryClientNamesList() as ArrayList<CategoryTable>
             for (value in categoryTableList) {
-                categorysName.add(value.category_name)
+                if (value.category_name != "Expenses") {
+                    categorysName.add(value.category_name)
+                }
             }
             return true
         }

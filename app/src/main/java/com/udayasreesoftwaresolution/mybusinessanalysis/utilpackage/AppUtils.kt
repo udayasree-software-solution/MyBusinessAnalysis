@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import android.widget.Toast
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -85,6 +86,34 @@ class AppUtils {
             }
             timeInMillis = calendar.timeInMillis
             return simpleDateFormat.format(timeInMillis)
+        }
+
+        fun sortBusinessModelList(businessList : ArrayList<AmountViewModel>) : ArrayList<AmountViewModel> {
+            val newBusinessList = ArrayList<AmountViewModel>()
+            var businessExpenses : AmountViewModel? = null
+            var businessOutlet : AmountViewModel? = null
+            for (element in businessList) {
+                when(element.title) {
+                    "Expenses" -> {
+                        businessExpenses = element
+                    }
+
+                    OUTLET_NAME -> {
+                        businessOutlet = element
+                    }
+                }
+            }
+
+            if (businessExpenses != null && businessOutlet != null) {
+                newBusinessList.add(businessExpenses)
+                newBusinessList.add(businessOutlet)
+                for (element in businessList) {
+                    if (element.title != "Expenses" && element.title != OUTLET_NAME) {
+                        newBusinessList.add(element)
+                    }
+                }
+            }
+            return newBusinessList
         }
 
         fun networkConnectivityCheck(context: Context): Boolean {

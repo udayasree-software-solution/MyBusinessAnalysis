@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.os.ConfigurationCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
@@ -20,6 +21,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import java.lang.Exception
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -89,11 +91,12 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         BusinessListByDateTask(currentDateFormat).execute()
     }
 
+
     @SuppressLint("SetTextI18n")
-    private fun setTotal(netBusiness : Int, expenses : Int) {
+    private fun setTotal(netBusiness : String, expenses : String, grossBusiness : String) {
         netAmountText.text = "₹ $netBusiness/-"
         expensesAmountText.text = "₹ $expenses/-"
-        grossAmountText.text = "₹ ${(netBusiness - expenses)}/-"
+        grossAmountText.text = "₹ $grossBusiness/-"
     }
 
     private inner class BusinessListByDateTask(val dateFormat : String) : AsyncTask<Void, Void, ArrayList<BusinessTable>>() {
@@ -119,9 +122,13 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 }
                 recyclerView.visibility = View.VISIBLE
                 emptyData.visibility = View.GONE
-                setTotal(netAmount, expense)
+                setTotal(
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(netAmount),
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format((netAmount - expense)),
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(expense)
+                )
             } else {
-                setTotal(0,0)
+                setTotal("0","0", "0")
                 emptyData.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
             }
