@@ -14,12 +14,11 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountViewAdapter
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 
 
@@ -67,7 +66,7 @@ class HomeFragment : Fragment() {
                 if (totalAmountList != null && totalAmountList.isNotEmpty()) {
                     setupPieChart(totalAmountList)
                     val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-                    val homeAdapter = AmountViewAdapter(activity!!, totalAmountList)
+                    val homeAdapter = AmountAdapter(activity!!, totalAmountList)
                     recyclerView.layoutManager = layoutManager
                     recyclerView.adapter = homeAdapter
                     homeAdapter.notifyDataSetChanged()

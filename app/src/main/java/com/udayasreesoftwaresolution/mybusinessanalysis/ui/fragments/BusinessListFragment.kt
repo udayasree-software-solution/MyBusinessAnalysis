@@ -1,4 +1,4 @@
-package com.udayasreesoftwaresolution.mybusinessanalysis
+package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
 import android.annotation.SuppressLint
@@ -12,12 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.os.ConfigurationCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.BusinessRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.BusinessAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import java.lang.Exception
@@ -122,6 +125,10 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 }
                 recyclerView.visibility = View.VISIBLE
                 emptyData.visibility = View.GONE
+                val businessAdapter = BusinessAdapter(activity!!, result)
+                recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+                recyclerView.adapter = businessAdapter
+                businessAdapter.notifyDataSetChanged()
                 setTotal(
                     NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(netAmount),
                     NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format((netAmount - expense)),

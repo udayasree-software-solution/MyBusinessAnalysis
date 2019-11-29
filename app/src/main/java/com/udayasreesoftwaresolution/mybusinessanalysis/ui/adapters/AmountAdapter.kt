@@ -18,8 +18,8 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtil
 import java.text.NumberFormat
 
 @SuppressLint("SetTextI18n")
-class AmountViewAdapter(val context : Context, val amountViewModelList : ArrayList<AmountViewModel>)
-    : RecyclerView.Adapter<AmountViewAdapter.HomeHolder>() {
+class AmountAdapter(val context : Context, val amountViewModelList : ArrayList<AmountViewModel>)
+    : RecyclerView.Adapter<AmountAdapter.HomeHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): HomeHolder {
         return HomeHolder(LayoutInflater.from(this.context).inflate(R.layout.adapter_home, parent, false))
@@ -29,7 +29,7 @@ class AmountViewAdapter(val context : Context, val amountViewModelList : ArrayLi
         return amountViewModelList.size ?: 0
     }
 
-    override fun onBindViewHolder(holder: AmountViewAdapter.HomeHolder, position: Int) {
+    override fun onBindViewHolder(holder: AmountAdapter.HomeHolder, position: Int) {
         with(amountViewModelList[position]) {
             holder.homeTitle.text = title.toUpperCase()
             holder.homeTotal.text = "₹ ${NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(total)}/-"

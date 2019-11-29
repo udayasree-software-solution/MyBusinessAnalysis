@@ -214,10 +214,12 @@ class SplashActivity : AppCompatActivity(),
             businessRepository.clearDataBase()
             Handler().postDelayed({
                 for (element in dataSnapShot.children) {
-                    val businessModel = element.getValue(BusinessModel::class.java)
-                    if (businessModel != null) {
-                        with(businessModel){
-                            businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+                    for (i in 0 until element.childrenCount) {
+                        val businessModel = element.child(i.toString()).getValue(BusinessModel::class.java)
+                        if (businessModel != null) {
+                            with(businessModel){
+                                businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+                            }
                         }
                     }
                 }

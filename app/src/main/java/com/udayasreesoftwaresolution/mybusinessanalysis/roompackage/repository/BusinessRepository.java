@@ -31,6 +31,18 @@ public class BusinessRepository {
         }.execute();
     }
 
+    public void insertBusinessList(final ArrayList<BusinessTable> businessTableList) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                for (BusinessTable businessTable : businessTableList) {
+                    businessDataBasePersistence.businessDaoAccess().insertBusiness(businessTable);
+                }
+                return null;
+            }
+        }.execute();
+    }
+
     public void updateBusiness(final BusinessTable businessTable) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -41,11 +53,14 @@ public class BusinessRepository {
         }.execute();
     }
 
-    public void deleteBusiness(final BusinessTable businessTable) {
+    public void deleteBusiness(final String selectedDate) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                businessDataBasePersistence.businessDaoAccess().deleteBusiness(businessTable);
+                List<BusinessTable> businessTables = businessDataBasePersistence.businessDaoAccess().queryBusinessListByDate(selectedDate);
+                for (BusinessTable tables : businessTables) {
+                    businessDataBasePersistence.businessDaoAccess().deleteBusiness(tables);
+                }
                 return null;
             }
         }.execute();
@@ -65,7 +80,7 @@ public class BusinessRepository {
                 case ConstantUtils.EXPENSES:
                     expenses += element.getAmount();
                     break;
-                    default:
+                default:
                         total += element.getAmount();
                         break;
             }

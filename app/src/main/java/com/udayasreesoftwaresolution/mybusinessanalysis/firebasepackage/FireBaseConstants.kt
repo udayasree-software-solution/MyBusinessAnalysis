@@ -15,8 +15,7 @@ class FireBaseConstants {
         val PAYABLE_AMOUNT = "Payable Amount"
         val PAID_AMOUNT = "Paid Amount"
         val EXPENSES_AMOUNT = "Expenses Amount"
-        val GROSS_AMOUNT = "Gross Amount"
-        //GROSS_AMOUNT - EXPENSES_AMOUNT = NET_AMOUNT
+        val NET_AMOUNT = "Gross Amount"
         val PURCHASE_AMOUNT = "Purchase Amount"
 
         val USERS = "Users"

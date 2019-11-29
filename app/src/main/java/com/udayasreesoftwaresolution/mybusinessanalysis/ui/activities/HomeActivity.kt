@@ -25,8 +25,8 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
-import com.udayasreesoftwaresolution.mybusinessanalysis.AddBusinessFragment
-import com.udayasreesoftwaresolution.mybusinessanalysis.BusinessListFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddBusinessFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.BusinessListFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.HomeFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox

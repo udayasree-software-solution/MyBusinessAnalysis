@@ -166,6 +166,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                         R.anim.bottom_to_top)
                                     verifyAnimLayout.visibility = View.VISIBLE
                                 } else {
+                                    progressBox.dismiss()
                                     Toast.makeText(this@SignInActivity, "User details doesn't match", Toast.LENGTH_SHORT).show()
                                 }
                             }
