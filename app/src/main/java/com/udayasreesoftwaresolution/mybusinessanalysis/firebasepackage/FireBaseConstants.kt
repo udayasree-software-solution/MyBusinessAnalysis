@@ -30,9 +30,9 @@ class FireBaseConstants {
 
         @JvmField
         val DEFAULT_LOGO =
-            "https://firebasestorage.googleapis.com/v0/b/my-business-analysis.appspot.com/o/default%2Fdefault_logo.png?alt=media&token=c3f7155d-10c5-4cfa-81c3-83ec5a89ff9b"
+            "https://firebasestorage.googleapis.com/v0/b/my-business-analysis-ec175.appspot.com/o/defaultlogo%2Fdefaultlogoimage.jpg?alt=media&token=c847aaef-3918-42ca-b9b1-f4b5c5e56d39"
         @JvmField
         val DEFAULT_BANNER =
-            "https://firebasestorage.googleapis.com/v0/b/my-business-analysis.appspot.com/o/default%2Fdefault_banner.jpg?alt=media&token=f1b92854-07fa-4607-aaaa-52e062a3a5f9"
+            "https://firebasestorage.googleapis.com/v0/b/my-business-analysis-ec175.appspot.com/o/defaultlogo%2Fdefaultbannerimage.jpg?alt=media&token=75211439-d492-4e89-ac0c-d4a3a69642b4"
     }
 }

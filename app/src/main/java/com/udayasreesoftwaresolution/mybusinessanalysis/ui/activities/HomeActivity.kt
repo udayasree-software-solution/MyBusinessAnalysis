@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -212,22 +213,26 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_drawable_purchase -> {
                     mFragmentPosition = 3
-                    supportActionBar?.title = "Purchase"
+                    //supportActionBar?.title = "Purchase"
+                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
                 }
 
                 R.id.menu_outlet_setup_client -> {
                     mFragmentPosition = 4
-                    supportActionBar?.title = "Outlet"
+                    //supportActionBar?.title = "Outlet"
+                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
                 }
 
                 R.id.menu_drawable_client -> {
                     mFragmentPosition = 5
-                    supportActionBar?.title = "Clients"
+                    //supportActionBar?.title = "Clients"
+                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
                 }
 
                 R.id.menu_drawable_users -> {
                     mFragmentPosition = 6
-                    supportActionBar?.title = "Users"
+                    //supportActionBar?.title = "Users"
+                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
                 }
             }
             drawerLayout.closeDrawers()
