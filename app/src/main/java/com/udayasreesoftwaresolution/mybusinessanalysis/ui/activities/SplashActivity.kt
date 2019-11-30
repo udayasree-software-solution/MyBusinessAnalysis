@@ -63,6 +63,8 @@ class SplashActivity : AppCompatActivity(),
         outletLogo = findViewById(R.id.splash_logo_img_id)
         outletName = findViewById(R.id.splash_outlet_name_id)
 
+        outletName.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
+
         imageLoaderUtils = ImageLoaderUtils(this@SplashActivity)
         imageLoaderUtils.setupImageLoader()
         appSharedPreference = AppSharedPreference(this@SplashActivity)
@@ -305,6 +307,7 @@ class SplashActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ConstantUtils.SIGNIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             progressBox.show()
+            outletName.text = AppUtils.OUTLET_NAME
             fireBaseUtils.readValidityFromFireBase()
         }
     }

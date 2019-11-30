@@ -300,7 +300,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun writeBusinessToFireBase(businessModelList : ArrayList<BusinessModel>) {
+    private fun writeBusinessToFireBase(businessModelList: ArrayList<BusinessModel>) {
         if (AppUtils.networkConnectivityCheck(context!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             progressBox.show()
             for (count in 0 until businessModelList.size) {
@@ -329,12 +329,14 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
             var delay = 0L
             progressBox.show()
             if (isModifyBusiness) {
-                delay = 700L
+                delay = 7000L
                 BusinessRepository(activity).deleteBusiness(selectedDate)
             }
 
             Handler().postDelayed({
+                delay = 0L
                 if (isModifyBusiness) {
+                    delay = 7000L
                     var oldExpenses = 0
                     var oldNet = 0
                     for (element in backupBusinessList) {
@@ -344,52 +346,71 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                             oldNet += element.amount
                         }
                     }
-                    modifyAmountFromFireBase(false, 0, oldExpenses)
-                    modifyAmountFromFireBase(false, 1, oldNet)
+                    modifyAmountFromFireBase(false, oldNet, oldExpenses)
                 }
-                var expensesTotal = 0
-                var netTotal = 0
-                for (count in 0 until businessLayoutIDs.size) {
-                    with(businessLayoutIDs[count]) {
-                        val name = fragView.findViewById<EditText>(nameId).text.toString()
-                        val amount = fragView.findViewById<EditText>(amountId).text.toString()
-                        if (name.isNotEmpty() && amount.isNotEmpty()) {
-                            if (name.equals("Expenses", ignoreCase = true)) {
-                                expensesTotal += amount.toInt()
-                            } else {
-                                netTotal += amount.toInt()
+
+                Handler().postDelayed({
+                    var expensesTotal = 0
+                    var netTotal = 0
+                    for (count in 0 until businessLayoutIDs.size) {
+                        with(businessLayoutIDs[count]) {
+                            if (fragView != null) {
+                                val name = fragView.findViewById<EditText>(nameId).text.toString()
+                                val amount = fragView.findViewById<EditText>(amountId).text.toString()
+                                if (name.isNotEmpty() && amount.isNotEmpty()) {
+                                    if (name.equals("Expenses", ignoreCase = true)) {
+                                        expensesTotal += amount.toInt()
+                                    } else {
+                                        netTotal += amount.toInt()
+                                    }
+                                    businessModelList.add(
+                                        BusinessModel(
+                                            count,
+                                            name,
+                                            amount.toInt(),
+                                            selectedDate,
+                                            timeInMillis
+                                        )
+                                    )
+                                    BusinessRepository(activity).insertBusiness(
+                                        BusinessTable(
+                                            count,
+                                            amount.toInt(),
+                                            name,
+                                            selectedDate,
+                                            timeInMillis
+                                        )
+                                    )
+                                }
                             }
-                            businessModelList.add(BusinessModel(count, name, amount.toInt(), selectedDate, timeInMillis))
-                            BusinessRepository(activity).insertBusiness(BusinessTable(count, amount.toInt(), name, selectedDate, timeInMillis))
                         }
                     }
-                }
-                modifyAmountFromFireBase(true, 0, expensesTotal)
-                modifyAmountFromFireBase(true, 1, netTotal)
+                    modifyAmountFromFireBase(true, netTotal, expensesTotal)
 
-                val fireBaseReference = FirebaseDatabase.getInstance()
-                    .getReference(AppUtils.OUTLET_NAME)
-                    .child(FireBaseConstants.BUSINESS)
-                    .child(selectedDate)
-                fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
-                        progressBox.dismiss()
-                        writeBusinessToFireBase(businessModelList)
-                    }
-
-                    override fun onDataChange(dataSnapShot: DataSnapshot) {
-                        if (dataSnapShot.exists()) {
-                            dataSnapShot.ref.removeValue()
+                    val fireBaseReference = FirebaseDatabase.getInstance()
+                        .getReference(AppUtils.OUTLET_NAME)
+                        .child(FireBaseConstants.BUSINESS)
+                        .child(selectedDate)
+                    fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
+                            progressBox.dismiss()
+                            writeBusinessToFireBase(businessModelList)
                         }
-                        progressBox.dismiss()
-                        writeBusinessToFireBase(businessModelList)
-                    }
-                })
+
+                        override fun onDataChange(dataSnapShot: DataSnapshot) {
+                            if (dataSnapShot.exists()) {
+                                dataSnapShot.ref.removeValue()
+                            }
+                            progressBox.dismiss()
+                            writeBusinessToFireBase(businessModelList)
+                        }
+                    })
+                }, delay)
             }, delay)
         }
     }
 
-    private fun modifyAmountFromFireBase(modified: Boolean, child: Int, amount: Int) {
+    private fun modifyAmountFromFireBase(modified: Boolean, net: Int, expenses: Int) {
         if (AppUtils.networkConnectivityCheck(activity!!)) {
             progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
@@ -403,26 +424,19 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
                     if (dataSnapShot.exists()) {
-                        val childName = when (child) {
-                            0 -> {
-                                FireBaseConstants.EXPENSES_AMOUNT
-                            }
-                            else -> {
-                                FireBaseConstants.NET_AMOUNT
-                            }
-                        }
-                        var total = dataSnapShot.child(childName).getValue(Int::class.java)!!
+                        var expensesTotal = dataSnapShot.child(FireBaseConstants.EXPENSES_AMOUNT).getValue(Int::class.java)!!
+                        var netTotal = dataSnapShot.child(FireBaseConstants.NET_AMOUNT).getValue(Int::class.java)!!
+
                         if (modified) {
-                            total += amount
+                            expensesTotal += expenses
+                            netTotal += net
                         } else {
-                            total -= amount
+                            expensesTotal -= expenses
+                            netTotal -= net
                         }
 
-                        FirebaseDatabase.getInstance()
-                            .getReference(AppUtils.OUTLET_NAME)
-                            .child(FireBaseConstants.TOTAL_AMOUNT)
-                            .child(childName)
-                            .setValue(total)
+                        fireBaseReference.child(FireBaseConstants.EXPENSES_AMOUNT).setValue(expensesTotal)
+                        fireBaseReference.child(FireBaseConstants.NET_AMOUNT).setValue(netTotal)
                     }
                 }
             })

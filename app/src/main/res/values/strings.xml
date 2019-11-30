@@ -8,7 +8,7 @@
     <string name="notifications_admin_channel_description" translatable="false">Notifications sent from the app admin
     </string>
 
-    <string name="sign_in_user">Sign-in User</string>
+    <string name="sign_in_user">User SignIn</string>
     <string name="user_name">User Name</string>
     <string name="contact">Contact</string>
     <string name="outlet_name">Outlet Name</string>

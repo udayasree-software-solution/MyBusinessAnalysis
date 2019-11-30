@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -29,7 +30,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var loginOutletName: AutoCompleteTextView
     private lateinit var loginBtn: Button
 
-    private lateinit var verifyAnimLayout : FrameLayout
+    private lateinit var verifyAnimLayout : CardView
     private lateinit var verifyEditText : EditText
     private lateinit var verifyButton : TextView
 
@@ -73,7 +74,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         verifyEditText = findViewById(R.id.login_verify_code_id)
         verifyButton = findViewById(R.id.login_verify_btn_id)
 
-        findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.SUNDAPRADA)
+        findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
         appSharedPreference = AppSharedPreference(this)
         loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
         loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
