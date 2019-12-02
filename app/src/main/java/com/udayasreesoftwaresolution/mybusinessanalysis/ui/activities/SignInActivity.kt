@@ -77,7 +77,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
         appSharedPreference = AppSharedPreference(this)
         loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
-        loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
+        //loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
 
         loginBtn.setOnClickListener(this)
         verifyButton.setOnClickListener(this)
@@ -172,11 +172,14 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                             }
                         } else {
-                            Toast.makeText(this@SignInActivity, "New user creating", Toast.LENGTH_SHORT).show()
-                            writeToFireBase(userSignInModel)
+                            progressBox.dismiss()
+                            Toast.makeText(this@SignInActivity, "Please provide valid credentials to login", Toast.LENGTH_SHORT).show()
+                            //writeToFireBase(userSignInModel)
                         }
                     } else {
-                        writeToFireBase(userSignInModel)
+                        progressBox.dismiss()
+                        Toast.makeText(this@SignInActivity, "Please contact your ADMIN to create credentials", Toast.LENGTH_SHORT).show()
+                        //writeToFireBase(userSignInModel)
                     }
                 }
             })

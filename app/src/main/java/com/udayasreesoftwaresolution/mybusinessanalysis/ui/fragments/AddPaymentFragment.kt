@@ -132,7 +132,6 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             progressBox.show()
             clientTableList = ArrayList()
             categoryTableList = ArrayList()
-            clientsName = ArrayList()
             categorysName = ArrayList()
         }
 
@@ -159,14 +158,11 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
+            clientsName = ArrayList()
         }
 
         override fun doInBackground(vararg p0: Void?): Boolean {
-            clientTableList =
-                ClientRepository(activity).queryClientNamesList() as ArrayList<ClientsTable>
-            for (value in clientTableList) {
-                clientsName.add(value.client)
-            }
+            clientsName = ClientRepository(activity).queryClientNamesList() as ArrayList<String>
             return true
         }
 

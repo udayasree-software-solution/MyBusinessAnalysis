@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         tools:context=".ui.activities.SignInActivity">
+
     <androidx.cardview.widget.CardView
             android:layout_centerInParent="true"
             app:cardElevation="6dp"
@@ -16,75 +17,76 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         <LinearLayout
+                android:id="@+id/login_layout_id"
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:padding="@dimen/margin_16dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <TextView
                     android:id="@+id/login_title_id"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/colorAccent"
                     android:textStyle="bold"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_gravity="end"
-                    android:text="@string/sign_in_user"
+                    android:text="@string/employee_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            <LinearLayout
-                    android:id="@+id/login_layout_id"
-                    android:orientation="vertical"
-                    android:layout_gravity="center"
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="@dimen/margin_16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <com.google.android.material.textfield.TextInputLayout
-                        android:layout_marginTop="@dimen/margin_16dp"
+                <EditText
+                        android:id="@+id/login_user_name_id"
+                        android:hint="@string/user_name"
+                        android:inputType="textCapWords|textPersonName|textNoSuggestions"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                    <EditText
-                            android:id="@+id/login_user_name_id"
-                            android:hint="@string/user_name"
-                            android:inputType="textCapWords|textPersonName|textNoSuggestions"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                        android:layout_marginTop="@dimen/margin_16dp"
+                        android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                        android:id="@+id/login_mobile_id"
+                        android:hint="@string/contact"
+                        android:inputType="phone"
+                        android:maxLength="10"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                    <EditText
-                            android:id="@+id/login_mobile_id"
-                            android:hint="@string/contact"
-                            android:inputType="phone"
-                            android:maxLength="10"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                        android:layout_marginTop="@dimen/margin_16dp"
+                        android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <AutoCompleteTextView
+                        android:id="@+id/login_outlet_name_id"
+                        android:hint="@string/outlet_name"
+                        android:inputType="textCapWords|textPersonName|textNoSuggestions"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                    <AutoCompleteTextView
-                            android:id="@+id/login_outlet_name_id"
-                            android:hint="@string/outlet_name"
-                            android:inputType="textCapWords|textPersonName|textNoSuggestions"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
+                        android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
             <Button
                     android:id="@+id/login_login_btn_id"
                     android:layout_marginTop="@dimen/margin_16dp"
-                    android:text="@string/sign_in_user"
+                    android:text="@string/login"
                     android:textColor="@android:color/white"
                     android:background="@color/colorAccent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-
+            <TextView
+                    android:text="Note: Please contact your ADMIN to create your account."
+                    android:textColor="@android:color/holo_red_light"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                    android:layout_alignParentBottom="true"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+
     <androidx.cardview.widget.CardView
             android:id="@+id/login_verify_dialog"
             app:cardElevation="10dp"
@@ -131,6 +133,5 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </FrameLayout>
-
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

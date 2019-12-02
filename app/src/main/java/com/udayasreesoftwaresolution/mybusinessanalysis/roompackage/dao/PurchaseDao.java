@@ -17,6 +17,9 @@ public interface PurchaseDao {
     @Update
     void updatePurchase(PurchaseTable purchaseTable);
 
+    @Query("SELECT * FROM PurchaseTable WHERE client_name =:client ORDER BY time_in_millis ASC")
+    List<PurchaseTable> queryPurchaseListByClient(String client);
+
     @Query("SELECT * FROM PurchaseTable ORDER BY time_in_millis ASC")
     List<PurchaseTable> queryPurchaseList();
 

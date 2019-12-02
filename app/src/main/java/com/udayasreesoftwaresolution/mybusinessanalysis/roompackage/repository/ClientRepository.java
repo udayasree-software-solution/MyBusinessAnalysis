@@ -52,7 +52,7 @@ public class ClientRepository {
         }.execute();
     }
 
-    public List<ClientsTable> queryClientNamesList() {
+    public List<String> queryClientNamesList() {
         return clientDataBasePersistence.clientDaoAccess().queryClientNamesList();
     }
 

@@ -36,7 +36,7 @@ public class PurchaseRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                purchaseDataBasePersistance.purchaseDaoAccess().insertPurchase(purchaseTable);
+                purchaseDataBasePersistance.purchaseDaoAccess().updatePurchase(purchaseTable);
                 return null;
             }
         }.execute();
@@ -46,14 +46,14 @@ public class PurchaseRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                purchaseDataBasePersistance.purchaseDaoAccess().insertPurchase(purchaseTable);
+                purchaseDataBasePersistance.purchaseDaoAccess().deletePurchase(purchaseTable);
                 return null;
             }
         }.execute();
     }
 
-    public List<PurchaseTable> queryPurchaseList() {
-        return purchaseDataBasePersistance.purchaseDaoAccess().queryPurchaseList();
+    public List<PurchaseTable> queryPurchaseList(String clientName) {
+        return purchaseDataBasePersistance.purchaseDaoAccess().queryPurchaseListByClient(clientName);
     }
 
     public int queryPurchaseTotalAmount() {

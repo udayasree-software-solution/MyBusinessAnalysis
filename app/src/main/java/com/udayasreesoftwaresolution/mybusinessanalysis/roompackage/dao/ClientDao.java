@@ -18,6 +18,6 @@ public interface ClientDao {
     @Update
     void updateClient(ClientsTable clientsTable);
 
-    @Query("SELECT * FROM ClientsTable ORDER BY client ASC")
-    List<ClientsTable> queryClientNamesList();
+    @Query("SELECT client FROM ClientsTable ORDER BY client ASC")
+    List<String> queryClientNamesList();
 }

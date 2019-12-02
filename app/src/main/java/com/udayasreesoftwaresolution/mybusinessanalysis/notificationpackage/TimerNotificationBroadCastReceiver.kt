@@ -29,12 +29,14 @@ class TimerNotificationBroadCastReceiver : BroadcastReceiver() {
     private var context: Context? = null
     private lateinit var notificationManagerNotify: NotificationManager
     private val ADMIN_CHANNEL_ID = "admin_channel"
+    private var NOTIFICATION_TYPE = ""
 
     override fun onReceive(context: Context?, intent: Intent?) {
         this.context = context
         val bundle = intent?.extras
          if (bundle != null) {
              if (bundle.containsKey(ConstantUtils.TASK_SLNO)) {
+                 NOTIFICATION_TYPE = ConstantNotification.NOTIFY_PAYMENT
                  GetTodayNotificationData(bundle.getInt(ConstantUtils.TASK_SLNO)).execute()
              }
          }
@@ -75,6 +77,15 @@ class TimerNotificationBroadCastReceiver : BroadcastReceiver() {
         val notificationId: Int = Random().nextInt(60000)
 
         val intent = Intent(context?.applicationContext, HomeActivity::class.java)
+        when(NOTIFICATION_TYPE) {
+            NOTIFICATION_TYPE -> {
+                intent.putExtra(ConstantNotification.NOTIFICATION_KEY, ConstantNotification.NOTIFY_PAYMENT)
+            }
+
+            else -> {
+
+            }
+        }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
 

@@ -26,14 +26,12 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddBusinessFragment
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.BusinessListFragment
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.HomeFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddPurchaseFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
+import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.ConstantNotification
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddPaymentFragment
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.PaymentFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
@@ -41,7 +39,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPre
 
 @SuppressLint("StaticFieldLeak")
 class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddPaymentFragment.AddPaymentInterface,
-    BusinessListFragment.BusinessListInterface {
+    BusinessListFragment.BusinessListInterface, PurchaseFragment.PurchaseInterface {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -94,7 +92,29 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         setupNavigationDrawer()
         setupNavigationHeader()
 
-        HomeAsyncTask().execute()
+        if (!notificationIntent()) {
+            HomeAsyncTask().execute()
+        }
+    }
+
+    private fun notificationIntent() : Boolean {
+        var isIntentFound = false
+        val bundle = intent.extras
+        if (bundle != null) {
+            if (bundle.containsKey(ConstantNotification.NOTIFICATION_KEY)) {
+                when(bundle.getString(ConstantNotification.NOTIFICATION_KEY)) {
+                    ConstantNotification.NOTIFY_PAYMENT -> {
+                        isIntentFound = true
+                        mFragmentPosition = 1
+                        payablePaidFragmentLaunch()
+                    }
+                    else -> {
+                        isIntentFound = true
+                    }
+                }
+            }
+        }
+        return isIntentFound
     }
 
     private fun initRoomDBRepository() {
@@ -197,8 +217,10 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         navigationView.setNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
                 R.id.menu_drawable_home -> {
-                    mFragmentPosition = 0
-                    HomeAsyncTask().execute()
+                    if (mFragmentPosition != 0) {
+                        mFragmentPosition = 0
+                        HomeAsyncTask().execute()
+                    }
                 }
 
                 R.id.menu_drawable_amount -> {
@@ -213,8 +235,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_drawable_purchase -> {
                     mFragmentPosition = 3
-                    //supportActionBar?.title = "Purchase"
-                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
+                    purchaseListFragmentLaunch()
                 }
 
                 R.id.menu_outlet_setup_client -> {
@@ -231,8 +252,8 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_drawable_users -> {
                     mFragmentPosition = 6
-                    //supportActionBar?.title = "Users"
-                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
+                    //supportActionBar?.title = "Employees"
+                    startActivity(Intent(this@HomeActivity, EmployeeActivity::class.java))
                 }
             }
             drawerLayout.closeDrawers()
@@ -261,6 +282,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
+            mFragmentPosition = 0
             supportActionBar?.title = "Home"
         }
 
@@ -301,12 +323,6 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         }
     }
 
-    override fun paymentActionListener(slNo: Int) {
-        supportActionBar?.title = "Payment"
-        mFragmentPosition = 100
-        launchFragment(AddPaymentFragment.newInstance(slNo))
-    }
-
     private fun payablePaidFragmentLaunch() {
         supportActionBar?.title = "Payable/Paid"
         launchFragment(PaymentFragment.newInstance())
@@ -317,14 +333,31 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         launchFragment(BusinessListFragment.newInstance())
     }
 
+    private fun purchaseListFragmentLaunch() {
+        supportActionBar?.title = "Purchase"
+        launchFragment(PurchaseFragment.newInstance())
+    }
+
     override fun onSuccessfulModified() {
         payablePaidFragmentLaunch()
     }
 
+    override fun paymentActionListener(slNo: Int) {
+        supportActionBar?.title = "Payment"
+        mFragmentPosition = 101
+        launchFragment(AddPaymentFragment.newInstance(slNo))
+    }
+
     override fun addBusinessFragmentListener() {
         supportActionBar?.title = "Business"
-        mFragmentPosition = 101
+        mFragmentPosition = 102
         launchFragment(AddBusinessFragment.newInstance())
+    }
+
+    override fun addPurchaseListener(clientsName: ArrayList<String>) {
+        supportActionBar?.title = "Purchase"
+        mFragmentPosition = 103
+        launchFragment(AddPurchaseFragment.newInstance(clientsName))
     }
 
     private fun clearBackStack() {
@@ -339,13 +372,17 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
     private fun onBackPressedAction(): Boolean {
         var backPress = true
-        if (mFragmentPosition == 100) {
+        if (mFragmentPosition == 101) {
             mFragmentPosition = 1
             payablePaidFragmentLaunch()
             backPress = false
-        } else if (mFragmentPosition == 101) {
+        } else if (mFragmentPosition == 102) {
             mFragmentPosition = 2
             businessListFragmentLaunch()
+            backPress = false
+        } else if (mFragmentPosition == 103) {
+            mFragmentPosition = 3
+            purchaseListFragmentLaunch()
             backPress = false
         } else if (mFragmentPosition > 0) {
             mFragmentPosition = 0

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragments.PurchaseFragment">
+    <Spinner
+            android:id="@+id/frag_purchase_client_spinner_id"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_purchase_recycler_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/frag_purchase_client_spinner_id" />
+
+    <TextView
+            android:id="@+id/frag_purchase_empty_text_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/frag_purchase_client_spinner_id"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:text="@string/data_is_empty"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@android:color/holo_red_light" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/frag_purchase_fab_btn_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_input_add" />
+</RelativeLayout>
