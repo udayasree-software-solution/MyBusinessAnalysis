@@ -12,13 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import java.text.NumberFormat
 
 @SuppressLint("SetTextI18n")
-class AmountAdapter(val context : Context, val amountViewModelList : ArrayList<AmountViewModel>)
+class AmountAdapter(val context : Context, val amountModelList : ArrayList<AmountModel>)
     : RecyclerView.Adapter<AmountAdapter.HomeHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): HomeHolder {
@@ -26,11 +26,11 @@ class AmountAdapter(val context : Context, val amountViewModelList : ArrayList<A
     }
 
     override fun getItemCount(): Int {
-        return amountViewModelList.size ?: 0
+        return amountModelList.size ?: 0
     }
 
     override fun onBindViewHolder(holder: AmountAdapter.HomeHolder, position: Int) {
-        with(amountViewModelList[position]) {
+        with(amountModelList[position]) {
             holder.homeTitle.text = title.toUpperCase()
             holder.homeTotal.text = "₹ ${NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(total)}/-"
             if (title == "Expenses Amount") {

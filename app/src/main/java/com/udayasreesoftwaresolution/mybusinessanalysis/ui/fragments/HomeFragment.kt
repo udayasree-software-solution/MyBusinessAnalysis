@@ -19,7 +19,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountAdapter
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 
 
 private const val ARG_AMOUNTS = "total_amount"
@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var progressBox : ProgressBox
 
     companion object {
-        fun newInstance(totalAmountList : ArrayList<AmountViewModel>) : HomeFragment {
+        fun newInstance(totalAmountList : ArrayList<AmountModel>) : HomeFragment {
             val fragment = HomeFragment()
             val args = Bundle()
             args.putParcelableArrayList(ARG_AMOUNTS, totalAmountList)
@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
         recyclerView = view.findViewById(R.id.frag_home_recycler_id)
         pieChartView = view.findViewById(R.id.frag_home_piechart_id)
         pieEmpty = view.findViewById(R.id.frag_home_piechart_empty_id)
-        progressBox = ProgressBox(activity)
+        progressBox = ProgressBox(context)
         setupRecyclerView()
     }
 
@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
         if (bundle != null) {
             if (bundle.containsKey(ARG_AMOUNTS)) {
                 progressBox.show()
-                val totalAmountList  = bundle.getParcelableArrayList<AmountViewModel>(ARG_AMOUNTS)
+                val totalAmountList  = bundle.getParcelableArrayList<AmountModel>(ARG_AMOUNTS)
                 if (totalAmountList != null && totalAmountList.isNotEmpty()) {
                     setupPieChart(totalAmountList)
                     val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupPieChart(totalAmountList: ArrayList<AmountViewModel>) {
+    private fun setupPieChart(totalAmountList: ArrayList<AmountModel>) {
         val calculatePercentage = ArrayList<PieEntry>()
         var isAmountNotFount = true
         /*var totalValue = 0

@@ -8,6 +8,8 @@ class ConstantUtils {
         val SIGNIN_REQUEST_CODE = 1
         @JvmField
         val PERMISSION_REQUESTED = 2
+        @JvmField
+        val PERMISSION_GALLERY = 3
 
         @JvmField
         val DATE_FORMAT = "MMMM dd, yyyy (EEEE)"

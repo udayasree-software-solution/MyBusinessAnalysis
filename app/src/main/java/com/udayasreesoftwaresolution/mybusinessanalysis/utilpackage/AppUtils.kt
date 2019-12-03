@@ -1,13 +1,12 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import android.widget.Toast
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -88,10 +87,10 @@ class AppUtils {
             return simpleDateFormat.format(timeInMillis)
         }
 
-        fun sortBusinessModelList(businessList : ArrayList<AmountViewModel>) : ArrayList<AmountViewModel> {
-            val newBusinessList = ArrayList<AmountViewModel>()
-            var businessExpenses : AmountViewModel? = null
-            var businessOutlet : AmountViewModel? = null
+        fun sortBusinessModelList(businessList : ArrayList<AmountModel>) : ArrayList<AmountModel> {
+            val newBusinessList = ArrayList<AmountModel>()
+            var businessExpenses : AmountModel? = null
+            var businessOutlet : AmountModel? = null
             for (element in businessList) {
                 when(element.title) {
                     "Expenses" -> {

@@ -26,13 +26,14 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.OutletFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddPurchaseFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.ConstantNotification
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.*
-import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountViewModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
@@ -57,7 +58,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
     private lateinit var paymentRepository: PaymentRepository
     private lateinit var purchaseRepository: PurchaseRepository
 
-    private lateinit var amountViewModelList: ArrayList<AmountViewModel>
+    private lateinit var amountModelList: ArrayList<AmountModel>
     private var mFragmentPosition = 0
 
     private lateinit var appSharedPreference: AppSharedPreference
@@ -77,7 +78,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
     private fun initView() {
         initRoomDBRepository()
-        amountViewModelList = ArrayList()
+        amountModelList = ArrayList()
         appSharedPreference = AppSharedPreference(this)
         AppUtils.isAdminStatus = appSharedPreference.getAdminStatus()
         AppUtils.OUTLET_NAME = appSharedPreference.getOutletName() ?: ""
@@ -240,8 +241,8 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_outlet_setup_client -> {
                     mFragmentPosition = 4
-                    //supportActionBar?.title = "Outlet"
-                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
+                    supportActionBar?.title = "Outlet"
+                    launchFragment(OutletFragment.newInstance())
                 }
 
                 R.id.menu_drawable_client -> {
@@ -277,7 +278,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         }
     }
 
-    inner class HomeAsyncTask : AsyncTask<Void, Void, ArrayList<AmountViewModel>>() {
+    inner class HomeAsyncTask : AsyncTask<Void, Void, ArrayList<AmountModel>>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -286,8 +287,8 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
             supportActionBar?.title = "Home"
         }
 
-        override fun doInBackground(vararg p0: Void?): ArrayList<AmountViewModel> {
-            val businessTotalList = ArrayList<AmountViewModel>()
+        override fun doInBackground(vararg p0: Void?): ArrayList<AmountModel> {
+            val businessTotalList = ArrayList<AmountModel>()
             val paymentList: ArrayList<Int> = paymentRepository.queryTotalPayAmount()
             if (paymentList.isEmpty()) {
                 paymentList.add(0)
@@ -305,16 +306,16 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
             val netBusinessTotal = businessTotal[1]
             val grossBusinessTotal = (netBusinessTotal - expensesTotal)
 
-            businessTotalList.add(AmountViewModel("Payable Amount", payableTotal))
-            businessTotalList.add(AmountViewModel("Paid Amount", paidTotal))
-            businessTotalList.add(AmountViewModel("Purchase Amount", purchaseTotal))
-            businessTotalList.add(AmountViewModel("Expenses Amount", expensesTotal))
-            businessTotalList.add(AmountViewModel("Net Business Amount", netBusinessTotal))
-            businessTotalList.add(AmountViewModel("Gross Business Amount", grossBusinessTotal))
+            businessTotalList.add(AmountModel("Payable Amount", payableTotal))
+            businessTotalList.add(AmountModel("Paid Amount", paidTotal))
+            businessTotalList.add(AmountModel("Purchase Amount", purchaseTotal))
+            businessTotalList.add(AmountModel("Expenses Amount", expensesTotal))
+            businessTotalList.add(AmountModel("Net Business Amount", netBusinessTotal))
+            businessTotalList.add(AmountModel("Gross Business Amount", grossBusinessTotal))
             return businessTotalList
         }
 
-        override fun onPostExecute(result: ArrayList<AmountViewModel>?) {
+        override fun onPostExecute(result: ArrayList<AmountModel>?) {
             super.onPostExecute(result)
             progressBox.dismiss()
             if (result != null && result.isNotEmpty()) {

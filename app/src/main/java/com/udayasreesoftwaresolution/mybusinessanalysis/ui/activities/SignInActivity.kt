@@ -76,7 +76,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
         findViewById<TextView>(R.id.login_title_id).typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
         appSharedPreference = AppSharedPreference(this)
-        loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
+        //loginLayout.layoutParams.width = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
         //loginLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.80).toInt()
 
         loginBtn.setOnClickListener(this)
@@ -243,7 +243,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                     loginMobile.error = "Enter Valid Number"
                 }
                 if (outletName.isEmpty()) {
-                    loginOutletName.error = "Select valid Outlet"
+                    loginOutletName.error = "Select Outlet from option"
                 }
             }
         }

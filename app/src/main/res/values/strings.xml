@@ -48,4 +48,7 @@
     <string name="bill_number">Bill Number</string>
     <string name="purchase_amount">Purchase Amount</string>
     <string name="save_purchase">Save Purchase</string>
+    <string name="address">Address</string>
+    <string name="save_outlet">Save Outlet</string>
+    <string name="pin_code">Pin Code</string>
 </resources>

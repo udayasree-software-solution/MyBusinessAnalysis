@@ -93,6 +93,7 @@ class SplashActivity : AppCompatActivity(),
         val builder = AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
+            .setCancelable(false)
             .setPositiveButton(posBtn) { dialog, _ ->
                 dialog.dismiss()
                 finishAffinity()
@@ -300,7 +301,7 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onFailureFireBaseListener() {
         progressBox.dismiss()
-        exitDialog("Server Connection Fail!","Unable to connect to server. Please check your internet connection","Exit")
+        exitDialog("Server Connection Fail!","Unable to connect to server. Please try again later","Exit")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

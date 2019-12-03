@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.os.ConfigurationCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -126,7 +125,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 recyclerView.visibility = View.VISIBLE
                 emptyData.visibility = View.GONE
                 val businessAdapter = BusinessAdapter(activity!!, result)
-                recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+                recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
                 recyclerView.adapter = businessAdapter
                 businessAdapter.notifyDataSetChanged()
                 setTotal(

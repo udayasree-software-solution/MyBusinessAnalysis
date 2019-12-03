@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:orientation="vertical"
-             android:padding="2dp">
+             android:padding="1dp">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/row_home_card_layout_id"
@@ -20,14 +20,14 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:padding="5dp">
+                android:padding="3dp">
 
             <TextView
                     android:id="@+id/row_home_title_id"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@color/colorPrimary"/>
@@ -37,7 +37,7 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@color/colorPrimary"/>
