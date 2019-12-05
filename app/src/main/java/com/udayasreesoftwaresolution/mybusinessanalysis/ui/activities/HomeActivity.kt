@@ -247,8 +247,8 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
                 R.id.menu_drawable_client -> {
                     mFragmentPosition = 5
-                    //supportActionBar?.title = "Clients"
-                    Toast.makeText(this, "Implementation under process", Toast.LENGTH_SHORT).show()
+                    supportActionBar?.title = "Clients"
+                    launchFragment(ClientFragment.newInstance())
                 }
 
                 R.id.menu_drawable_users -> {

@@ -51,4 +51,6 @@
     <string name="address">Address</string>
     <string name="save_outlet">Save Outlet</string>
     <string name="pin_code">Pin Code</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

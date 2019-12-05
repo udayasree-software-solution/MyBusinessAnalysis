@@ -34,7 +34,6 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 private const val ARG_PARAM1 = "param1"
@@ -148,21 +147,21 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private inner class CategoryListTask : AsyncTask<Void, Void, ArrayList<CategoryTable>>() {
+    private inner class CategoryListTask : AsyncTask<Void, Void, ArrayList<String>>() {
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
         }
 
-        override fun doInBackground(vararg p0: Void?): ArrayList<CategoryTable> {
-            return CategoryRepository(activity).queryClientNamesList() as ArrayList<CategoryTable>
+        override fun doInBackground(vararg p0: Void?): ArrayList<String> {
+            return CategoryRepository(activity).queryCategoryNamesList() as ArrayList<String>
         }
 
-        override fun onPostExecute(result: ArrayList<CategoryTable>?) {
+        override fun onPostExecute(result: ArrayList<String>?) {
             super.onPostExecute(result)
             if (result != null && result.isNotEmpty()) {
                 for (element in result) {
-                    createBusinessLayout(true, element.category_name, "")
+                    createBusinessLayout(true, element, "")
                 }
             } else {
                 createBusinessLayout(true, "Expenses", "")

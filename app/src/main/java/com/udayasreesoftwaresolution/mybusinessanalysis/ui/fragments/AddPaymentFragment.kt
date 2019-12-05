@@ -59,7 +59,6 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     private var isCategorySelected = false
     private lateinit var clientTableList: ArrayList<ClientsTable>
     private lateinit var clientsName: ArrayList<String>
-    private lateinit var categoryTableList: ArrayList<CategoryTable>
     private lateinit var categorysName: ArrayList<String>
 
     private lateinit var title: TextView
@@ -131,18 +130,12 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             super.onPreExecute()
             progressBox.show()
             clientTableList = ArrayList()
-            categoryTableList = ArrayList()
             categorysName = ArrayList()
         }
 
         override fun doInBackground(vararg p0: Void?): Boolean {
-            categoryTableList =
-                CategoryRepository(activity!!).queryClientNamesList() as ArrayList<CategoryTable>
-            for (value in categoryTableList) {
-                if (value.category_name != "Expenses") {
-                    categorysName.add(value.category_name)
-                }
-            }
+            categorysName =
+                CategoryRepository(activity!!).queryCategoryNamesList() as ArrayList<String>
             return true
         }
 
@@ -283,7 +276,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
     private fun setupCategoryTextView() {
         if (categorysName.isNotEmpty()) {
             val categoryAdapter =
-                ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, categorysName)
+                ArrayAdapter(activity!!, android.R.layout.select_dialog_item, categorysName)
             categoryAutoText.threshold = 1
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             categoryAutoText.setAdapter(categoryAdapter)

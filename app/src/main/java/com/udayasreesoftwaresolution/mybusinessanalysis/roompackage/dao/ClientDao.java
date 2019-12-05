@@ -1,5 +1,6 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.dao;
 
+import android.widget.ListView;
 import androidx.room.*;
 
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.ClientsTable;
@@ -20,4 +21,7 @@ public interface ClientDao {
 
     @Query("SELECT client FROM ClientsTable ORDER BY client ASC")
     List<String> queryClientNamesList();
+
+    @Query("SELECT * FROM ClientsTable ORDER BY client ASC")
+    List<ClientsTable> queryClientList();
 }

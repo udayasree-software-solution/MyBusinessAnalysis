@@ -67,7 +67,13 @@ class FireBaseUtils(val mContext: Context, val fireBaseInterface : FireBaseInter
                 .getReference(outletName)
                 .child(FireBaseConstants.BUSINESS_CATEGORY)
                 .push()
-                .setValue(SingleEntityModel(outletName))
+                .setValue("Expenses")
+
+            FirebaseDatabase.getInstance()
+                .getReference(outletName)
+                .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .push()
+                .setValue(outletName)
         }
     }
 

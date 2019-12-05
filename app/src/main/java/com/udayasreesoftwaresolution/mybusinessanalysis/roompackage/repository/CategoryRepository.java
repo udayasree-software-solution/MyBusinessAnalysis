@@ -49,7 +49,7 @@ public class CategoryRepository {
         }.execute();
     }
 
-    public List<CategoryTable> queryClientNamesList() {
+    public List<String> queryCategoryNamesList() {
         return categoryDataBasePersistence.categoryDaoAccess().queryCategoryList();
     }
 

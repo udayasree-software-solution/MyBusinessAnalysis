@@ -56,6 +56,10 @@ public class ClientRepository {
         return clientDataBasePersistence.clientDaoAccess().queryClientNamesList();
     }
 
+    public List<ClientsTable> queryClientList() {
+        return clientDataBasePersistence.clientDaoAccess().queryClientList();
+    }
+
     public void clearDataBase() {
         new AsyncTask<Void, Void, Void>() {
             @Override

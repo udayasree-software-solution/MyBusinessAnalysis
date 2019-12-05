@@ -19,6 +19,6 @@ public interface CategoryDao {
     @Update
     void updateCategory(CategoryTable clientsTable);
 
-    @Query("SELECT * FROM CategoryTable ORDER BY slNo ASC")
-    List<CategoryTable> queryCategoryList();
+    @Query("SELECT category_name FROM CategoryTable ORDER BY category_name ASC")
+    List<String> queryCategoryList();
 }

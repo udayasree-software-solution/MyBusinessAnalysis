@@ -18,7 +18,7 @@
             android:id="@+id/home_nav_view_id"
             app:menu="@menu/drawer_menu"
             android:layout_gravity="start"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             app:headerLayout="@layout/nav_header_home"
             app:itemIconTint="@color/colorAccent"
             app:itemTextColor="@android:color/white"

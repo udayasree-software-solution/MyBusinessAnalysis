@@ -37,6 +37,7 @@
                 <TextView
                     android:id="@+id/nav_header_name"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,6 +46,7 @@
                 <TextView
                     android:id="@+id/nav_header_mobile"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
@@ -52,6 +54,7 @@
                 <TextView
                     android:id="@+id/nav_header_outletname"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
                     android:maxLines="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
