@@ -25,7 +25,7 @@ class FireBaseConstants {
         val BUSINESS = "Business"
         val PURCHASE = "Purchase"
         val BUSINESS_CATEGORY = "Business Category"
-
+        val OUTLET_PROFILE = "Outlet Profile"
         val ADMIN = "Admin"
 
         @JvmField

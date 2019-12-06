@@ -9,9 +9,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseInterface
@@ -79,14 +83,39 @@ class SplashActivity : AppCompatActivity(),
             this@SplashActivity,
             this
         )
+        val contact = appSharedPreference.getMobileNumber()!!
 
-        if (appSharedPreference.getUserSignInStatus() && AppUtils.OUTLET_NAME.isNotEmpty()) {
+        if (AppUtils.networkConnectivityCheck(this) && AppUtils.OUTLET_NAME.isNotEmpty() && contact.isNotEmpty() && appSharedPreference.getUserSignInStatus()) {
             progressBox.show()
-            fireBaseUtils.readValidityFromFireBase()
+            val fireBaseReference = FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.USERS)
+                .child(contact)
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    progressBox.dismiss()
+                    exitDialog("User Not Exist", "Please contact ADMIN for your account verification", "Okay")
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        val userSignInModel = dataSnapshot.getValue(UserSignInModel::class.java)
+                        if (userSignInModel != null && userSignInModel.deviceLoginCode == appSharedPreference.getLoginDeviceCode()) {
+                            fireBaseUtils.readValidityFromFireBase()
+                        } else {
+                            exitDialog("Acount already used", "Your account is login in another device. Contact ADMIN", "Okay")
+                        }
+                    } else {
+                        progressBox.dismiss()
+                        exitDialog("User Not Exist", "Please contact ADMIN for your account verification", "Okay")
+                    }
+                }
+            })
         } else {
             startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
+
     }
 
     private fun exitDialog(title: String, message: String, posBtn: String) {
@@ -281,8 +310,6 @@ class SplashActivity : AppCompatActivity(),
             val categoryRepository = CategoryRepository(this@SplashActivity)
             categoryRepository.clearDataBase()
             Handler().postDelayed({
-                //categoryRepository.insertTask(CategoryTable("Expenses"))
-                //categoryRepository.insertTask(CategoryTable(AppUtils.OUTLET_NAME))
                 for (element in dataSnapShot.children) {
                     val entityModel = element.getValue(String::class.java)
                     if (entityModel != null) {

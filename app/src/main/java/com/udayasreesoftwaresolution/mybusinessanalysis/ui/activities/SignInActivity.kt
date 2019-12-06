@@ -161,6 +161,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                     sharedPreferenceUtils.setSignInCode(verificationCode)
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
                                     sharedPreferenceUtils.setAdminStatus(admin)
+                                    sharedPreferenceUtils.setLoginDeviceCode(deviceLoginCode)
 
                                     progressBox.dismiss()
                                     verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity,
@@ -232,7 +233,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         userMobile,
                         outletName,
                         verificationCode,
-                        false, false
+                        false, false, AppUtils.uniqueKey()
                     )
                 readUserFromFireBase(userSignInModel)
             } else {

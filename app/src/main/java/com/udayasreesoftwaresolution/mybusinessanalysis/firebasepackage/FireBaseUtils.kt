@@ -1,6 +1,7 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage
 
 import android.content.Context
+import android.widget.QuickContactBadge
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,7 +12,6 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import java.math.BigDecimal
 
 class FireBaseUtils(private val mContext: Context, private val mFireBaseInterface: FireBaseInterface) {
-
     fun readValidityFromFireBase() {
         if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             val fireBaseReference = FirebaseDatabase.getInstance()

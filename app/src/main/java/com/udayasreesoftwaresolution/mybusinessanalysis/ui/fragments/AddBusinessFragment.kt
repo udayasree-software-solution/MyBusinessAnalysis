@@ -434,8 +434,17 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                             netTotal -= net
                         }
 
-                        fireBaseReference.child(FireBaseConstants.EXPENSES_AMOUNT).setValue(expensesTotal)
-                        fireBaseReference.child(FireBaseConstants.NET_AMOUNT).setValue(netTotal)
+                        FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.TOTAL_AMOUNT)
+                            .child(FireBaseConstants.EXPENSES_AMOUNT)
+                            .setValue(expensesTotal)
+
+                        FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.TOTAL_AMOUNT)
+                            .child(FireBaseConstants.NET_AMOUNT)
+                            .setValue(netTotal)
                     }
                 }
             })

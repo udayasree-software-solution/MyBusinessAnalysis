@@ -43,7 +43,6 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private lateinit var progressBox: ProgressBox
     private var _modifyTaskDataTable: PaymentTable? = null
-    private var isTaskAddedStatus = false
     private val selectDays = "Select Days"
     private var isNewPayment = true
 
@@ -166,11 +165,15 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             val slNo = arguments?.getInt(ARG_SLNO)!!
             progressBox.dismiss()
             _modifyTaskDataTable = PaymentTable()
-            if (slNo >= 0) {
-                isNewPayment = false
-                MenuTaskAsync(slNo).execute()
-            } else {
-                isNewPayment = true
+
+            when(slNo) {
+                -1 -> {
+                    isNewPayment = true
+                }
+                else -> {
+                    isNewPayment = false
+                    MenuTaskAsync(slNo).execute()
+                }
             }
         }
     }
@@ -305,7 +308,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun writeCategoryToFireBase(category: SingleEntityModel) {
+    private fun writeCategoryToFireBase(category: String) {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
@@ -417,7 +420,9 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     if (error == null) {
                         val paymentRepo = PaymentRepository(activity)
                         if (isNewPayment) {
-                            paymentRepo.insertTask(_modifyTaskDataTable)
+                            with(paymentModel) {
+                                paymentRepo.insertTask(PaymentTable(uniqueKey, clientName, categoryName, payAmount, chequeNumber, dateInMillis, payStatus, preDays))
+                            }
                         } else {
                             paymentRepo.updateTask(_modifyTaskDataTable)
                         }
@@ -457,7 +462,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             }
         }
         if (isNotFound) {
-            writeCategoryToFireBase(SingleEntityModel(_categoryName))
+            writeCategoryToFireBase(_categoryName)
             CategoryRepository(activity!!).insertTask(CategoryTable(_categoryName))
         }
     }
@@ -480,34 +485,13 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun addTaskToDB() {
-
-        checkCategoryAvailable()
-
-        checkClientAvailable()
-
-        _chequeNo = taskChequeNo.text.toString()
-        _payableAmount = taskAmount.text.toString()
-
+    private fun addNewTaskToFireBase() {
         if (_selectedDays != selectDays && _categoryName.isNotEmpty() && _companyName.isNotEmpty() &&
             _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()) {
 
             readAmountFromFireBase(true, _payableAmount.toInt())
+            _uniqueKeys = AppUtils.uniqueKey()
 
-            _modifyTaskDataTable?.clientName = _companyName
-            _modifyTaskDataTable?.categoryName = _categoryName
-            _modifyTaskDataTable?.payAmount = _payableAmount
-            _modifyTaskDataTable?.chequeNumber = _chequeNo
-            _modifyTaskDataTable?.dateInMillis = _selectedDateInMills
-            _modifyTaskDataTable?.paymentStatus = false
-            _modifyTaskDataTable?.preDays = _selectedDays.toInt()
-
-            _uniqueKeys = if (_uniqueKeys.isNotEmpty()) {
-                _uniqueKeys
-            } else {
-                AppUtils.uniqueKey()
-            }
-            _modifyTaskDataTable?.uniqueKey = _uniqueKeys
             Handler().postDelayed({
                 writePaymentToFireBase(
                     PaymentModel(
@@ -515,7 +499,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                         false, _selectedDays.toInt()
                     )
                 )
-            }, 1000)
+            }, 2000)
+
         } else {
             if (_chequeNo.isEmpty() || _chequeNo.isBlank()) {
                 taskChequeNo.error = "Enter Valid Cheque Number"
@@ -535,10 +520,54 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             if (_categoryName.isBlank() || _categoryName.isEmpty()) {
                 Toast.makeText(activity!!, "Select Category", Toast.LENGTH_SHORT).show()
             }
+            progressBox.dismiss()
         }
-        _companyName = ""
-        _categoryName = ""
-        progressBox.dismiss()
+    }
+
+    private fun modifyTaskFromFireBase() {
+        if (_selectedDays != selectDays && _categoryName.isNotEmpty() && _companyName.isNotEmpty() &&
+            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()) {
+
+            readAmountFromFireBase(true, _payableAmount.toInt())
+
+            _modifyTaskDataTable?.clientName = _companyName
+            _modifyTaskDataTable?.categoryName = _categoryName
+            _modifyTaskDataTable?.payAmount = _payableAmount
+            _modifyTaskDataTable?.chequeNumber = _chequeNo
+            _modifyTaskDataTable?.dateInMillis = _selectedDateInMills
+            _modifyTaskDataTable?.paymentStatus = false
+            _modifyTaskDataTable?.preDays = _selectedDays.toInt()
+            _modifyTaskDataTable?.uniqueKey = _uniqueKeys
+
+            Handler().postDelayed({
+                writePaymentToFireBase(
+                    PaymentModel(
+                        _uniqueKeys, _companyName, _categoryName, _payableAmount, _chequeNo, _selectedDateInMills,
+                        false, _selectedDays.toInt()
+                    )
+                )
+            }, 2000)
+        } else {
+            if (_chequeNo.isEmpty() || _chequeNo.isBlank()) {
+                taskChequeNo.error = "Enter Valid Cheque Number"
+            }
+            if (_selectedDateInMills == 0L) {
+                selectDate.error = "Select Valid Date"
+            }
+            if (_payableAmount.isEmpty() || _payableAmount.isBlank()) {
+                taskAmount.error = "Enter Valid Amount"
+            }
+            if (_companyName.isBlank() || _companyName.isEmpty()) {
+                companyAutoText.error = "Select Company Name"
+            }
+            if (_selectedDays.isBlank() || _selectedDays.isEmpty() || _selectedDays == selectDays) {
+                Toast.makeText(activity!!, "Please Select days", Toast.LENGTH_SHORT).show()
+            }
+            if (_categoryName.isBlank() || _categoryName.isEmpty()) {
+                Toast.makeText(activity!!, "Select Category", Toast.LENGTH_SHORT).show()
+            }
+            progressBox.dismiss()
+        }
     }
 
     private fun clearInputs() {
@@ -558,21 +587,21 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             }
 
             R.id.remainder_task_btn_id -> {
-                // add/modify task to database
-                isTaskAddedStatus = true
+
                 if (AppUtils.networkConnectivityCheck(activity!!)) {
                     progressBox.show()
-                    var delay = 0L
-                    if (!isNewPayment) {
-                        delay = 7000L
-                        readAmountFromFireBase(
-                            false,
-                            _modifyTaskDataTable!!.payAmount.toInt()
-                        )
+                    checkCategoryAvailable()
+                    checkClientAvailable()
+
+                    _chequeNo = taskChequeNo.text.toString()
+                    _payableAmount = taskAmount.text.toString()
+
+                    if (isNewPayment) {
+                        addNewTaskToFireBase()
+                    } else {
+                        readAmountFromFireBase(false, _modifyTaskDataTable!!.payAmount.toInt())
+                        Handler().postDelayed({modifyTaskFromFireBase()}, 7000)
                     }
-                    Handler().postDelayed({
-                        addTaskToDB()
-                    }, delay)
                 }
             }
         }

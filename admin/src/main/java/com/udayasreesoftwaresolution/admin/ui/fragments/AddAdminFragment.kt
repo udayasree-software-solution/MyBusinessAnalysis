@@ -15,6 +15,7 @@ import com.udayasreesoftwaresolution.admin.R
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseInterface
 import com.udayasreesoftwaresolution.admin.firebasepackage.FireBaseUtils
+import com.udayasreesoftwaresolution.admin.firebasepackage.models.CompanyModel
 import com.udayasreesoftwaresolution.admin.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.admin.retorfit.ApiClient
 import com.udayasreesoftwaresolution.admin.retorfit.ApiInterface
@@ -209,6 +210,23 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
         }
     }
 
+    private fun writeOutletDetailsToFireBase(name : String, address : String) {
+        if (AppUtils.networkConnectivityCheck(activity!!) && name.isNotEmpty()  && address.isNotEmpty()) {
+            FirebaseDatabase.getInstance()
+                .getReference(name)
+                .child(FireBaseConstants.OUTLET_PROFILE)
+                .setValue(
+                    CompanyModel(
+                        name,
+                        address,
+                        "",
+                        "NA",
+                        "NA"
+                    )
+                )
+        }
+    }
+
     private fun writeUserToFirebase(userSignInModel: UserSignInModel) {
         if (AppUtils.networkConnectivityCheck(context!!)) {
             with(userSignInModel) {
@@ -337,8 +355,9 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
                             outletName,
                             adminCode,
                             false,
-                            true
+                            true,""
                         )
+                    writeOutletDetailsToFireBase(outletName, address)
                     if (isOutletSelected) {
                         writeUserToFirebase(userSignInModel)
                     } else {

@@ -4,13 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class UserSignInModel implements Parcelable {
-    private String userId, userName, userMobile, registerDate, userOutlet, verificationCode;
+    private String userId, userName, userMobile, registerDate, userOutlet, verificationCode, deviceLoginCode;
     private boolean isCodeVerified, isAdmin;
 
     public UserSignInModel() {
     }
 
-    public UserSignInModel(String userId, String userName, String userMobile, String userOutlet, String verificationCode, boolean isCodeVerified, boolean isAdmin) {
+    public UserSignInModel(String userId, String userName, String userMobile, String userOutlet, String verificationCode, boolean isCodeVerified, boolean isAdmin, String deviceLoginCode) {
         this.userId = userId;
         this.userName = userName;
         this.userMobile = userMobile;
@@ -18,18 +18,8 @@ public class UserSignInModel implements Parcelable {
         this.verificationCode = verificationCode;
         this.isCodeVerified = isCodeVerified;
         this.isAdmin = isAdmin;
+        this.deviceLoginCode = deviceLoginCode;
     }
-
-    /*public UserSignInModel(String userId, String userName, String userMobile, String registerDate, String userOutlet, String verificationCode, boolean isCodeVerified, boolean isAdmin) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userMobile = userMobile;
-        this.registerDate = registerDate;
-        this.userOutlet = userOutlet;
-        this.verificationCode = verificationCode;
-        this.isCodeVerified = isCodeVerified;
-        this.isAdmin = isAdmin;
-    }*/
 
     protected UserSignInModel(Parcel in) {
         userId = in.readString();
@@ -40,6 +30,25 @@ public class UserSignInModel implements Parcelable {
         verificationCode = in.readString();
         isCodeVerified = in.readByte() != 0;
         isAdmin = in.readByte() != 0;
+        deviceLoginCode = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userId);
+        dest.writeString(userName);
+        dest.writeString(userMobile);
+        dest.writeString(registerDate);
+        dest.writeString(userOutlet);
+        dest.writeString(verificationCode);
+        dest.writeByte((byte) (isCodeVerified ? 1 : 0));
+        dest.writeByte((byte) (isAdmin ? 1 : 0));
+        dest.writeString(deviceLoginCode);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<UserSignInModel> CREATOR = new Creator<UserSignInModel>() {
@@ -118,20 +127,11 @@ public class UserSignInModel implements Parcelable {
         isAdmin = admin;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getDeviceLoginCode() {
+        return deviceLoginCode;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userId);
-        dest.writeString(userName);
-        dest.writeString(userMobile);
-        dest.writeString(registerDate);
-        dest.writeString(userOutlet);
-        dest.writeString(verificationCode);
-        dest.writeByte((byte) (isCodeVerified ? 1 : 0));
-        dest.writeByte((byte) (isAdmin ? 1 : 0));
+    public void setDeviceLoginCode(String deviceLoginCode) {
+        this.deviceLoginCode = deviceLoginCode;
     }
 }

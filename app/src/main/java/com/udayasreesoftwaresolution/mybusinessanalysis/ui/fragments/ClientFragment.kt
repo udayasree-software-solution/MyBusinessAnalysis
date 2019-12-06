@@ -227,7 +227,7 @@ class ClientFragment : Fragment(), View.OnClickListener, ClientAdapter.ClientAda
                             .child(child)
                             .setValue(bigDecimal.toDouble())
                     }
-                    progressBox.show()
+                    progressBox.dismiss()
                 }
             })
         } else {

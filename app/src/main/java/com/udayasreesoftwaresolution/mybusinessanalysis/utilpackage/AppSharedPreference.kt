@@ -19,6 +19,7 @@ class AppSharedPreference(val mContext: Context) {
     private val user_admin_status = "USER_ADMIN_STATUS"
     private val outlet_logo_url = "OUTLET_LOGO_URL"
     private val outlet_banner_url = "OUTLET_BANNER_URL"
+    private val device_login_code = "DEVICE_LOGIN_CODE"
 
 
     fun setAlarmIds(ids : String){
@@ -99,6 +100,14 @@ class AppSharedPreference(val mContext: Context) {
 
     fun getOutletBannerUrl() : String? {
         return sharedPreferences.getString(outlet_banner_url, FireBaseConstants.DEFAULT_BANNER)
+    }
+
+    fun setLoginDeviceCode(code : String) {
+        sharedPreferences.edit()?.putString(device_login_code, code)?.apply()
+    }
+
+    fun getLoginDeviceCode() : String? {
+        return sharedPreferences.getString(device_login_code,"")
     }
 
     fun clearAlarmIDPreference() {

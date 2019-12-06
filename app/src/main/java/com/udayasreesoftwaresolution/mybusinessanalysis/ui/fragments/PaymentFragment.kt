@@ -54,8 +54,6 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
     private lateinit var progressBox: ProgressBox
     private lateinit var paymentInterface: PaymentInterface
 
-    private lateinit var editPaymentTable : PaymentTable
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
@@ -183,23 +181,22 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
         override fun onPostExecute(result: PaymentTable?) {
             super.onPostExecute(result)
             if (result != null) {
-                editPaymentTable = result
                 when (status) {
                     0 -> {
                         // payed
-                        calendarViewDialog()
+                        calendarViewDialog(result)
                     }
 
                     2 -> {
                         // delete
-                        deletePaymentInFireBase()
+                        deletePaymentInFireBase(result)
                     }
                 }
             }
         }
     }
 
-    private fun deletePaymentInFireBase() {
+    private fun deletePaymentInFireBase(paymentTable: PaymentTable) {
         if (AppUtils.networkConnectivityCheck(activity!!)) {
             progressBox.show()
             if (AppUtils.OUTLET_NAME.isNotEmpty()
@@ -208,7 +205,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                 val fireBaseReference = FirebaseDatabase.getInstance()
                     .getReference(AppUtils.OUTLET_NAME)
                     .child(FireBaseConstants.PAYMENT)
-                    .child(editPaymentTable.uniqueKey)
+                    .child(paymentTable.uniqueKey)
 
                 fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {
@@ -220,8 +217,8 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                             for (element in dataSnapShot.children) {
                                 element.ref.removeValue()
                             }
-                            readAmountFromFireBase(editPaymentTable.payAmount.toInt())
-                            PaymentRepository(activity!!).deleteTask(editPaymentTable)
+                            deletePayableAmountFromFireBase(paymentTable.payAmount.toInt())
+                            PaymentRepository(activity!!).deleteTask(paymentTable)
                             progressBox.dismiss()
                         } else {
                             progressBox.dismiss()
@@ -232,7 +229,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
         }
     }
 
-    private fun readAmountFromFireBase(pay : Int) {
+    private fun deletePayableAmountFromFireBase(pay : Int) {
         if (AppUtils.networkConnectivityCheck(activity!!)) {
             progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
@@ -251,14 +248,52 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                             .getReference(AppUtils.OUTLET_NAME)
                             .child(FireBaseConstants.TOTAL_AMOUNT)
                             .child(FireBaseConstants.PAYABLE_AMOUNT)
-                            .setValue((payable - pay))
+                            .setValue((payable - pay)) {error, _ ->
+                                if (error == null) {
+                                    readVersionOfChildFromFireBase()
+                                }
+                            }
                     }
                 }
             })
         }
     }
 
-    private fun calendarViewDialog() {
+    private fun paidAmountFromFireBase(pay : Int) {
+        if (AppUtils.networkConnectivityCheck(activity!!)) {
+            progressBox.show()
+            val fireBaseReference = FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.TOTAL_AMOUNT)
+
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    progressBox.dismiss()
+                }
+
+                override fun onDataChange(dataSnapShot: DataSnapshot) {
+                    if (dataSnapShot.exists()) {
+                        val payable = dataSnapShot.child(FireBaseConstants.PAYABLE_AMOUNT).getValue(Int::class.java)!!
+                        val paid = dataSnapShot.child(FireBaseConstants.PAID_AMOUNT).getValue(Int::class.java)!!
+
+                        FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.TOTAL_AMOUNT)
+                            .child(FireBaseConstants.PAYABLE_AMOUNT)
+                            .setValue((payable - pay))
+
+                        FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.TOTAL_AMOUNT)
+                            .child(FireBaseConstants.PAID_AMOUNT)
+                            .setValue((paid + pay))
+                    }
+                }
+            })
+        }
+    }
+
+    private fun calendarViewDialog(paymentTable : PaymentTable) {
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeZone = TimeZone.getTimeZone("Asia/Calcutta")
         val datePickerDialog: DatePickerDialog.OnDateSetListener =
@@ -269,12 +304,15 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
 
                 val simpleDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.US)
                 val payedDate = simpleDateFormat.format(calendar.time)
-                with(editPaymentTable) {
+                with(paymentTable) {
                     writePaymentToFireBase(PaymentModel(uniqueKey, clientName.plus("[$payedDate]"), categoryName,
-                        payAmount, chequeNumber, dateInMillis, true, preDays))
+                        payAmount, chequeNumber, dateInMillis, true, preDays), paymentTable)
                 }
-                editPaymentTable.paymentStatus = true
-                editPaymentTable.clientName = editPaymentTable.clientName.plus(" [$payedDate]")
+                paymentTable.paymentStatus = true
+                paymentTable.clientName = paymentTable.clientName.plus(" [$payedDate]")
+
+                /*TODO: Change Total Amount*/
+                paidAmountFromFireBase(paymentTable.payAmount.toInt())
             }
 
         val datePicker = DatePickerDialog(
@@ -286,7 +324,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
         datePicker.show()
     }
 
-    private fun writePaymentToFireBase(paymentModel: PaymentModel) {
+    private fun writePaymentToFireBase(paymentModel: PaymentModel, paymentTable: PaymentTable) {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
@@ -294,6 +332,7 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                 .child(paymentModel.uniqueKey)
                 .setValue(paymentModel) {error, _ ->
                     if (error == null){
+                        PaymentRepository(activity!!).updateTask(paymentTable)
                         readVersionOfChildFromFireBase()
                     }
                 }
@@ -326,7 +365,6 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
                             fireBaseReference
                                 .setValue(bigDecimal.toDouble()) { error, _ ->
                                 if (error == null) {
-                                    PaymentRepository(activity!!).updateTask(editPaymentTable)
                                     GetTaskListAsync(false).execute()
                                 }
                             }

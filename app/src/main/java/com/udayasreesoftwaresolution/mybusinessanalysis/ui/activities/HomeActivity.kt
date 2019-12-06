@@ -213,6 +213,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         val navMenu = navigationView.menu
         if (!AppUtils.isAdminStatus) {
             navMenu.findItem(R.id.menu_outlet_setup_client).isVisible = false
+            navMenu.findItem(R.id.menu_drawable_users).isVisible = false
         }
 
         navigationView.setNavigationItemSelectedListener { menu ->
@@ -255,6 +256,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
                     mFragmentPosition = 6
                     //supportActionBar?.title = "Employees"
                     startActivity(Intent(this@HomeActivity, EmployeeActivity::class.java))
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 }
             }
             drawerLayout.closeDrawers()

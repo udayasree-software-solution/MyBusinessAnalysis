@@ -53,4 +53,9 @@
     <string name="pin_code">Pin Code</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="employee">Employees</string>
+    <string name="save_employee">Save Employee</string>
+    <string name="employee_name">Employee Name</string>
+    <string name="employee_outlet">Employee Outlet</string>
+    <string name="employee_contact">Employee Contact</string>
 </resources>
