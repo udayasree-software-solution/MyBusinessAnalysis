@@ -207,7 +207,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
 
     private fun readOutletDetailsFromFireBase() {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()
-            && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME != "NA"
+            && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME.isNotEmpty()
         ) {
             progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
@@ -242,7 +242,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
 
     private fun writeOutletDetailsToFireBase() {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()
-            && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME != "NA"
+            && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME.isNotEmpty()
         ) {
             val name = outletName.text.toString()
             val contact = outletContact.text.toString()
@@ -260,8 +260,8 @@ class OutletFragment : Fragment(), View.OnClickListener {
                             name,
                             address,
                             contact,
-                            serverLogoUrl ?: "NA",
-                            serverBannerUrl ?: "NA"
+                            serverLogoUrl ?: FireBaseConstants.DEFAULT_LOGO,
+                            serverBannerUrl ?: FireBaseConstants.DEFAULT_BANNER
                         )
                     ) { _, _ ->
                         progressBox.dismiss()
@@ -289,7 +289,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
         outletName.setText(companyModel.outletName ?: "")
         outletContact.setText(companyModel.outletContact ?: "")
         outletAddress.setText(companyModel.outletAddress ?: "")
-        outletZipcode.setText(companyModel.outletAddress.substring(companyModel.outletAddress.lastIndexOf("-")+1).trim())
+        outletZipcode.setText("")
         if (AppUtils.networkConnectivityCheck(activity!!)) {
 
             serverLogoUrl = if (companyModel.outletLogo != null && companyModel.outletLogo.isNotEmpty()) {
@@ -334,7 +334,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
                         view: View?,
                         loadedImage: Bitmap?
                     ) {
-                        if (AppUtils.OUTLET_NAME.isNotEmpty() && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME != "NA") {
+                        if (AppUtils.OUTLET_NAME.isNotEmpty() && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME.isNotEmpty()) {
                             progressBox.show()
                             val ext = url.substring(url.lastIndexOf("."))
                             val storageReference: StorageReference = FirebaseStorage.getInstance()

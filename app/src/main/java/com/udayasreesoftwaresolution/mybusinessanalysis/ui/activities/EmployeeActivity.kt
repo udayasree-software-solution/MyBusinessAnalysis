@@ -10,7 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
-import com.udayasreesoftwaresolution.mybusinessanalysis.AddEmployeeFragment
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddEmployeeFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.EmployeesListFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
@@ -34,6 +34,7 @@ class EmployeeActivity : AppCompatActivity(), EmployeesListFragment.EmployeesLis
     private fun initView() {
         navToolbar = findViewById(R.id.nav_appbar_toolbar_id)
         navToolbar.setTitleTextColor(Color.WHITE)
+        navToolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
         setSupportActionBar(navToolbar)
 
         drawerLayout = findViewById(R.id.employee_nav_drawer_id)

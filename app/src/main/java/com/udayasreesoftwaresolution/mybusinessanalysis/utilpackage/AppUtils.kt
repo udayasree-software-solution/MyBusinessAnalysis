@@ -62,7 +62,7 @@ class AppUtils {
                     typeFaceName = "kendaltype.ttf"
                 }
                 3 -> {
-                    typeFaceName = "montserrat_regular_Editor.ttf"
+                    typeFaceName = "montserrat_regular.ttf"
                 }
                 4 -> {
                     typeFaceName = "Satisfy-Regular.ttf"

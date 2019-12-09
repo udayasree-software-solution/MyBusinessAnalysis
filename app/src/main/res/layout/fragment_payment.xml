@@ -86,6 +86,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
-            android:src="@android:drawable/ic_input_add"/>
+            android:tint="@android:color/white"
+            android:src="@drawable/ic_add"/>
 
 </RelativeLayout>

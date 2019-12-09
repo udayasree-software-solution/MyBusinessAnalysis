@@ -189,15 +189,15 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
         val nameHeader = headerView.findViewById<TextView>(R.id.nav_header_name)
         nameHeader.text = appSharedPreference.getUserName()
-        nameHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
+        nameHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
 
         val mobileHeader = headerView.findViewById<TextView>(R.id.nav_header_mobile)
         mobileHeader.text = appSharedPreference.getMobileNumber()
-        mobileHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
+        mobileHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
 
         val outletHeader = headerView.findViewById<TextView>(R.id.nav_header_outletname)
         outletHeader.text = appSharedPreference.getOutletName()
-        outletHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.BLACKJACK)
+        outletHeader.typeface = AppUtils.getTypeFace(this, ConstantUtils.MONTSERRAT)
     }
 
     private fun setupNavigationDrawer() {
@@ -212,7 +212,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
         val navMenu = navigationView.menu
         if (!AppUtils.isAdminStatus) {
-            navMenu.findItem(R.id.menu_outlet_setup_client).isVisible = false
+            navMenu.findItem(R.id.menu_outlet_analysis).isVisible = false
             navMenu.findItem(R.id.menu_drawable_users).isVisible = false
         }
 

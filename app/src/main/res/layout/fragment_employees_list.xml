@@ -22,7 +22,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/frag_employee_fab_id"
-            android:src="@android:drawable/btn_star"
+            android:src="@drawable/ic_add_employee"
+            android:tint="@android:color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/margin_16dp"

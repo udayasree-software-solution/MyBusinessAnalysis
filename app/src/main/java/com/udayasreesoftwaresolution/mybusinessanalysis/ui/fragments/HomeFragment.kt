@@ -11,9 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
@@ -79,21 +77,13 @@ class HomeFragment : Fragment() {
     private fun setupPieChart(totalAmountList: ArrayList<AmountModel>) {
         val calculatePercentage = ArrayList<PieEntry>()
         var isAmountNotFount = true
-        /*var totalValue = 0
-        for (total in totalAmountList) {
-            totalValue += total.total
-        }*/
+
         for (element in totalAmountList) {
-            //var percentage = 0f
             if (element.total > 0f) {
                 isAmountNotFount = false
-                //percentage = ((element.total * 100) / totalValue).toFloat()
-                //calculatePercentage.add(PieEntry(percentage, element.title))
                 calculatePercentage.add(PieEntry(element.total.toFloat(), element.title))
             }
         }
-
-
 
         if (isAmountNotFount) {
             pieEmpty.visibility = View.VISIBLE
@@ -130,5 +120,6 @@ class HomeFragment : Fragment() {
         pieChartView.setEntryLabelColor(Color.DKGRAY)
         pieChartView.setEntryLabelTextSize(13f)
         pieChartView.animateXY(2000, 2000)
+        pieChartView.invalidate()
     }
 }

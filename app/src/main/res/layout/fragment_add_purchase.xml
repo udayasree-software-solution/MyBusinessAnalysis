@@ -40,9 +40,10 @@
 
         <ImageView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.15"
-                android:src="@android:drawable/ic_menu_my_calendar"
+                android:src="@drawable/ic_calendar"
                 android:tint="@color/colorPrimary" />
     </LinearLayout>
 
