@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.OutletFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments.AddPurchaseFragment
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.ConstantNotification
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
@@ -184,8 +185,15 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         val headerBanner: ImageView = headerView.findViewById(R.id.nav_header_banner)
         val headerProfile: ImageView = headerView.findViewById(R.id.nav_header_profile)
 
-        imageLoader.displayImage(appSharedPreference.getOutletBannerUrl(), headerBanner, displayOptions)
-        imageLoader.displayImage(appSharedPreference.getOutletLogoUrl(), headerProfile, roundDisplayOptions)
+        if (AppUtils.outlet_banner.isEmpty() || AppUtils.outlet_banner == "NA") {
+            AppUtils.outlet_banner = FireBaseConstants.DEFAULT_BANNER
+        }
+        if (AppUtils.outlet_logo.isEmpty() || AppUtils.outlet_logo =="NA") {
+            AppUtils.outlet_logo = FireBaseConstants.DEFAULT_LOGO
+        }
+
+        imageLoader.displayImage(AppUtils.outlet_banner, headerBanner, displayOptions)
+        imageLoader.displayImage(AppUtils.outlet_logo, headerProfile, roundDisplayOptions)
 
         val nameHeader = headerView.findViewById<TextView>(R.id.nav_header_name)
         nameHeader.text = appSharedPreference.getUserName()
@@ -346,19 +354,19 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
     }
 
     override fun paymentActionListener(slNo: Int) {
-        supportActionBar?.title = "Payment"
+        supportActionBar?.title = "New Payment Details"
         mFragmentPosition = 101
         launchFragment(AddPaymentFragment.newInstance(slNo))
     }
 
     override fun addBusinessFragmentListener() {
-        supportActionBar?.title = "Business"
+        supportActionBar?.title = "New Business Details"
         mFragmentPosition = 102
         launchFragment(AddBusinessFragment.newInstance())
     }
 
     override fun addPurchaseListener(clientsName: ArrayList<String>) {
-        supportActionBar?.title = "Purchase"
+        supportActionBar?.title = "New Purchase Details"
         mFragmentPosition = 103
         launchFragment(AddPurchaseFragment.newInstance(clientsName))
     }

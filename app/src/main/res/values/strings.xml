@@ -58,4 +58,6 @@
     <string name="employee_name">Employee Name</string>
     <string name="employee_outlet">Employee Outlet</string>
     <string name="employee_contact">Employee Contact</string>
+    <string name="client_access">Client Access</string>
+    <string name="employee_access">Employee Access</string>
 </resources>

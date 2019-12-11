@@ -76,8 +76,9 @@ class SplashActivity : AppCompatActivity(),
         progressBox = ProgressBox(this)
 
         AppUtils.OUTLET_NAME = appSharedPreference.getOutletName()!!
-        imageLoaderUtils.displayImage(appSharedPreference.getOutletBannerUrl()!!, outletBanner)
-        imageLoaderUtils.displayRoundImage(appSharedPreference.getOutletLogoUrl()!!, outletLogo)
+
+        imageLoaderUtils.displayImage(FireBaseConstants.DEFAULT_BANNER, outletBanner)
+        imageLoaderUtils.displayRoundImage(FireBaseConstants.DEFAULT_LOGO, outletLogo)
         outletName.text = AppUtils.OUTLET_NAME
         fireBaseUtils = FireBaseUtils(
             this@SplashActivity,
@@ -100,10 +101,15 @@ class SplashActivity : AppCompatActivity(),
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         val userSignInModel = dataSnapshot.getValue(UserSignInModel::class.java)
-                        if (userSignInModel != null && userSignInModel.deviceLoginCode == appSharedPreference.getLoginDeviceCode()) {
-                            fireBaseUtils.readValidityFromFireBase()
+                        if (appSharedPreference.getAdminStatus() || appSharedPreference.getLoginType() == ConstantUtils.isAdminClientAccess) {
+                            if (userSignInModel != null && userSignInModel.deviceLoginCode == appSharedPreference.getLoginDeviceCode()) {
+                                fireBaseUtils.readValidityFromFireBase()
+                            } else {
+                                appSharedPreference.clearPreference()
+                                exitDialog("Account already used", "Your account is login in another device. Contact ADMIN", "Okay")
+                            }
                         } else {
-                            exitDialog("Acount already used", "Your account is login in another device. Contact ADMIN", "Okay")
+                            /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/
                         }
                     } else {
                         progressBox.dismiss()
@@ -154,6 +160,7 @@ class SplashActivity : AppCompatActivity(),
                 "Okay"
             )
         } else {
+            fireBaseUtils.readOutletDetailsFromFireBase()
             fireBaseUtils.readVersionFromFireBase()
         }
     }
@@ -334,7 +341,12 @@ class SplashActivity : AppCompatActivity(),
         if (requestCode == ConstantUtils.SIGNIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             progressBox.show()
             outletName.text = AppUtils.OUTLET_NAME
-            fireBaseUtils.readValidityFromFireBase()
+            val sharedPreference = AppSharedPreference(this@SplashActivity)
+            if (sharedPreference.getAdminStatus() || sharedPreference.getLoginType() == ConstantUtils.isAdminClientAccess) {
+                fireBaseUtils.readValidityFromFireBase()
+            } else {
+                /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/
+            }
         }
     }
 }

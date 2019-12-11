@@ -67,8 +67,6 @@ class OutletFragment : Fragment(), View.OnClickListener {
     private lateinit var preferenceSharedUtils: AppSharedPreference
 
     private var isLogoImage = false
-    private var serverLogoUrl = ""
-    private var serverBannerUrl = ""
 
     companion object {
         fun newInstance() : OutletFragment {
@@ -111,7 +109,10 @@ class OutletFragment : Fragment(), View.OnClickListener {
         progressBox = ProgressBox(activity!!)
 
         setupImageLoader()
-        readOutletDetailsFromFireBase()
+        //readOutletDetailsFromFireBase()
+
+        setModelDataToView(CompanyModel(AppUtils.OUTLET_NAME, AppUtils.outlet_address,
+            AppUtils.outlet_contact, AppUtils.outlet_logo, AppUtils.outlet_banner))
     }
 
     private fun setupImageLoader() {
@@ -205,7 +206,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun readOutletDetailsFromFireBase() {
+    /*private fun readOutletDetailsFromFireBase() {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()
             && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME.isNotEmpty()
         ) {
@@ -238,7 +239,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
             })
 
         }
-    }
+    }*/
 
     private fun writeOutletDetailsToFireBase() {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()
@@ -260,8 +261,8 @@ class OutletFragment : Fragment(), View.OnClickListener {
                             name,
                             address,
                             contact,
-                            serverLogoUrl ?: FireBaseConstants.DEFAULT_LOGO,
-                            serverBannerUrl ?: FireBaseConstants.DEFAULT_BANNER
+                            AppUtils.outlet_logo,
+                            AppUtils.outlet_banner
                         )
                     ) { _, _ ->
                         progressBox.dismiss()
@@ -286,33 +287,19 @@ class OutletFragment : Fragment(), View.OnClickListener {
 
     private fun setModelDataToView(companyModel: CompanyModel) {
         progressBox.show()
-        outletName.setText(companyModel.outletName ?: "")
-        outletContact.setText(companyModel.outletContact ?: "")
-        outletAddress.setText(companyModel.outletAddress ?: "")
+        outletName.setText(companyModel.outletName)
+        outletContact.setText(companyModel.outletContact)
+        outletAddress.setText(companyModel.outletAddress)
         outletZipcode.setText("")
         if (AppUtils.networkConnectivityCheck(activity!!)) {
-
-            serverLogoUrl = if (companyModel.outletLogo != null && companyModel.outletLogo.isNotEmpty()) {
-                preferenceSharedUtils.setOutletLogoUrl(companyModel.outletLogo)
-                companyModel.outletLogo
-            } else {
-                FireBaseConstants.DEFAULT_LOGO
-            }
-            serverBannerUrl = if (companyModel.outletBanner != null && companyModel.outletBanner.isNotEmpty()) {
-                preferenceSharedUtils.setOutletBannerUrl(companyModel.outletBanner)
-                companyModel.outletBanner
-            } else {
-                FireBaseConstants.DEFAULT_BANNER
-            }
-
             imageLoader.displayImage(
-                serverLogoUrl,
+                AppUtils.outlet_logo,
                 outletLogoImage,
                 roundDisplayOption
             )
 
             imageLoader.displayImage(
-                serverBannerUrl,
+                AppUtils.outlet_banner,
                 outletBannerImage,
                 displayOptions
             )
@@ -334,7 +321,7 @@ class OutletFragment : Fragment(), View.OnClickListener {
                         view: View?,
                         loadedImage: Bitmap?
                     ) {
-                        if (AppUtils.OUTLET_NAME.isNotEmpty() && AppUtils.OUTLET_NAME.isNotBlank() && AppUtils.OUTLET_NAME.isNotEmpty()) {
+                        if (AppUtils.OUTLET_NAME.isNotEmpty() && AppUtils.OUTLET_NAME.isNotBlank()) {
                             progressBox.show()
                             val ext = url.substring(url.lastIndexOf("."))
                             val storageReference: StorageReference = FirebaseStorage.getInstance()
@@ -352,10 +339,10 @@ class OutletFragment : Fragment(), View.OnClickListener {
                                 .addOnSuccessListener { taskSnapShot ->
                                     progressBox.dismiss()
                                     if (isLogoImage) {
-                                        serverLogoUrl =
+                                        AppUtils.outlet_logo =
                                             taskSnapShot.metadata?.reference?.downloadUrl.toString()
                                     } else {
-                                        serverBannerUrl =
+                                        AppUtils.outlet_banner =
                                             taskSnapShot.metadata?.reference?.downloadUrl.toString()
                                     }
                                 }

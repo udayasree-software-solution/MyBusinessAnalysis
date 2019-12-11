@@ -57,7 +57,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             .setMessage(message)
             .setPositiveButton(posBtn) { dialog, _ ->
                 dialog.dismiss()
-                finishAffinity()
+                if (posBtn == "Exit") {
+                    finishAffinity()
+                }
             }
         builder.create().show()
     }
@@ -160,7 +162,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                     sharedPreferenceUtils.setOutletName(userOutlet)
                                     sharedPreferenceUtils.setSignInCode(verificationCode)
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
-                                    sharedPreferenceUtils.setAdminStatus(admin)
+                                    sharedPreferenceUtils.setAdminStatus(loginUserType == ConstantUtils.isAdminAccess)
+                                    sharedPreferenceUtils.setLoginType(loginUserType)
                                     sharedPreferenceUtils.setLoginDeviceCode(deviceLoginCode)
 
                                     progressBox.dismiss()
@@ -179,7 +182,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     } else {
                         progressBox.dismiss()
-                        Toast.makeText(this@SignInActivity, "Please contact your ADMIN to create credentials", Toast.LENGTH_SHORT).show()
+                        exitDialog("Account not found","Please contact your ADMIN to create credentials","Okay")
                         //writeToFireBase(userSignInModel)
                     }
                 }
@@ -233,7 +236,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         userMobile,
                         outletName,
                         verificationCode,
-                        false, false, AppUtils.uniqueKey()
+                        "", AppUtils.uniqueKey()
                     )
                 readUserFromFireBase(userSignInModel)
             } else {

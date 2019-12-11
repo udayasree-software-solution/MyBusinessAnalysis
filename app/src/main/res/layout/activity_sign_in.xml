@@ -33,6 +33,8 @@
             <EditText
                     android:id="@+id/login_user_name_id"
                     android:hint="@string/user_name"
+                    android:typeface="serif"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                     android:inputType="textCapWords|textPersonName|textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -44,6 +46,7 @@
             <EditText
                     android:id="@+id/login_mobile_id"
                     android:hint="@string/contact"
+                    android:typeface="serif"
                     android:inputType="phone"
                     android:maxLength="10"
                     android:layout_width="match_parent"
@@ -56,6 +59,7 @@
             <AutoCompleteTextView
                     android:id="@+id/login_outlet_name_id"
                     android:hint="@string/outlet_name"
+                    android:typeface="serif"
                     android:inputType="textCapWords|textPersonName|textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -64,6 +68,7 @@
                 android:id="@+id/login_login_btn_id"
                 android:layout_marginTop="@dimen/margin_16dp"
                 android:text="@string/login"
+                android:typeface="serif"
                 android:textColor="@android:color/white"
                 android:background="@color/colorAccent"
                 android:layout_width="match_parent"
@@ -122,16 +127,18 @@
                             android:hint="@string/verification_code"
                             android:textAlignment="center"
                             android:maxLength="6"
+                            android:typeface="serif"
                             android:inputType="number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                     <TextView
                             android:id="@+id/login_verify_btn_id"
                             android:text="@string/verify"
-                            android:textColor="@color/colorPrimary"
+                            android:textColor="@android:color/holo_orange_dark"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textStyle="bold"
                             android:padding="3dp"
+                            android:typeface="serif"
                             android:layout_gravity="end"
                             android:gravity="center"
                             android:layout_width="wrap_content"

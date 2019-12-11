@@ -26,7 +26,6 @@ import com.udayasreesoftwaresolution.admin.firebasepackage.models.UserSignInMode
 import com.udayasreesoftwaresolution.admin.utilspackage.AppUtils
 import retrofit2.Call
 import retrofit2.Callback
-import java.math.BigDecimal
 
 class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
 
@@ -50,9 +49,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
 
     companion object {
         fun newInstance() : Fragment {
-            val fragment = AddAdminFragment()
-
-            return fragment
+            return AddAdminFragment()
         }
     }
 
@@ -82,7 +79,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
         userPinCodeBtn.setOnClickListener(this)
 
         fireBaseUtils = FireBaseUtils(activity!!, this).getInstance()
-        progressBox = ProgressBox.create(activity)
+        progressBox = ProgressBox(activity)
             /*.setSize((AppUtils.SCREEN_WIDTH * 0.1).toInt(), (AppUtils.SCREEN_WIDTH * 0.1).toInt())*/
         readOutletToFireBase()
     }
@@ -100,15 +97,19 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
                 }
 
                 override fun onDataChange(dataSnapShot: DataSnapshot) {
-                    val outletList = ArrayList<SingleEntityModel>()
-                    for (ds in dataSnapShot.children) {
-                        outletList.add(ds.getValue(SingleEntityModel::class.java)!!)
+                    if (dataSnapShot.exists()) {
+                        val outletList = ArrayList<SingleEntityModel>()
+                        for (ds in dataSnapShot.children) {
+                            outletList.add(ds.getValue(SingleEntityModel::class.java)!!)
+                        }
+                        for (element in outletList) {
+                            outletNameList.add(element.inputData)
+                        }
+                        progressBox.dismiss()
+                        setupOutletTextView(outletNameList)
+                    } else {
+                        progressBox.dismiss()
                     }
-                    for (element in outletList) {
-                        outletNameList.add(element.inputData)
-                    }
-                    setupOutletTextView(outletNameList)
-                    progressBox.dismiss()
                 }
             })
         }
@@ -354,8 +355,7 @@ class AddAdminFragment : Fragment(), View.OnClickListener, FireBaseInterface {
                             mobile,
                             outletName,
                             adminCode,
-                            false,
-                            true,""
+                            "ADMIN_ACCESS",""
                         )
                     writeOutletDetailsToFireBase(outletName, address)
                     if (isOutletSelected) {

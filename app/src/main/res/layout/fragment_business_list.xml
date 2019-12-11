@@ -32,9 +32,9 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-                android:src="@android:drawable/ic_menu_my_calendar"
+                android:src="@drawable/ic_calendar"
                 android:layout_weight="0.15"
-                android:tint="@color/colorPrimary"
+                android:tint="@android:color/holo_orange_dark"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"/>
     </LinearLayout>

@@ -126,33 +126,29 @@ class EmployeesListFragment : Fragment(), EmployeeAdapter.EmployeeAdapterInterfa
         }
     }
 
-    override fun employeeAdapterListener(userSignInModel: UserSignInModel) {
-        if (!userSignInModel.admin) {
-            progressBox.show()
-            val fireBaseReference = FirebaseDatabase.getInstance()
-                .getReference(AppUtils.OUTLET_NAME)
-                .child(FireBaseConstants.USERS)
-                .child(userSignInModel.userMobile)
+    override fun employeeAdapterListener(isModify : Boolean, userSignInModel: UserSignInModel) {
+        progressBox.show()
+        val fireBaseReference = FirebaseDatabase.getInstance()
+            .getReference(AppUtils.OUTLET_NAME)
+            .child(FireBaseConstants.USERS)
+            .child(userSignInModel.userMobile)
 
-            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {
+        fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                progressBox.dismiss()
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (element in dataSnapshot.children) {
+                        element.ref.removeValue()
+                    }
+                    progressBox.dismiss()
+                } else {
                     progressBox.dismiss()
                 }
-
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        for (element in dataSnapshot.children) {
-                            element.ref.removeValue()
-                        }
-                        progressBox.dismiss()
-                    } else {
-                        progressBox.dismiss()
-                    }
-                }
-            })
-        } else {
-            Toast.makeText(activity, "Admin details can't delete", Toast.LENGTH_SHORT).show()
-        }
+            }
+        })
     }
 
     interface EmployeesListFragmentInterface {

@@ -1,6 +1,8 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.U
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ImageLoaderUtils
 
 
@@ -35,6 +38,12 @@ class AddEmployeeFragment : Fragment() {
     private lateinit var employeeOutlet: EditText
     private lateinit var saveEmployee: Button
 
+    private lateinit var employeeTypeGroup : RadioGroup
+    private lateinit var radioTypeClient : RadioButton
+    private lateinit var radioTypeEmployee : RadioButton
+    private lateinit var employeeTypeInfo : ImageView
+
+    private var userType = ""
     private var mOutlet = ""
     private var mOutletKey = ""
 
@@ -68,6 +77,36 @@ class AddEmployeeFragment : Fragment() {
         employeeOutlet = view.findViewById(R.id.add_employee_outlet_name_id)
         saveEmployee = view.findViewById(R.id.add_employee_btn_id)
 
+        employeeTypeGroup = view.findViewById(R.id.add_employee_radio_group_id)
+        radioTypeClient = view.findViewById(R.id.add_employee_radio_client_id)
+        radioTypeEmployee = view.findViewById(R.id.add_employee_radio_employee_id)
+        employeeTypeInfo = view.findViewById(R.id.add_employee_radio_info_id)
+        
+        resetRadio()
+        
+        employeeTypeGroup.setOnCheckedChangeListener { group, checkedId ->
+            when(group.id) {
+                R.id.add_employee_radio_client_id -> {
+                    userType = ConstantUtils.isAdminClientAccess
+                }
+                R.id.add_employee_radio_employee_id -> {
+                    userType = ConstantUtils.isEmployeeAccess
+                }
+            }
+        }
+
+        employeeTypeInfo.setOnClickListener {
+            val builder = AlertDialog.Builder(activity)
+                .setTitle("Employee Type")
+                .setMessage("Client Access - They can read all data in the application. But, can't modify \n\n Employee Access - Only to update employee data. Can't check application transaction details")
+                .setCancelable(false)
+                .setPositiveButton("Okay", DialogInterface.OnClickListener { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                })
+
+            builder.create().show()
+        }
+
         employeeOutlet.setText(appSharedPreference.getOutletName())
 
         mOutlet = employeeOutlet.text.toString()
@@ -87,12 +126,18 @@ class AddEmployeeFragment : Fragment() {
         setMargins(outletLogo, 0, margin, 0, 0)
         //setMargins(registerLayout, 0, (margin / 2).toInt(), 0, 0)
 
-        imageLoaderUtils.displayImage(appSharedPreference.getOutletBannerUrl()!!, outletBanner)
-        imageLoaderUtils.displayRoundImage(appSharedPreference.getOutletLogoUrl()!!, outletLogo)
+        imageLoaderUtils.displayImage(AppUtils.outlet_banner, outletBanner)
+        imageLoaderUtils.displayRoundImage(AppUtils.outlet_logo, outletLogo)
 
         saveEmployee.setOnClickListener {
             registerEmployeeToFireBase()
         }
+    }
+
+    private fun resetRadio() {
+        employeeTypeGroup.clearCheck()
+        radioTypeEmployee.isChecked = true
+        userType = ConstantUtils.isEmployeeAccess
     }
 
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
@@ -111,9 +156,9 @@ class AddEmployeeFragment : Fragment() {
             val mVerifyCode = AppUtils.randomNumbers().toString()
 
             if (mName.isNotEmpty() && mContact.isNotEmpty() && mContact.length == 10 && mOutlet.isNotEmpty()
-                && mUserId.isNotEmpty() && mVerifyCode.isNotEmpty()) {
+                && mUserId.isNotEmpty() && mVerifyCode.isNotEmpty() && userType.isNotEmpty()) {
                 progressBox.show()
-                val userSignInModel = UserSignInModel(mUserId, mName, mContact, mOutlet, mVerifyCode, false, false, "")
+                val userSignInModel = UserSignInModel(mUserId, mName, mContact, mOutlet, mVerifyCode, userType, "")
                 FirebaseDatabase.getInstance()
                     .getReference(userSignInModel.userOutlet)
                     .child(FireBaseConstants.USERS)

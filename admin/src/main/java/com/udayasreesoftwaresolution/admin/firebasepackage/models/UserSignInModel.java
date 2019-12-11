@@ -4,20 +4,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class UserSignInModel implements Parcelable {
-    private String userId, userName, userMobile, registerDate, userOutlet, verificationCode, deviceLoginCode;
-    private boolean isCodeVerified, isAdmin;
+    private String userId, userName, userMobile, userOutlet, verificationCode, loginUserType,deviceLoginCode;
 
     public UserSignInModel() {
     }
 
-    public UserSignInModel(String userId, String userName, String userMobile, String userOutlet, String verificationCode, boolean isCodeVerified, boolean isAdmin, String deviceLoginCode) {
+    public UserSignInModel(String userId, String userName, String userMobile, String userOutlet,
+                           String verificationCode, String loginUserType, String deviceLoginCode) {
         this.userId = userId;
         this.userName = userName;
         this.userMobile = userMobile;
         this.userOutlet = userOutlet;
         this.verificationCode = verificationCode;
-        this.isCodeVerified = isCodeVerified;
-        this.isAdmin = isAdmin;
+        this.loginUserType = loginUserType;
         this.deviceLoginCode = deviceLoginCode;
     }
 
@@ -25,11 +24,9 @@ public class UserSignInModel implements Parcelable {
         userId = in.readString();
         userName = in.readString();
         userMobile = in.readString();
-        registerDate = in.readString();
         userOutlet = in.readString();
         verificationCode = in.readString();
-        isCodeVerified = in.readByte() != 0;
-        isAdmin = in.readByte() != 0;
+        loginUserType = in.readString();
         deviceLoginCode = in.readString();
     }
 
@@ -38,11 +35,9 @@ public class UserSignInModel implements Parcelable {
         dest.writeString(userId);
         dest.writeString(userName);
         dest.writeString(userMobile);
-        dest.writeString(registerDate);
         dest.writeString(userOutlet);
         dest.writeString(verificationCode);
-        dest.writeByte((byte) (isCodeVerified ? 1 : 0));
-        dest.writeByte((byte) (isAdmin ? 1 : 0));
+        dest.writeString(loginUserType);
         dest.writeString(deviceLoginCode);
     }
 
@@ -87,14 +82,6 @@ public class UserSignInModel implements Parcelable {
         this.userMobile = userMobile;
     }
 
-    public String getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(String registerDate) {
-        this.registerDate = registerDate;
-    }
-
     public String getUserOutlet() {
         return userOutlet;
     }
@@ -111,20 +98,12 @@ public class UserSignInModel implements Parcelable {
         this.verificationCode = verificationCode;
     }
 
-    public boolean getCodeVerified() {
-        return isCodeVerified;
+    public String getLoginUserType() {
+        return loginUserType;
     }
 
-    public void setCodeVerified(boolean codeVerified) {
-        isCodeVerified = codeVerified;
-    }
-
-    public boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setLoginUserType(String loginUserType) {
+        this.loginUserType = loginUserType;
     }
 
     public String getDeviceLoginCode() {

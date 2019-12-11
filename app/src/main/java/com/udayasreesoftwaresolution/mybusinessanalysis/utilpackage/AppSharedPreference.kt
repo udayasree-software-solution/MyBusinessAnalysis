@@ -15,10 +15,8 @@ class AppSharedPreference(val mContext: Context) {
     private val user_name_firebase = "FIRE_BASE_USER_NAME"
     private val user_mobile_number = "USER_MOBILE_NUMBER"
     private val user_signin_code_firebase = "FIRE_BASE_CODE"
-    private val user_confirmation_status = "USER_CONFIRMATION_STATUS"
+    private val user_login_type = "USER_LOGIN_TYPE"
     private val user_admin_status = "USER_ADMIN_STATUS"
-    private val outlet_logo_url = "OUTLET_LOGO_URL"
-    private val outlet_banner_url = "OUTLET_BANNER_URL"
     private val device_login_code = "DEVICE_LOGIN_CODE"
 
 
@@ -86,20 +84,12 @@ class AppSharedPreference(val mContext: Context) {
         return sharedPreferences.getBoolean(user_admin_status, false)
     }
 
-    fun setOutletLogoUrl(url : String) {
-        sharedPreferences.edit()?.putString(outlet_logo_url, url)?.apply()
+    fun setLoginType(loginType : String) {
+        sharedPreferences.edit()?.putString(user_login_type, loginType)?.apply()
     }
 
-    fun getOutletLogoUrl() : String? {
-        return sharedPreferences.getString(outlet_logo_url, FireBaseConstants.DEFAULT_LOGO)
-    }
-
-    fun setOutletBannerUrl(url : String) {
-        sharedPreferences.edit()?.putString(outlet_banner_url, url)?.apply()
-    }
-
-    fun getOutletBannerUrl() : String? {
-        return sharedPreferences.getString(outlet_banner_url, FireBaseConstants.DEFAULT_BANNER)
+    fun getLoginType() : String? {
+        return sharedPreferences.getString(user_login_type,"")
     }
 
     fun setLoginDeviceCode(code : String) {

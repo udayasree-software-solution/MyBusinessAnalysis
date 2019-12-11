@@ -8,7 +8,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.*
+import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.CompanyModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import java.math.BigDecimal
 
 class FireBaseUtils(private val mContext: Context, private val mFireBaseInterface: FireBaseInterface) {
@@ -32,6 +35,36 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
                                 mFireBaseInterface.onValiditySuccessListener(true)
                             } else {
                                 mFireBaseInterface.onValiditySuccessListener(false)
+                            }
+                        }
+                    } else {
+                        mFireBaseInterface.onFailureFireBaseListener()
+                    }
+                }
+            })
+        }
+    }
+
+    fun readOutletDetailsFromFireBase() {
+        if (AppUtils.networkConnectivityCheck(mContext) && AppUtils.OUTLET_NAME.isNotEmpty()){
+            val fireBaseReference = FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.OUTLET_PROFILE)
+
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    mFireBaseInterface.onFailureFireBaseListener()
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        val companyModel = dataSnapshot.getValue(CompanyModel::class.java)
+                        if (companyModel != null) {
+                            with(companyModel) {
+                                AppUtils.outlet_address = outletAddress
+                                AppUtils.outlet_banner = outletBanner
+                                AppUtils.outlet_logo = outletLogo
+                                AppUtils.outlet_contact = outletContact
                             }
                         }
                     } else {

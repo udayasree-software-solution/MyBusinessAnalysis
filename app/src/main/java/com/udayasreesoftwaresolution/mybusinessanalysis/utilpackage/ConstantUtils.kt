@@ -32,5 +32,9 @@ class ConstantUtils {
         val SUNDAPRADA = -1
 
         const val EXPENSES = "Expenses"
+
+        const val isAdminAccess = "ADMIN_ACCESS"
+        const val isAdminClientAccess = "ADMIN_CLIENT_ACCESS"
+        const val isEmployeeAccess = "EMPLOYEE_ACCESS"
     }
 }

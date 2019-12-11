@@ -18,6 +18,11 @@ class AppUtils {
         @JvmField var isServiceRun = true
         @JvmField var OUTLET_NAME = ""
 
+        @JvmField var outlet_contact = ""
+        @JvmField var outlet_address = ""
+        @JvmField var outlet_logo = ""
+        @JvmField var outlet_banner = ""
+
         @JvmField var SCREEN_WIDTH = 0
         @JvmField var SCREEN_HEIGHT = 0
 
