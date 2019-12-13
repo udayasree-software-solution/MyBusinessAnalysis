@@ -1,12 +1,15 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,15 +21,24 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
+import java.lang.Appendable
 
 
 private const val ARG_AMOUNTS = "total_amount"
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var pieChartView : PieChart
     private lateinit var pieEmpty : TextView
+
+    private lateinit var notificationLayout : LinearLayout
+    private lateinit var chartLayout : LinearLayout
+    private lateinit var recyclerLayout : LinearLayout
+    private lateinit var slideImage : ImageView
+
     private lateinit var progressBox : ProgressBox
+    private var isSlide = false
 
     companion object {
         fun newInstance(totalAmountList : ArrayList<AmountModel>) : HomeFragment {
@@ -51,8 +63,33 @@ class HomeFragment : Fragment() {
         recyclerView = view.findViewById(R.id.frag_home_recycler_id)
         pieChartView = view.findViewById(R.id.frag_home_piechart_id)
         pieEmpty = view.findViewById(R.id.frag_home_piechart_empty_id)
+
+        notificationLayout = view.findViewById(R.id.frag_home_notification_layout)
+        chartLayout = view.findViewById(R.id.frag_home_piechart_layout)
+        recyclerLayout = view.findViewById(R.id.frag_home_bottom_layout_id)
+        slideImage = view.findViewById(R.id.frag_home_slide_image)
+
+        chartLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.8).toInt()
+
+        slideImage.setOnClickListener(this)
+
         progressBox = ProgressBox(context)
         setupRecyclerView()
+        slideAnimation()
+    }
+
+    private fun slideAnimation() {
+        if (isSlide) {
+            /*OPEN*/
+            isSlide = false
+            slideImage.rotation = 270f
+            recyclerView.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.5).toInt()
+        } else {
+            /*CLOSE*/
+            isSlide = true
+            slideImage.rotation = 90f
+            recyclerView.layoutParams.height = 0
+        }
     }
 
     private fun setupRecyclerView() {
@@ -121,5 +158,13 @@ class HomeFragment : Fragment() {
         pieChartView.setEntryLabelTextSize(13f)
         pieChartView.animateXY(2000, 2000)
         pieChartView.invalidate()
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            R.id.frag_home_slide_image -> {
+                slideAnimation()
+            }
+        }
     }
 }
