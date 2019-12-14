@@ -7,7 +7,7 @@
         tools:context=".ui.fragments.HomeFragment">
 
     <ScrollView
-            android:layout_above="@+id/frag_home_bottom_layout"
+            android:layout_above="@+id/layout_card_frag_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <LinearLayout
@@ -27,7 +27,7 @@
                 <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/frag_home_piechart_id"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="match_parent"/>
                 <TextView
                         android:text="@string/chart_data_is_empty"
                         android:visibility="gone"
@@ -41,30 +41,34 @@
     </ScrollView>
 
     <androidx.cardview.widget.CardView
-            android:id="@+id/frag_home_bottom_layout"
+            android:id="@+id/layout_card_frag_home"
             android:layout_alignParentBottom="true"
-            app:cardElevation="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <LinearLayout
-                android:id="@+id/frag_home_bottom_layout_id"
-                android:orientation="vertical"
+        <RelativeLayout
+                android:background="@android:color/transparent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <ImageView
                     android:id="@+id/frag_home_slide_image"
                     android:background="@drawable/ic_slide"
-                    android:rotation="-90"
-                    android:layout_gravity="center"
-                    android:tint="@color/colorPrimary"
+                    android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/frag_home_recycler_id"
-                    android:background="@color/colorAccent"
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/frag_home_bottom_layout"
+                    android:layout_below="@+id/frag_home_slide_image"
+                    app:cardElevation="2dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-        </LinearLayout>
-
+                    android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/frag_home_recycler_id"
+                        android:background="@android:color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

@@ -1,9 +1,9 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
-import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +17,15 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AmountAdapter
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
-import java.lang.Appendable
+import android.view.animation.TranslateAnimation
+import androidx.cardview.widget.CardView
+import com.udayasreesoftwaresolution.mybusinessanalysis.R
+
+
 
 
 private const val ARG_AMOUNTS = "total_amount"
@@ -34,11 +37,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var notificationLayout : LinearLayout
     private lateinit var chartLayout : LinearLayout
-    private lateinit var recyclerLayout : LinearLayout
+    private lateinit var cardView : CardView
     private lateinit var slideImage : ImageView
 
     private lateinit var progressBox : ProgressBox
-    private var isSlide = false
+    private var isSlideUp = false
 
     companion object {
         fun newInstance(totalAmountList : ArrayList<AmountModel>) : HomeFragment {
@@ -66,10 +69,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         notificationLayout = view.findViewById(R.id.frag_home_notification_layout)
         chartLayout = view.findViewById(R.id.frag_home_piechart_layout)
-        recyclerLayout = view.findViewById(R.id.frag_home_bottom_layout_id)
+        cardView = view.findViewById(R.id.frag_home_bottom_layout)
         slideImage = view.findViewById(R.id.frag_home_slide_image)
 
-        chartLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.8).toInt()
+        chartLayout.layoutParams.height = (AppUtils.SCREEN_WIDTH * 1.3).toInt()
+        recyclerView.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.6).toInt()
 
         slideImage.setOnClickListener(this)
 
@@ -79,18 +83,47 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun slideAnimation() {
-        if (isSlide) {
+        if (isSlideUp) {
             /*OPEN*/
-            isSlide = false
-            slideImage.rotation = 270f
-            recyclerView.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.5).toInt()
+            isSlideUp = false
+            slideImage.rotation = 360f
+            slideUp()
         } else {
             /*CLOSE*/
-            isSlide = true
-            slideImage.rotation = 90f
-            recyclerView.layoutParams.height = 0
+            isSlideUp = true
+            slideImage.rotation = 180f
+            slideDown()
         }
     }
+
+    private fun slideUp() {
+        val animate = TranslateAnimation(
+            0f, // fromXDelta
+            0f, // toXDelta
+            recyclerView.height.toFloat(), // fromYDelta
+            0f
+        )                // toYDelta
+        animate.duration = 200
+        animate.fillAfter = true
+        cardView.startAnimation(animate)
+        cardView.visibility = View.VISIBLE
+    }
+
+    private fun slideDown() {
+        val animate = TranslateAnimation(
+            0f, // fromXDelta
+            0f, // toXDelta
+            0f, // fromYDelta
+            recyclerView.height.toFloat()
+        ) // toYDelta
+        animate.duration = 200
+        animate.fillAfter = true
+        cardView.startAnimation(animate)
+        Handler().postDelayed({
+            cardView.visibility = View.GONE
+        },200)
+    }
+
 
     private fun setupRecyclerView() {
         val bundle = arguments
