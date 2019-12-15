@@ -137,12 +137,12 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun readUserFromFireBase(userSignInModel: UserSignInModel) {
+    private fun readUserFromFireBase(outlet : String, contact : String, name : String) {
         if (AppUtils.networkConnectivityCheck(this)) {
             val fireBaseReference = FirebaseDatabase.getInstance()
-                .getReference(userSignInModel.userOutlet)
+                .getReference(outlet)
                 .child(FireBaseConstants.USERS)
-                .child(userSignInModel.userMobile)
+                .child(contact)
 
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -156,20 +156,22 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                             val sharedPreferenceUtils =
                                 AppSharedPreference(this@SignInActivity)
                             with(model) {
-                                if (userSignInModel.userOutlet == userOutlet && userSignInModel.userName == userName) {
+                                if (outlet == userOutlet && name == userName) {
+
+                                    val deviceCode = AppUtils.uniqueKey()
+                                    val userId = AppUtils.fireBaseChildId(outletCode)
+                                    val verifyCode = if (loginUserType == ConstantUtils.isAdminAccess) {verificationCode} else {AppUtils.randomNumbers().toString()}
+
                                     sharedPreferenceUtils.setUserName(userName)
                                     sharedPreferenceUtils.setMobileNumber(userMobile)
                                     sharedPreferenceUtils.setOutletName(userOutlet)
-                                    sharedPreferenceUtils.setSignInCode(verificationCode)
+                                    sharedPreferenceUtils.setSignInCode(verifyCode)
                                     sharedPreferenceUtils.setUserFireBaseChildId(userId)
                                     sharedPreferenceUtils.setAdminStatus(loginUserType == ConstantUtils.isAdminAccess)
                                     sharedPreferenceUtils.setLoginType(loginUserType)
-                                    sharedPreferenceUtils.setLoginDeviceCode(deviceLoginCode)
+                                    sharedPreferenceUtils.setLoginDeviceCode(deviceCode)
 
-                                    progressBox.dismiss()
-                                    verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity,
-                                        R.anim.bottom_to_top)
-                                    verifyAnimLayout.visibility = View.VISIBLE
+                                    writeToFireBase(UserSignInModel(userId, userName, userMobile, userOutlet, verifyCode, loginUserType, deviceCode))
                                 } else {
                                     progressBox.dismiss()
                                     Toast.makeText(this@SignInActivity, "User details doesn't match", Toast.LENGTH_SHORT).show()
@@ -198,13 +200,15 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                     .child(FireBaseConstants.USERS)
                     .child(userSignInModel.userMobile)
                     .setValue(userSignInModel) { error, _ ->
+                        progressBox.dismiss()
                         if (error == null) {
-                            readUserFromFireBase(userSignInModel)
+                            //readUserFromFireBase(userSignInModel)
+                            verifyAnimLayout.animation = AnimationUtils.loadAnimation(this@SignInActivity, R.anim.bottom_to_top)
+                            verifyAnimLayout.visibility = View.VISIBLE
                         } else {
-                            progressBox.dismiss()
                             Toast.makeText(
                                 this@SignInActivity,
-                                "Fail to create user. Please try again",
+                                "Fail to Login. Please try again",
                                 Toast.LENGTH_SHORT
                             )
                                 .show()
@@ -218,27 +222,15 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         if (AppUtils.networkConnectivityCheck(this)) {
             val userName = loginUserName.text.toString()
             val userMobile = loginMobile.text.toString()
-            val userId = AppUtils.fireBaseChildId(outletCode)
-            val verificationCode = AppUtils.randomNumbers().toString()
             val outletNameFetch = loginOutletName.text.toString()
             if (outletNameFetch != outletName) {
                 loginOutletName.setText("")
                 outletName = ""
             }
             if (userName.isNotEmpty() && userMobile.isNotEmpty() && userMobile.length == 10
-                && outletName.isNotEmpty() && outletCode.isNotEmpty() && userId.isNotEmpty() && verificationCode.isNotEmpty()
-            ) {
+                && outletName.isNotEmpty() && outletCode.isNotEmpty()) {
                 progressBox.show()
-                val userSignInModel =
-                    UserSignInModel(
-                        userId,
-                        userName,
-                        userMobile,
-                        outletName,
-                        verificationCode,
-                        "", AppUtils.uniqueKey()
-                    )
-                readUserFromFireBase(userSignInModel)
+                readUserFromFireBase(outletName, userMobile, userName)
             } else {
                 if (userName.isEmpty()) {
                     loginUserName.error = "Enter User Name"

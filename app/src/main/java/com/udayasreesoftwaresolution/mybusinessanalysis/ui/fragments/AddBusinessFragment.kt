@@ -43,10 +43,10 @@ private const val ARG_PARAM2 = "param2"
 class AddBusinessFragment : Fragment(), View.OnClickListener {
 
     private lateinit var calendarText: EditText
+    private lateinit var calenderLayout : LinearLayout
     private lateinit var includeLayout: LinearLayout
     private lateinit var insertBtn: ImageView
     private lateinit var saveBtn: Button
-    private lateinit var fragView: View
     private lateinit var progressBox: ProgressBox
 
     private var isModifyBusiness = false
@@ -67,13 +67,14 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragView = inflater.inflate(R.layout.fragment_add_business, container, false)
-        initView(fragView)
-        return fragView
+        val view = inflater.inflate(R.layout.fragment_add_business, container, false)
+        initView(view)
+        return view
     }
 
     private fun initView(view: View) {
         calendarText = view.findViewById(R.id.business_add_date_id)
+        calenderLayout = view.findViewById(R.id.business_add_date_layout)
         includeLayout = view.findViewById(R.id.business_add_insert_id)
         insertBtn = view.findViewById(R.id.business_add_include_id)
         saveBtn = view.findViewById(R.id.business_add_save_id)
@@ -81,7 +82,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
 
         insertBtn.setOnClickListener(this)
         saveBtn.setOnClickListener(this)
-        calendarText.setOnClickListener(this)
+        calenderLayout.setOnClickListener(this)
 
         businessLayoutIDs = ArrayList()
         backupBusinessList = ArrayList()
@@ -199,6 +200,13 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         deleteRow.setBackgroundColor(Color.BLACK)
         deleteRow.id = deleteId
 
+        if (categoryName.equals(ConstantUtils.EXPENSES, ignoreCase = true) ||
+            categoryName.equals(AppUtils.OUTLET_NAME, ignoreCase = true)) {
+            deleteRow.visibility = View.INVISIBLE
+        } else {
+            deleteRow.visibility = View.VISIBLE
+        }
+
         val parentChildLayout = LinearLayout(activity)
         val layoutParams = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -221,7 +229,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         if (isFirst) {
             with(nameEditText) {
                 setText(categoryName)
-                if (categoryName.equals("Expenses", ignoreCase = true)) {
+                if (categoryName.equals(ConstantUtils.EXPENSES, ignoreCase = true)) {
                     setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
                 } else {
                     setTextColor(
@@ -323,89 +331,97 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getDataFromViews() {
-        if (AppUtils.networkConnectivityCheck(context!!) && AppUtils.OUTLET_NAME.isNotEmpty() && businessLayoutIDs.isNotEmpty()) {
-            val businessModelList = ArrayList<BusinessModel>()
-            var delay = 0L
-            progressBox.show()
-            if (isModifyBusiness) {
-                delay = 7000L
-                BusinessRepository(activity).deleteBusiness(selectedDate)
-            }
-
-            Handler().postDelayed({
-                delay = 0L
+        try {
+            if (AppUtils.networkConnectivityCheck(context!!) && AppUtils.OUTLET_NAME.isNotEmpty() && businessLayoutIDs.isNotEmpty()) {
+                val businessModelList = ArrayList<BusinessModel>()
+                var delay = 0L
+                progressBox.show()
                 if (isModifyBusiness) {
                     delay = 7000L
-                    var oldExpenses = 0
-                    var oldNet = 0
-                    for (element in backupBusinessList) {
-                        if (element.businessName.equals("Expenses", ignoreCase = true)) {
-                            oldExpenses += element.amount
-                        } else {
-                            oldNet += element.amount
-                        }
-                    }
-                    modifyAmountFromFireBase(false, oldNet, oldExpenses)
+                    BusinessRepository(activity).deleteBusiness(selectedDate)
                 }
 
                 Handler().postDelayed({
-                    var expensesTotal = 0
-                    var netTotal = 0
-                    for (count in 0 until businessLayoutIDs.size) {
-                        with(businessLayoutIDs[count]) {
-                            if (fragView != null) {
-                                val name = fragView.findViewById<EditText>(nameId).text.toString()
-                                val amount = fragView.findViewById<EditText>(amountId).text.toString()
-                                if (name.isNotEmpty() && amount.isNotEmpty()) {
-                                    if (name.equals("Expenses", ignoreCase = true)) {
-                                        expensesTotal += amount.toInt()
-                                    } else {
-                                        netTotal += amount.toInt()
+                    delay = 0L
+                    if (isModifyBusiness) {
+                        delay = 7000L
+                        var oldExpenses = 0
+                        var oldNet = 0
+                        for (element in backupBusinessList) {
+                            if (element.businessName.equals("Expenses", ignoreCase = true)) {
+                                oldExpenses += element.amount
+                            } else {
+                                oldNet += element.amount
+                            }
+                        }
+                        modifyAmountFromFireBase(false, oldNet, oldExpenses)
+                    }
+
+                    Handler().postDelayed({
+                        var expensesTotal = 0
+                        var netTotal = 0
+                        for (count in 0 until businessLayoutIDs.size) {
+                            with(businessLayoutIDs[count]) {
+                                if (view != null) {
+                                    val nameEditText = view!!.findViewById<EditText>(nameId)
+                                    val amountEditText = view!!.findViewById<EditText>(amountId)
+
+                                    val name = nameEditText.text.toString()
+                                    val amount = amountEditText.text.toString()
+
+                                    if (name.isNotEmpty() && amount.isNotEmpty()) {
+                                        if (name.equals("Expenses", ignoreCase = true)) {
+                                            expensesTotal += amount.toInt()
+                                        } else {
+                                            netTotal += amount.toInt()
+                                        }
+                                        businessModelList.add(
+                                            BusinessModel(
+                                                count,
+                                                name,
+                                                amount.toInt(),
+                                                selectedDate,
+                                                timeInMillis
+                                            )
+                                        )
+                                        BusinessRepository(activity).insertBusiness(
+                                            BusinessTable(
+                                                count,
+                                                amount.toInt(),
+                                                name,
+                                                selectedDate,
+                                                timeInMillis
+                                            )
+                                        )
                                     }
-                                    businessModelList.add(
-                                        BusinessModel(
-                                            count,
-                                            name,
-                                            amount.toInt(),
-                                            selectedDate,
-                                            timeInMillis
-                                        )
-                                    )
-                                    BusinessRepository(activity).insertBusiness(
-                                        BusinessTable(
-                                            count,
-                                            amount.toInt(),
-                                            name,
-                                            selectedDate,
-                                            timeInMillis
-                                        )
-                                    )
                                 }
                             }
                         }
-                    }
-                    modifyAmountFromFireBase(true, netTotal, expensesTotal)
+                        modifyAmountFromFireBase(true, netTotal, expensesTotal)
 
-                    val fireBaseReference = FirebaseDatabase.getInstance()
-                        .getReference(AppUtils.OUTLET_NAME)
-                        .child(FireBaseConstants.BUSINESS)
-                        .child(selectedDate)
-                    fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {
-                            progressBox.dismiss()
-                            writeBusinessToFireBase(businessModelList)
-                        }
-
-                        override fun onDataChange(dataSnapShot: DataSnapshot) {
-                            if (dataSnapShot.exists()) {
-                                dataSnapShot.ref.removeValue()
+                        val fireBaseReference = FirebaseDatabase.getInstance()
+                            .getReference(AppUtils.OUTLET_NAME)
+                            .child(FireBaseConstants.BUSINESS)
+                            .child(selectedDate)
+                        fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
+                                progressBox.dismiss()
+                                writeBusinessToFireBase(businessModelList)
                             }
-                            progressBox.dismiss()
-                            writeBusinessToFireBase(businessModelList)
-                        }
-                    })
+
+                            override fun onDataChange(dataSnapShot: DataSnapshot) {
+                                if (dataSnapShot.exists()) {
+                                    dataSnapShot.ref.removeValue()
+                                }
+                                progressBox.dismiss()
+                                writeBusinessToFireBase(businessModelList)
+                            }
+                        })
+                    }, delay)
                 }, delay)
-            }, delay)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(activity, "Failed to save data to server", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -487,8 +503,11 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
     private fun checkForDataInView(): Boolean {
         if (businessLayoutIDs.isNotEmpty()) {
             val ids = businessLayoutIDs[businessLayoutIDs.size - 1]
-            val name = fragView.findViewById<EditText>(ids.nameId).text.toString()
-            val amount = fragView.findViewById<EditText>(ids.amountId).text.toString()
+            val nameEditText = view!!.findViewById<EditText>(ids.nameId)
+            val amountEditText = view!!.findViewById<EditText>(ids.amountId)
+
+            val name = nameEditText.text.toString()
+            val amount = amountEditText.text.toString()
             if (name.isNotEmpty() && amount.isNotEmpty()) {
                 return true
             }
@@ -510,7 +529,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                 getDataFromViews()
             }
 
-            R.id.business_add_date_id -> {
+            R.id.business_add_date_layout -> {
                 calendarViewDialog()
             }
         }

@@ -35,6 +35,7 @@ private const val ARG_PARAM2 = "param2"
 class BusinessListFragment : Fragment(), View.OnClickListener {
 
     private lateinit var calenderText: EditText
+    private lateinit var calendarLayout : LinearLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyData: TextView
     private lateinit var netAmountText: TextView
@@ -73,6 +74,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         recyclerView = view.findViewById(R.id.business_list_recycler_id)
         emptyData = view.findViewById(R.id.business_list_empty_id)
         calenderText = view.findViewById(R.id.business_list_date_id)
+        calendarLayout = view.findViewById(R.id.business_list_date_layout)
         addBusinessFab = view.findViewById(R.id.business_add_fab_id)
 
         netAmountText = view.findViewById(R.id.business_net_amount_id)
@@ -80,7 +82,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         grossAmountText = view.findViewById(R.id.business_gross_amount_id)
 
         addBusinessFab.setOnClickListener(this)
-        calenderText.setOnClickListener(this)
+        calendarLayout.setOnClickListener(this)
         progressBox = ProgressBox(activity)
 
         calenderText.setText(AppUtils.getCurrentDate(true))
@@ -130,8 +132,8 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 businessAdapter.notifyDataSetChanged()
                 setTotal(
                     NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(netAmount),
-                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format((netAmount - expense)),
-                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(expense)
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(expense),
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format((netAmount - expense))
                 )
             } else {
                 setTotal("0","0", "0")
@@ -172,7 +174,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 businessListInterface.addBusinessFragmentListener()
             }
 
-            R.id.business_list_date_id -> {
+            R.id.business_list_date_layout -> {
                 calendarViewDialog()
             }
         }
