@@ -166,7 +166,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             progressBox.dismiss()
             _modifyTaskDataTable = PaymentTable()
 
-            when(slNo) {
+            when (slNo) {
                 -1 -> {
                     isNewPayment = true
                 }
@@ -313,6 +313,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .child(FireBaseConstants.OUTLET_CATEGORY)
                 .push()
                 .setValue(category) { error, _ ->
                     if (error == null) {
@@ -421,21 +422,27 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                         val paymentRepo = PaymentRepository(activity)
                         if (isNewPayment) {
                             with(paymentModel) {
-                                paymentRepo.insertTask(PaymentTable(uniqueKey, clientName, categoryName, payAmount, chequeNumber, dateInMillis, payStatus, preDays))
+                                paymentRepo.insertTask(
+                                    PaymentTable(
+                                        uniqueKey,
+                                        clientName,
+                                        categoryName,
+                                        payAmount,
+                                        chequeNumber,
+                                        dateInMillis,
+                                        payStatus,
+                                        preDays
+                                    )
+                                )
                             }
                         } else {
                             paymentRepo.updateTask(_modifyTaskDataTable)
                         }
                         readVersionOfChildFromFireBase(FireBaseConstants.PAYMENT_VERSION)
                         Handler().postDelayed({
-                            clearInputs()
-                            _companyName = ""
-                            _categoryName = ""
                             progressBox.dismiss()
-                            if (!isNewPayment) {
-                                addPaymentInterface.onSuccessfulModified()
-                            }
-                        }, 1000)
+                            WriteTotalToFireBaseTask().execute()
+                        }, 2000)
                     } else {
                         Toast.makeText(
                             activity!!,
@@ -448,6 +455,48 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     }
                 }
         }
+    }
+
+    inner class WriteTotalToFireBaseTask : AsyncTask<Void, Void, ArrayList<Int>>() {
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            progressBox.show()
+        }
+
+        override fun doInBackground(vararg p0: Void?): ArrayList<Int> {
+            return PaymentRepository(activity).queryTotalPayAmount()
+        }
+
+        override fun onPostExecute(result: ArrayList<Int>?) {
+            super.onPostExecute(result)
+            if (result != null && result.isNotEmpty()) {
+                FirebaseDatabase.getInstance()
+                    .getReference(AppUtils.OUTLET_NAME)
+                    .child(FireBaseConstants.TOTAL_AMOUNT)
+                    .child(FireBaseConstants.PAYABLE_AMOUNT)
+                    .setValue(result[0])
+
+                FirebaseDatabase.getInstance()
+                    .getReference(AppUtils.OUTLET_NAME)
+                    .child(FireBaseConstants.TOTAL_AMOUNT)
+                    .child(FireBaseConstants.PAID_AMOUNT)
+                    .setValue(result[1])
+
+                Handler().postDelayed({
+                    clearInputs()
+                    _companyName = ""
+                    _categoryName = ""
+                    progressBox.dismiss()
+                    if (!isNewPayment) {
+                        addPaymentInterface.onSuccessfulModified()
+                    }
+                }, 4000)
+            } else {
+                progressBox.dismiss()
+            }
+        }
+
     }
 
     private fun checkCategoryAvailable() {
@@ -463,7 +512,7 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
         }
         if (isNotFound) {
             writeCategoryToFireBase(_categoryName)
-            CategoryRepository(activity!!).insertTask(CategoryTable(_categoryName))
+            CategoryRepository(activity!!).insertTask(CategoryTable(FireBaseConstants.OUTLET_CATEGORY,_categoryName))
         }
     }
 
@@ -487,9 +536,10 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private fun addNewTaskToFireBase() {
         if (_selectedDays != selectDays && _categoryName.isNotEmpty() && _companyName.isNotEmpty() &&
-            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()) {
+            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()
+        ) {
 
-            readAmountFromFireBase(true, _payableAmount.toInt())
+            //readAmountFromFireBase(true, _payableAmount.toInt())
             _uniqueKeys = AppUtils.uniqueKey()
 
             Handler().postDelayed({
@@ -526,9 +576,10 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
 
     private fun modifyTaskFromFireBase() {
         if (_selectedDays != selectDays && _categoryName.isNotEmpty() && _companyName.isNotEmpty() &&
-            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()) {
+            _selectedDateInMills != 0L && _chequeNo.isNotEmpty() && _payableAmount.isNotEmpty()
+        ) {
 
-            readAmountFromFireBase(true, _payableAmount.toInt())
+            //readAmountFromFireBase(true, _payableAmount.toInt())
 
             _modifyTaskDataTable?.clientName = _companyName
             _modifyTaskDataTable?.categoryName = _categoryName
@@ -599,8 +650,9 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
                     if (isNewPayment) {
                         addNewTaskToFireBase()
                     } else {
-                        readAmountFromFireBase(false, _modifyTaskDataTable!!.payAmount.toInt())
-                        Handler().postDelayed({modifyTaskFromFireBase()}, 7000)
+                        //readAmountFromFireBase(false, _modifyTaskDataTable!!.payAmount.toInt())
+                        //Handler().postDelayed({modifyTaskFromFireBase()}, 7000)
+                        modifyTaskFromFireBase()
                     }
                 }
             }

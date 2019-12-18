@@ -36,5 +36,7 @@ class ConstantUtils {
         const val isAdminAccess = "ADMIN_ACCESS"
         const val isAdminClientAccess = "ADMIN_CLIENT_ACCESS"
         const val isEmployeeAccess = "EMPLOYEE_ACCESS"
+
+        const val OUTLET_SETTINGS = "outlet_settings"
     }
 }

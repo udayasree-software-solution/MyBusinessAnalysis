@@ -182,10 +182,11 @@ class ClientFragment : Fragment(), View.OnClickListener, ClientAdapter.ClientAda
                             FirebaseDatabase.getInstance()
                                 .getReference(AppUtils.OUTLET_NAME)
                                 .child(FireBaseConstants.BUSINESS_CATEGORY)
+                                .child(FireBaseConstants.OUTLET_CATEGORY)
                                 .push()
                                 .setValue(clientModel.category) { derror, _ ->
                                     if (derror == null) {
-                                        CategoryRepository(activity!!).insertTask(CategoryTable(clientModel.category))
+                                        CategoryRepository(activity!!).insertTask(CategoryTable(FireBaseConstants.OUTLET_CATEGORY,clientModel.category))
                                         readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
                                     }
                                 }

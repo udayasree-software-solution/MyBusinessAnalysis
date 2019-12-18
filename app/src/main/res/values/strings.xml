@@ -60,4 +60,8 @@
     <string name="employee_contact">Employee Contact</string>
     <string name="client_access">Client Access</string>
     <string name="employee_access">Employee Access</string>
+
+    <string name="next">NEXT</string>
+    <string name="done">DONE</string>
+    <string name="previous">PREVIOUS</string>
 </resources>

@@ -55,6 +55,10 @@ public class CategoryRepository {
         return categoryDataBasePersistence.categoryDaoAccess().queryCategoryList();
     }
 
+    public List<String> queryCategoryListByKey(String key) {
+        return categoryDataBasePersistence.categoryDaoAccess().queryCategoryListByKey(key);
+    }
+
     public void clearDataBase() {
         new AsyncTask<Void, Void, Void>() {
             @Override

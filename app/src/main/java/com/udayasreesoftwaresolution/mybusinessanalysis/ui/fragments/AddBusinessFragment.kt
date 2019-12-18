@@ -48,6 +48,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
     private lateinit var insertBtn: ImageView
     private lateinit var saveBtn: Button
     private lateinit var progressBox: ProgressBox
+    private var fragView : View? = null
 
     private var isModifyBusiness = false
 
@@ -68,6 +69,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_business, container, false)
+        fragView = view
         initView(view)
         return view
     }
@@ -294,7 +296,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                     val ids = businessLayoutIDs[i]
                     if (i > 1) {
                         if (view.id == ids.deleteId) {
-                            val relativeLayout = getView()?.findViewById<RelativeLayout>(ids.parentId)
+                            val relativeLayout = fragView!!.findViewById<RelativeLayout>(ids.parentId)
                             (relativeLayout?.parent as LinearLayout).removeView(relativeLayout)
                             //includeLayout.removeView(view.findViewById(ids.parentId))
                             //includeLayout.invalidate()
@@ -318,11 +320,21 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                         .child(FireBaseConstants.BUSINESS)
                         .child(selectedDate)
                         .child(count.toString())
-                        .setValue(businessModel) { _, _ ->
+                        .setValue(businessModel) { error, _ ->
+                            if (error == null) {
+                                BusinessRepository(activity).insertBusiness(
+                                    BusinessTable(
+                                        count,
+                                        amount.toInt(),
+                                        businessName,
+                                        selectedDate,
+                                        timeInMillis
+                                    )
+                                )
+                                readVersionOfChildFromFireBase()
+                            }
                             if (count == (businessModelList.size - 1)) {
                                 progressBox.dismiss()
-                                //remove layout
-                                readVersionOfChildFromFireBase()
                             }
                         }
                 }
@@ -334,16 +346,11 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
         try {
             if (AppUtils.networkConnectivityCheck(context!!) && AppUtils.OUTLET_NAME.isNotEmpty() && businessLayoutIDs.isNotEmpty()) {
                 val businessModelList = ArrayList<BusinessModel>()
-                var delay = 0L
                 progressBox.show()
-                if (isModifyBusiness) {
-                    delay = 7000L
+                /*if (isModifyBusiness) {
                     BusinessRepository(activity).deleteBusiness(selectedDate)
                 }
-
-                Handler().postDelayed({
-                    delay = 0L
-                    if (isModifyBusiness) {
+                if (isModifyBusiness) {
                         delay = 7000L
                         var oldExpenses = 0
                         var oldNet = 0
@@ -356,72 +363,66 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                         }
                         modifyAmountFromFireBase(false, oldNet, oldExpenses)
                     }
+                    var expensesTotal = 0
+                    var netTotal = 0
+                */
 
-                    Handler().postDelayed({
-                        var expensesTotal = 0
-                        var netTotal = 0
-                        for (count in 0 until businessLayoutIDs.size) {
-                            with(businessLayoutIDs[count]) {
-                                if (view != null) {
-                                    val nameEditText = view!!.findViewById<EditText>(nameId)
-                                    val amountEditText = view!!.findViewById<EditText>(amountId)
 
-                                    val name = nameEditText.text.toString()
-                                    val amount = amountEditText.text.toString()
+                for (count in 0 until businessLayoutIDs.size) {
+                    with(businessLayoutIDs[count]) {
+                        if (fragView != null) {
+                            val nameEditText = fragView!!.findViewById<EditText>(nameId)
+                            val amountEditText = fragView!!.findViewById<EditText>(amountId)
 
-                                    if (name.isNotEmpty() && amount.isNotEmpty()) {
-                                        if (name.equals("Expenses", ignoreCase = true)) {
-                                            expensesTotal += amount.toInt()
-                                        } else {
-                                            netTotal += amount.toInt()
-                                        }
-                                        businessModelList.add(
-                                            BusinessModel(
-                                                count,
-                                                name,
-                                                amount.toInt(),
-                                                selectedDate,
-                                                timeInMillis
-                                            )
-                                        )
-                                        BusinessRepository(activity).insertBusiness(
-                                            BusinessTable(
-                                                count,
-                                                amount.toInt(),
-                                                name,
-                                                selectedDate,
-                                                timeInMillis
-                                            )
-                                        )
-                                    }
-                                }
+                            val name = nameEditText.text.toString()
+                            val amount = amountEditText.text.toString()
+
+                            if (name.isNotEmpty() && amount.isNotEmpty()) {
+                                /*if (name.equals("Expenses", ignoreCase = true)) {
+                                    expensesTotal += amount.toInt()
+                                } else {
+                                    netTotal += amount.toInt()
+                                }*/
+                                businessModelList.add(
+                                    BusinessModel(
+                                        count,
+                                        name,
+                                        amount.toInt(),
+                                        selectedDate,
+                                        timeInMillis
+                                    )
+                                )
                             }
                         }
-                        modifyAmountFromFireBase(true, netTotal, expensesTotal)
+                    }
+                }
+                //modifyAmountFromFireBase(true, netTotal, expensesTotal)
 
-                        val fireBaseReference = FirebaseDatabase.getInstance()
-                            .getReference(AppUtils.OUTLET_NAME)
-                            .child(FireBaseConstants.BUSINESS)
-                            .child(selectedDate)
-                        fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onCancelled(p0: DatabaseError) {
-                                progressBox.dismiss()
-                                writeBusinessToFireBase(businessModelList)
-                            }
+                val fireBaseReference = FirebaseDatabase.getInstance()
+                    .getReference(AppUtils.OUTLET_NAME)
+                    .child(FireBaseConstants.BUSINESS)
+                    .child(selectedDate)
+                fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                        progressBox.dismiss()
+                        writeBusinessToFireBase(businessModelList)
+                    }
 
-                            override fun onDataChange(dataSnapShot: DataSnapshot) {
-                                if (dataSnapShot.exists()) {
-                                    dataSnapShot.ref.removeValue()
-                                }
-                                progressBox.dismiss()
-                                writeBusinessToFireBase(businessModelList)
-                            }
-                        })
-                    }, delay)
-                }, delay)
+                    override fun onDataChange(dataSnapShot: DataSnapshot) {
+                        if (dataSnapShot.exists()) {
+                            dataSnapShot.ref.removeValue()
+                        }
+                        BusinessRepository(activity).deleteBusiness(selectedDate)
+                        Handler().postDelayed({
+                            progressBox.dismiss()
+                            writeBusinessToFireBase(businessModelList)
+                        },4000)
+                    }
+                })
             }
         } catch (e: Exception) {
             Toast.makeText(activity, "Failed to save data to server", Toast.LENGTH_SHORT).show()
+            progressBox.dismiss()
         }
     }
 
@@ -501,10 +502,10 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkForDataInView(): Boolean {
-        if (businessLayoutIDs.isNotEmpty()) {
+        if (businessLayoutIDs.isNotEmpty() && fragView != null) {
             val ids = businessLayoutIDs[businessLayoutIDs.size - 1]
-            val nameEditText = view!!.findViewById<EditText>(ids.nameId)
-            val amountEditText = view!!.findViewById<EditText>(ids.amountId)
+            val nameEditText = fragView!!.findViewById<EditText>(ids.nameId)
+            val amountEditText = fragView!!.findViewById<EditText>(ids.amountId)
 
             val name = nameEditText.text.toString()
             val amount = amountEditText.text.toString()

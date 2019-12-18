@@ -18,6 +18,7 @@ class AppSharedPreference(val mContext: Context) {
     private val user_login_type = "USER_LOGIN_TYPE"
     private val user_admin_status = "USER_ADMIN_STATUS"
     private val device_login_code = "DEVICE_LOGIN_CODE"
+    private val outlet_details_status = "OUTLET_DETAILS_STATUS"
 
 
     fun setAlarmIds(ids : String){
@@ -98,6 +99,14 @@ class AppSharedPreference(val mContext: Context) {
 
     fun getLoginDeviceCode() : String? {
         return sharedPreferences.getString(device_login_code,"")
+    }
+
+    fun setOutletDetailsStatus(status: Boolean) {
+        sharedPreferences.edit()?.putBoolean(outlet_details_status, status)?.apply()
+    }
+
+    fun getOutletDetailsStatus() : Boolean {
+        return sharedPreferences.getBoolean(outlet_details_status, false)
     }
 
     fun clearAlarmIDPreference() {

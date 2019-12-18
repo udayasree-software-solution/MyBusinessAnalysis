@@ -1,15 +1,12 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Point
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
@@ -110,6 +107,7 @@ class SplashActivity : AppCompatActivity(),
                             }
                         } else {
                             /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/
+                            progressBox.dismiss()
                         }
                     } else {
                         progressBox.dismiss()
@@ -121,7 +119,6 @@ class SplashActivity : AppCompatActivity(),
             startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
-
     }
 
     private fun exitDialog(title: String, message: String, posBtn: String) {
@@ -142,9 +139,12 @@ class SplashActivity : AppCompatActivity(),
             totalServerConnected = 0
             totalServerExecuted = 0
             Handler().postDelayed({
-                /*TODO: Intent to HOME Activity*/
                 progressBox.dismiss()
-                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                if (appSharedPreference.getOutletDetailsStatus()) {
+                    startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                } else {
+                    startActivity(Intent(this@SplashActivity, OutletSettingsActivity::class.java))
+                }
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 finish()
             }, 7000)
@@ -314,21 +314,49 @@ class SplashActivity : AppCompatActivity(),
     override fun onSuccessReadBusinessCategoryDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Business Name Version [KKC, Socks etc]*/
         try {
+
+            val outletCategorySnapShot = dataSnapShot.child(FireBaseConstants.OUTLET_CATEGORY)
+            val paymentCategorySnapShot = dataSnapShot.child(FireBaseConstants.PAYMENT_CATEGORY)
+            val expensesCategorySnapShot = dataSnapShot.child(FireBaseConstants.EXPENSES_CATEGORY)
+
             val categoryRepository = CategoryRepository(this@SplashActivity)
             categoryRepository.clearDataBase()
+
             Handler().postDelayed({
-                for (element in dataSnapShot.children) {
+
+                for (outlet in outletCategorySnapShot.children) {
+                    val entityModel = outlet.getValue(String::class.java)
+                    if (entityModel != null) {
+                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.OUTLET_CATEGORY,entityModel))
+                    }
+                }
+
+                for (payment in paymentCategorySnapShot.children) {
+                    val entityModel = payment.getValue(String::class.java)
+                    if (entityModel != null) {
+                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.PAYMENT_CATEGORY, entityModel))
+                    }
+                }
+
+                for (expenses in expensesCategorySnapShot.children) {
+                    val entityModel = expenses.getValue(String::class.java)
+                    if (entityModel != null) {
+                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.EXPENSES_CATEGORY, entityModel))
+                    }
+                }
+
+                /*for (element in dataSnapShot.children) {
                     val entityModel = element.getValue(String::class.java)
                     if (entityModel != null) {
                         categoryRepository.insertTask(CategoryTable(entityModel))
                     }
-                }
-
+                }*/
+                saveDetailsToDB()
             }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
+            saveDetailsToDB()
         }
-        saveDetailsToDB()
     }
 
     override fun onFailureFireBaseListener() {
@@ -346,6 +374,7 @@ class SplashActivity : AppCompatActivity(),
                 fireBaseUtils.readValidityFromFireBase()
             } else {
                 /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/
+                progressBox.dismiss()
             }
         }
     }

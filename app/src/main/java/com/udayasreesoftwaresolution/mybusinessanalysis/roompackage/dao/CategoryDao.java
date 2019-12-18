@@ -21,4 +21,7 @@ public interface CategoryDao {
 
     @Query("SELECT category_name FROM CategoryTable ORDER BY category_name ASC")
     List<String> queryCategoryList();
+
+    @Query("SELECT category_name FROM CategoryTable WHERE category_key =:key")
+    List<String> queryCategoryListByKey(String key);
 }

@@ -24,7 +24,11 @@ class FireBaseConstants {
         val PAYMENT = "Payment"
         val BUSINESS = "Business"
         val PURCHASE = "Purchase"
+
         val BUSINESS_CATEGORY = "Business Category"
+        val OUTLET_CATEGORY = "Outlet Category"
+        val PAYMENT_CATEGORY = "Payment Category"
+        val EXPENSES_CATEGORY = "Expenses Category"
 
         val OUTLET_PROFILE = "Outlet Profile"
 

@@ -3,7 +3,7 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.ui.model
 import android.os.Parcel
 import android.os.Parcelable
 
-class AmountModel(val title : String, val total : Int) : Parcelable {
+data class AmountModel(val title : String, val total : Int) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readInt()

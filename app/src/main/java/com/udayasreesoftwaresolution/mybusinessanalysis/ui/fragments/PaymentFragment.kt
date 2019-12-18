@@ -54,6 +54,8 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
     private lateinit var progressBox: ProgressBox
     private lateinit var paymentInterface: PaymentInterface
 
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
@@ -100,7 +102,9 @@ class PaymentFragment : Fragment(), View.OnClickListener, PaymentAdapter.TaskInt
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    paymentFAB.show()
+                    if (AppUtils.isAdminStatus) {
+                        paymentFAB.show()
+                    }
                 }
                 super.onScrollStateChanged(recyclerView, newState)
             }

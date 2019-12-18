@@ -19,9 +19,14 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup">
-        <activity android:name=".ui.activities.EmployeeActivity"
+        <activity android:name=".ui.activities.OutletSettingsActivity"
+                  android:theme="@style/AppTheme.MaterialComponents"
                   android:configChanges="orientation"
                   android:screenOrientation="portrait"/>
+        <activity
+                android:name=".ui.activities.EmployeeActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".ui.activities.SignInActivity"
                 android:configChanges="orientation"

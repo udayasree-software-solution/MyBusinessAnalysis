@@ -278,6 +278,7 @@ class FireBaseUtils(private val mContext: Context, private val mFireBaseInterfac
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.BUSINESS_CATEGORY)
+                .child(FireBaseConstants.OUTLET_CATEGORY)
             fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                     mFireBaseInterface.onFailureFireBaseListener()
