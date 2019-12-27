@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.CategoryModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ClientModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.PaymentModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.SingleEntityModel
@@ -313,9 +314,8 @@ class AddPaymentFragment : Fragment(), View.OnClickListener {
             FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.BUSINESS_CATEGORY)
-                .child(FireBaseConstants.OUTLET_CATEGORY)
                 .push()
-                .setValue(category) { error, _ ->
+                .setValue(CategoryModel(FireBaseConstants.OUTLET_CATEGORY,category)) { error, _ ->
                     if (error == null) {
                         readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)
                     }

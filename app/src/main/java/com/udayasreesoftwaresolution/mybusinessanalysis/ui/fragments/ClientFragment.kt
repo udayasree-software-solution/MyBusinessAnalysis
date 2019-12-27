@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.CategoryModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.ClientModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.SingleEntityModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
@@ -182,9 +183,8 @@ class ClientFragment : Fragment(), View.OnClickListener, ClientAdapter.ClientAda
                             FirebaseDatabase.getInstance()
                                 .getReference(AppUtils.OUTLET_NAME)
                                 .child(FireBaseConstants.BUSINESS_CATEGORY)
-                                .child(FireBaseConstants.OUTLET_CATEGORY)
                                 .push()
-                                .setValue(clientModel.category) { derror, _ ->
+                                .setValue(CategoryModel(FireBaseConstants.OUTLET_CATEGORY, clientModel.category)) { derror, _ ->
                                     if (derror == null) {
                                         CategoryRepository(activity!!).insertTask(CategoryTable(FireBaseConstants.OUTLET_CATEGORY,clientModel.category))
                                         readVersionOfChildFromFireBase(FireBaseConstants.BUSINESS_CATEGORY_VERSION)

@@ -23,8 +23,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.*
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.*
 
-class SplashActivity : AppCompatActivity(),
-    FireBaseInterface {
+class SplashActivity : AppCompatActivity(), FireBaseInterface {
 
     private lateinit var outletBanner: ImageView
     private lateinit var outletLogo: ImageView
@@ -295,7 +294,7 @@ class SplashActivity : AppCompatActivity(),
         try {
             val purchaseRepository = PurchaseRepository(this@SplashActivity)
             purchaseRepository.clearDataBase()
-             Handler().postDelayed({
+            Handler().postDelayed({
                 for (element in dataSnapShot.children) {
                     val purchaseModel = element.getValue(PurchaseModel::class.java)
                     if (purchaseModel != null) {
@@ -314,43 +313,18 @@ class SplashActivity : AppCompatActivity(),
     override fun onSuccessReadBusinessCategoryDataListener(dataSnapShot: DataSnapshot) {
         /*TODO: Business Name Version [KKC, Socks etc]*/
         try {
-
-            val outletCategorySnapShot = dataSnapShot.child(FireBaseConstants.OUTLET_CATEGORY)
-            val paymentCategorySnapShot = dataSnapShot.child(FireBaseConstants.PAYMENT_CATEGORY)
-            val expensesCategorySnapShot = dataSnapShot.child(FireBaseConstants.EXPENSES_CATEGORY)
-
             val categoryRepository = CategoryRepository(this@SplashActivity)
             categoryRepository.clearDataBase()
 
             Handler().postDelayed({
-
-                for (outlet in outletCategorySnapShot.children) {
-                    val entityModel = outlet.getValue(String::class.java)
+                for (element in dataSnapShot.children) {
+                    val entityModel = element.getValue(CategoryModel::class.java)
                     if (entityModel != null) {
-                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.OUTLET_CATEGORY,entityModel))
+                        with(entityModel) {
+                            categoryRepository.insertTask(CategoryTable(category_key, category_name))
+                        }
                     }
                 }
-
-                for (payment in paymentCategorySnapShot.children) {
-                    val entityModel = payment.getValue(String::class.java)
-                    if (entityModel != null) {
-                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.PAYMENT_CATEGORY, entityModel))
-                    }
-                }
-
-                for (expenses in expensesCategorySnapShot.children) {
-                    val entityModel = expenses.getValue(String::class.java)
-                    if (entityModel != null) {
-                        categoryRepository.insertTask(CategoryTable(FireBaseConstants.EXPENSES_CATEGORY, entityModel))
-                    }
-                }
-
-                /*for (element in dataSnapShot.children) {
-                    val entityModel = element.getValue(String::class.java)
-                    if (entityModel != null) {
-                        categoryRepository.insertTask(CategoryTable(entityModel))
-                    }
-                }*/
                 saveDetailsToDB()
             }, 3000)
         } catch (e: Exception) {

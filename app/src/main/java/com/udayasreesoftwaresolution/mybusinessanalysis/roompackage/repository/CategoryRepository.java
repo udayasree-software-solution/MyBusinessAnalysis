@@ -5,6 +5,7 @@ import androidx.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.CategoryModel;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence.CategoryDataBasePersistence;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.CategoryTable;
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils;
@@ -55,8 +56,8 @@ public class CategoryRepository {
         return categoryDataBasePersistence.categoryDaoAccess().queryCategoryList();
     }
 
-    public List<String> queryCategoryListByKey(String key) {
-        return categoryDataBasePersistence.categoryDaoAccess().queryCategoryListByKey(key);
+    public List<CategoryTable> queryFullCategoryList() {
+        return categoryDataBasePersistence.categoryDaoAccess().queryFullCategoryList();
     }
 
     public void clearDataBase() {

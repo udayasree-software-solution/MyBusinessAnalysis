@@ -1,6 +1,7 @@
 package com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.CategoryModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.CategoryRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.CategoryTable
@@ -37,9 +39,13 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var chipGroup: ChipGroup
     private lateinit var doneBtn: ImageView
 
-    private lateinit var categoryChipData: ArrayList<String>
-    private lateinit var paymentTypeChipData: ArrayList<String>
-    private lateinit var expensesTypeChipData: ArrayList<String>
+    private lateinit var outletList : ArrayList<String>
+    private lateinit var paymentList : ArrayList<String>
+    private lateinit var expensesList : ArrayList<String>
+
+    private lateinit var insertIdArray : ArrayList<Int>
+    private lateinit var removedIdArray : ArrayList<Int>
+
 
     private lateinit var progressBox: ProgressBox
 
@@ -70,6 +76,12 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
         nextBtn.setOnClickListener(this)
         doneBtn.setOnClickListener(this)
 
+        outletList = ArrayList()
+        paymentList = ArrayList()
+        expensesList = ArrayList()
+        insertIdArray = ArrayList()
+        removedIdArray = ArrayList()
+
         /*editText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (view != null && actionId == EditorInfo.IME_ACTION_DONE) {
@@ -86,31 +98,38 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     @SuppressLint("StaticFieldLeak")
-    inner class OutletSettingTask : AsyncTask<Void, Void, Boolean>() {
+    inner class OutletSettingTask : AsyncTask<Void, Void, ArrayList<CategoryTable>>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
-            categoryChipData = ArrayList()
-            paymentTypeChipData = ArrayList()
-            expensesTypeChipData = ArrayList()
         }
 
-        override fun doInBackground(vararg p0: Void?): Boolean {
-            val categoryRepository = CategoryRepository(this@OutletSettingsActivity)
-            categoryChipData =
-                categoryRepository.queryCategoryListByKey(FireBaseConstants.OUTLET_CATEGORY) as ArrayList<String>
-            paymentTypeChipData =
-                categoryRepository.queryCategoryListByKey(FireBaseConstants.PAYMENT_CATEGORY) as ArrayList<String>
-            expensesTypeChipData =
-                categoryRepository.queryCategoryListByKey(FireBaseConstants.EXPENSES_CATEGORY) as ArrayList<String>
-            return true
+        override fun doInBackground(vararg p0: Void?): ArrayList<CategoryTable>? {
+            return CategoryRepository(this@OutletSettingsActivity).queryFullCategoryList() as ArrayList<CategoryTable>?
         }
 
-        override fun onPostExecute(result: Boolean?) {
+        override fun onPostExecute(result: ArrayList<CategoryTable>?) {
             super.onPostExecute(result)
             progressBox.dismiss()
-            outletSetting(false)
+            if (result != null && result.isNotEmpty()) {
+                for (element in result) {
+                    when(element.category_key) {
+                        FireBaseConstants.OUTLET_CATEGORY -> {
+                            outletList.add(element.category_name)
+                        }
+
+                        FireBaseConstants.PAYMENT_CATEGORY -> {
+                            paymentList.add(element.category_name)
+                        }
+
+                        FireBaseConstants.EXPENSES_CATEGORY -> {
+                            expensesList.add(element.category_name)
+                        }
+                    }
+                }
+                outletSetting(false)
+            }
         }
     }
 
@@ -118,166 +137,122 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
         if (text.isNotEmpty()) {
             val chip = Chip(this)
             chip.text = text
-
+            val id = View.generateViewId()
+            chip.id = id
             chip.isClickable = true
             chip.isCheckable = false
 
             if (!text.equals(AppUtils.OUTLET_NAME, ignoreCase = true)) {
                 val chipDrawable =
-                    ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_MaterialComponents_Chip_Entry)
+                    ChipDrawable.createFromAttributes(this, null, 0,
+                        R.style.Widget_MaterialComponents_Chip_Action)
                 chip.setChipDrawable(chipDrawable)
             }
-            val id = View.generateViewId()
-            chip.id = id
 
-            when (clickCount) {
+            /*when (clickCount) {
                 1 -> {
-                    categoryChipData.add(text)
+                    outletList.add(text)
                 }
 
                 2 -> {
-                    paymentTypeChipData.add(text)
+                    paymentList.add(text)
                 }
 
                 3 -> {
-                    expensesTypeChipData.add(text)
+                    expensesList.add(text)
                 }
-            }
+            }*/
 
             chipGroup.addView(chip)
-            chip.setOnCloseIconClickListener { view ->
+            insertIdArray.add(id)
 
+            chip.setOnClickListener{ view ->
                 val chipView = findViewById<Chip>(view.id)
                 val chipText = chipView.text.toString()
 
-                when (clickCount) {
-                    1 -> {
-
-                        val iterator = categoryChipData.iterator()
-                        while (iterator.hasNext()) {
-                            val category = iterator.next()
-                            if (chipText.equals(category, ignoreCase = true)) {
-                                iterator.remove()
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }
-
-                        /*for (value in categoryChipData) {
-                            if (chipText.equals(value, ignoreCase = true)) {
-                                categoryChipData.remove(value)
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }*/
-                    }
-
-                    2 -> {
-
-                        val iterator = paymentTypeChipData.iterator()
-                        while (iterator.hasNext()) {
-                            val payment = iterator.next()
-                            if (chipText.equals(payment, ignoreCase = true)) {
-                                iterator.remove()
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }
-
-                        /*for (value in paymentTypeChipData) {
-                            if (chipText.equals(value, ignoreCase = true)) {
-                                paymentTypeChipData.remove(value)
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }*/
-                    }
-
-                    3 -> {
-
-                        val iterator = expensesTypeChipData.iterator()
-                        while (iterator.hasNext()) {
-                            val expenses = iterator.next()
-                            if (chipText.equals(expenses, ignoreCase = true)) {
-                                iterator.remove()
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }
-
-                        /*for (value in expensesTypeChipData) {
-                            if (chipText.equals(value, ignoreCase = true)) {
-                                expensesTypeChipData.remove(value)
-                                chipGroup.removeView(chipView)
-                                break
-                            }
-                        }*/
-                    }
+                if (!chipText.equals(AppUtils.OUTLET_NAME, ignoreCase = true)) {
+                    removedIdArray.add(view.id)
+                    chipGroup.removeView(chipView)
                 }
             }
         }
     }
 
     private fun outletSetting(status: Boolean) {
-        outletLayout.animation = if (status) {
-            AnimationUtils.loadAnimation(this, R.anim.left_side)
-        } else {
-            AnimationUtils.loadAnimation(this, R.anim.right_side)
-        }
-        chipGroup.removeAllViews()
-        nextBtn.setText(R.string.next)
-        previousBtn.visibility = View.VISIBLE
-        nextBtn.visibility = View.VISIBLE
-        when (clickCount) {
-            1 -> {
-                previousBtn.visibility = View.INVISIBLE
-                editText.hint = "Enter Outlet Category"
+        try {
+            outletLayout.animation = if (status) {
+                AnimationUtils.loadAnimation(this, R.anim.left_side)
+            } else {
+                AnimationUtils.loadAnimation(this, R.anim.right_side)
+            }
+            chipGroup.removeAllViews()
+            nextBtn.setText(R.string.next)
+            previousBtn.visibility = View.VISIBLE
+            nextBtn.visibility = View.VISIBLE
+            when (clickCount) {
+                1 -> {
+                    previousBtn.visibility = View.INVISIBLE
+                    editText.hint = "Enter Outlet Category"
 
-                val iterator = categoryChipData.iterator()
-                while (iterator.hasNext()) {
-                    val category = iterator.next()
-                    if (!category.equals(ConstantUtils.EXPENSES, ignoreCase = true)) {
-                        createChipView(category)
+                    for (outlet in outletList) {
+                        if (!outlet.equals(ConstantUtils.EXPENSES, ignoreCase = true)) {
+                            createChipView(outlet)
+                        }
                     }
+                    outletList.clear()
+                }
+
+                2 -> {
+                    editText.hint = "Enter Payment Acceptance"
+
+                    for (payment in paymentList) {
+                        createChipView(payment)
+                    }
+                    paymentList.clear()
+                }
+
+                3 -> {
+                    editText.hint = "Enter Expenses Category"
+                    nextBtn.setText(R.string.done)
+
+                    for (expenses in expensesList) {
+                        createChipView(expenses)
+                    }
+                    expensesList.clear()
+                }
+
+                4 -> {
+                    /*0TODO: Save all the data to server*/
+                    saveDataToServer()
                 }
             }
-
-            2 -> {
-                editText.hint = "Enter Payment Acceptance"
-
-                val iterator = paymentTypeChipData.iterator()
-                while (iterator.hasNext()) {
-                    createChipView(iterator.next())
-                }
-            }
-
-            3 -> {
-                editText.hint = "Enter Expenses Category"
-                nextBtn.setText(R.string.done)
-
-                val iterator = expensesTypeChipData.iterator()
-                while (iterator.hasNext()) {
-                    createChipView(iterator.next())
-                }
-            }
-
-            4 -> {
-                /*TODO: Save all the data to server*/
-                saveDataToServer()
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun saveDataToServer() {
-        var totalLoop = 0
+        progressBox.show()
+        val categoryModelList: ArrayList<CategoryModel> = ArrayList()
+
+        for (outlet in outletList) {
+            categoryModelList.add(CategoryModel(FireBaseConstants.OUTLET_CATEGORY, outlet))
+        }
+        outletList.clear()
+        for (payment in paymentList) {
+            categoryModelList.add(CategoryModel(FireBaseConstants.PAYMENT_CATEGORY, payment))
+        }
+        paymentList.clear()
+        for (expenses in expensesList) {
+            categoryModelList.add(CategoryModel(FireBaseConstants.EXPENSES_CATEGORY, expenses))
+        }
+        expensesList.clear()
+
+        val totalLoop = categoryModelList.size
         var loopCount = 0
 
-        totalLoop += categoryChipData.size
-        totalLoop += paymentTypeChipData.size
-        totalLoop += expensesTypeChipData.size
-
         if (totalLoop > 0) {
-            progressBox.show()
+            //progressBox.show()
 
             val referenceFireBase = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
@@ -293,92 +268,20 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
                         dataSnapshot.ref.removeValue { error, _ ->
                             if (error == null) {
 
-                                val referenceOutlet = FirebaseDatabase.getInstance()
+                                val reference = FirebaseDatabase.getInstance()
                                     .getReference(AppUtils.OUTLET_NAME)
                                     .child(FireBaseConstants.BUSINESS_CATEGORY)
-                                    .child(FireBaseConstants.OUTLET_CATEGORY)
 
-                                val referencePayment = FirebaseDatabase.getInstance()
-                                    .getReference(AppUtils.OUTLET_NAME)
-                                    .child(FireBaseConstants.BUSINESS_CATEGORY)
-                                    .child(FireBaseConstants.PAYMENT_CATEGORY)
-
-                                val referenceExpenses = FirebaseDatabase.getInstance()
-                                    .getReference(AppUtils.OUTLET_NAME)
-                                    .child(FireBaseConstants.BUSINESS_CATEGORY)
-                                    .child(FireBaseConstants.EXPENSES_CATEGORY)
-
-                                for (category in categoryChipData) {
-                                    referenceOutlet
+                                for (category in categoryModelList) {
+                                    reference
                                         .push()
                                         .setValue(category) { _, _ ->
                                             loopCount++
+                                            if (loopCount >= totalLoop) {
+                                                saveDataToRoomDB(categoryModelList)
+                                            }
                                         }
                                 }
-
-                                for (payment in paymentTypeChipData) {
-                                    referencePayment
-                                        .push()
-                                        .setValue(payment) { _, _ ->
-                                            loopCount++
-                                        }
-                                }
-
-                                for (expenses in expensesTypeChipData) {
-                                    referenceExpenses
-                                        .push()
-                                        .setValue(expenses) { _, _ ->
-                                            loopCount++
-                                        }
-                                }
-
-                                if (loopCount >= totalLoop) {
-                                    loopCount = 0
-                                    val categoryRepository = CategoryRepository(this@OutletSettingsActivity)
-                                    categoryRepository.clearDataBase()
-
-                                    Handler().postDelayed({
-
-                                        for (outlet in categoryChipData) {
-                                            loopCount++
-                                            categoryRepository.insertTask(
-                                                CategoryTable(
-                                                    FireBaseConstants.OUTLET_CATEGORY,
-                                                    outlet
-                                                )
-                                            )
-                                        }
-
-                                        for (payment in paymentTypeChipData) {
-                                            loopCount++
-                                            categoryRepository.insertTask(
-                                                CategoryTable(
-                                                    FireBaseConstants.PAYMENT_CATEGORY,
-                                                    payment
-                                                )
-                                            )
-                                        }
-
-                                        for (expenses in expensesTypeChipData) {
-                                            loopCount++
-                                            categoryRepository.insertTask(
-                                                CategoryTable(
-                                                    FireBaseConstants.EXPENSES_CATEGORY,
-                                                    expenses
-                                                )
-                                            )
-                                        }
-
-                                        val sharedPreference = AppSharedPreference(this@OutletSettingsActivity)
-                                        if (!sharedPreference.getOutletDetailsStatus()) {
-                                            sharedPreference.setOutletDetailsStatus(true)
-                                        }
-                                        if (loopCount >= totalLoop) {
-                                            progressBox.dismiss()
-                                        }
-                                    }, 4000)
-                                }
-
                             } else {
                                 progressBox.dismiss()
                             }
@@ -388,36 +291,70 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             })
+        } else {
+            progressBox.dismiss()
         }
     }
 
-    private fun businessPayment(status: Boolean) {
-        nextBtn.setText(R.string.next)
-        previousBtn.visibility = View.VISIBLE
-        nextBtn.visibility = View.VISIBLE
-        when (clickCount) {
-            1 -> {
-                previousBtn.visibility = View.INVISIBLE
+    private fun saveDataToRoomDB(categoryModelList : ArrayList<CategoryModel>) {
+        val totalLoop = categoryModelList.size
+        var loopCount = 0
 
+        val categoryRepository = CategoryRepository(this)
+        categoryRepository.clearDataBase()
+
+        Handler().postDelayed({
+            if (totalLoop <= 0) {
+                progressBox.dismiss()
+            }
+            for (element in categoryModelList) {
+                loopCount++
+                categoryRepository.insertTask(CategoryTable(element.category_key, element.category_name))
+                if (loopCount >= totalLoop) {
+                    val sharedPreference = AppSharedPreference(this@OutletSettingsActivity)
+                    if (!sharedPreference.getOutletDetailsStatus()) {
+                        sharedPreference.setOutletDetailsStatus(true)
+                        startActivity(Intent(this@OutletSettingsActivity, HomeActivity::class.java))
+                    }
+                    progressBox.dismiss()
+                    finish()
+                }
+            }
+        }, 4000)
+    }
+
+    private fun getViewTextFromId() {
+        if (insertIdArray.isNotEmpty()) {
+            progressBox.show()
+            for (deleteId in removedIdArray) {
+                insertIdArray.remove(deleteId)
             }
 
-            2 -> {
+            Handler().postDelayed({
+                for(id in insertIdArray) {
+                    val chipView = findViewById<Chip>(id)
+                    val chipText = chipView.text.toString()
+                    when (clickCount) {
+                        2 -> {
+                            outletList.add(chipText)
+                        }
 
-            }
+                        3 -> {
+                            paymentList.add(chipText)
+                        }
 
-            3 -> {
-                nextBtn.setText(R.string.done)
-
-            }
-
-            4 -> {
-                nextBtn.visibility = View.INVISIBLE
-
-            }
-
-            else -> {
-                /*TODO: Save all the data to server*/
-            }
+                        4 -> {
+                            expensesList.add(chipText)
+                        }
+                    }
+                }
+                insertIdArray.clear()
+                removedIdArray.clear()
+                progressBox.dismiss()
+                outletSetting(false)
+            },500)
+        } else {
+            outletSetting(false)
         }
     }
 
@@ -430,7 +367,7 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
 
             R.id.outlet_setting_next_id -> {
                 clickCount++
-                outletSetting(false)
+                getViewTextFromId()
             }
 
             R.id.outlet_setting_outlet_done -> {

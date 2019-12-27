@@ -26,18 +26,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                <LinearLayout
-                        android:orientation="horizontal"
-                        android:weightSum="1"
+                <RelativeLayout
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                     <EditText
                             android:id="@+id/outlet_setting_outlet_edittext"
+                            android:layout_toStartOf="@+id/outlet_setting_outlet_done"
                             android:textAlignment="center"
                             android:maxLines="1"
-                            android:layout_margin="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="10dp"
                             android:textColor="@android:color/white"
                             android:textColorHint="@android:color/white"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz"
@@ -46,26 +48,26 @@
                             android:imeOptions="actionDone"
                             android:singleLine="true"
                             android:background="@drawable/rectangle"
-                            android:layout_weight="0.8"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
                     <ImageView
                             android:id="@+id/outlet_setting_outlet_done"
                             android:background="#6EF3E1"
-                            android:padding="5dp"
+                            android:padding="3dp"
                             android:src="@drawable/ic_done_36dp"
-                            android:layout_weight="0.2"
-                            android:layout_width="0dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_width="wrap_content"
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"/>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <com.google.android.material.chip.ChipGroup
                         android:id="@+id/outlet_setting_chip_group"
                         android:padding="@dimen/margin_16dp"
                         android:layout_marginTop="@dimen/margin_16dp"
-                        android:background="@drawable/rect_edit_text"
+                        android:background="@drawable/rectangle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
             </LinearLayout>

@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+
+static def releaseTime() {
+    return new Date().format("dd-MM-yy-hh-mm", TimeZone.getDefault())
+}
 
 android {
     compileSdkVersion 28
@@ -18,9 +20,29 @@ android {
     }
     buildTypes {
         release {
-            //minifyEnabled false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    outputFileName = new File("MBAClient_${variant.versionName}_${releaseTime()}.apk");
+                }
+            }
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    dexOptions {
+        jumboMode = false
+        javaMaxHeapSize "2048M"
+    }
+    lintOptions {
+        disable 'MissingTranslation'
+        abortOnError false
     }
 }
 

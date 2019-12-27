@@ -48,6 +48,7 @@
                     android:hint="@string/contact"
                     android:typeface="serif"
                     android:inputType="phone"
+                    android:imeOptions="actionNext"
                     android:maxLength="10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -60,6 +61,7 @@
                     android:id="@+id/login_outlet_name_id"
                     android:hint="@string/outlet_name"
                     android:typeface="serif"
+                    android:imeOptions="actionDone"
                     android:inputType="textCapWords|textPersonName|textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
