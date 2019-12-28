@@ -70,6 +70,10 @@ public class BusinessRepository {
         return businessDataBasePersistence.businessDaoAccess().queryBusinessListByDate(selectedDate);
     }
 
+    public List<BusinessTable> queryBusinessListByDateCategory(String selectedDate, String category) {
+        return businessDataBasePersistence.businessDaoAccess().queryBusinessListByDateCategory(selectedDate, category);
+    }
+
     public List<Integer> queryBusinessAmount() {
         List<Integer> totals = new ArrayList<>();
         int expenses = 0;

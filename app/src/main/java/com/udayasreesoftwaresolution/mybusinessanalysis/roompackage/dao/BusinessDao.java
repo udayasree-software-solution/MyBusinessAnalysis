@@ -22,4 +22,7 @@ public interface BusinessDao {
 
     @Query("SELECT * FROM BusinessTable WHERE selected_date =:selectedDate ORDER BY slNo ASC")
     List<BusinessTable> queryBusinessListByDate(String selectedDate);
+
+    @Query("SELECT * FROM BusinessTable WHERE selected_date =:selectedDate AND business_category =:category ORDER BY slNo ASC")
+    List<BusinessTable> queryBusinessListByDateCategory(String selectedDate, String category);
 }

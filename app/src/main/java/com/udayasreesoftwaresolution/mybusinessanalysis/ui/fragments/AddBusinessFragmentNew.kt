@@ -5,18 +5,22 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.animation.AnimationUtils
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.models.BusinessModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.BusinessRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.CategoryRepository
@@ -26,6 +30,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters.AddBusinessA
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,7 +58,10 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
     private var selectedDate : String = ""
     private var clickCount: Int = 1
 
-    private lateinit var businessTableList: ArrayList<BusinessTable>
+    private lateinit var outletTableList: ArrayList<BusinessTable>
+    private lateinit var paymentTableList: ArrayList<BusinessTable>
+    private lateinit var expensesTableList: ArrayList<BusinessTable>
+
     private lateinit var outletAmount : ArrayList<AmountModel>
     private lateinit var paymentAmount : ArrayList<AmountModel>
     private lateinit var expensesAmount : ArrayList<AmountModel>
@@ -91,7 +99,14 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
         val currentDateFormat = AppUtils.getCurrentDate(true)
 
-        businessTableList = ArrayList()
+        outletTableList = ArrayList()
+        paymentTableList = ArrayList()
+        expensesTableList = ArrayList()
+
+        outletAmount = ArrayList()
+        paymentAmount = ArrayList()
+        expensesAmount = ArrayList()
+
         selectedDate = currentDateFormat
         timeInMillis = AppUtils.timeInMillis
         calendarText.setText(currentDateFormat)
@@ -99,26 +114,27 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
     }
 
     private inner class BusinessListByDateTask(val dateFormat: String) :
-        AsyncTask<Void, Void, ArrayList<BusinessTable>>() {
+        AsyncTask<Void, Void, Boolean>() {
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
         }
 
-        override fun doInBackground(vararg p0: Void?): ArrayList<BusinessTable> {
-            return BusinessRepository(activity).queryBusinessByDate(dateFormat) as ArrayList<BusinessTable>
+        override fun doInBackground(vararg p0: Void?): Boolean {
+            outletTableList = BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.OUTLET_CATEGORY) as ArrayList<BusinessTable>
+            paymentTableList = BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.PAYMENT_CATEGORY) as ArrayList<BusinessTable>
+            expensesTableList = BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.EXPENSES_CATEGORY) as ArrayList<BusinessTable>
+
+            return true
         }
 
-        override fun onPostExecute(result: ArrayList<BusinessTable>?) {
+        override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
-            if (result != null && result.isNotEmpty()) {
+            if (outletTableList.isNotEmpty() && paymentTableList.isNotEmpty() && expensesTableList.isNotEmpty()) {
                 isModifyBusiness = true
-                /*TODO: Display data with amount in recyclerview*/
-                businessTableList.addAll(result)
-                launchRecyclerView()
+                launchRecyclerView(false)
             } else {
                 isModifyBusiness = false
-                /*TODO: Fetch business outlet, payment & Expenses from DB and display in recyclerview*/
                 CategoryListTask().execute()
             }
         }
@@ -137,9 +153,8 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
         override fun onPostExecute(result: ArrayList<CategoryTable>?) {
             super.onPostExecute(result)
             if (result != null && result.isNotEmpty()) {
-                /*TODO: Display data with amount in recyclerview*/
                 createBusinessTable(result)
-                launchRecyclerView()
+                launchRecyclerView(false)
             } else {
                 progressBox.dismiss()
             }
@@ -150,19 +165,18 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
         var outletCount = 2
         var paymentCount = 1
         var expensesCount = 1
-        businessTableList.clear()
         for (element in result) {
             with(element) {
                 when(category_key) {
                     FireBaseConstants.OUTLET_CATEGORY -> {
                         when(category_name) {
                             AppUtils.OUTLET_NAME -> {
-                                businessTableList.add(BusinessTable(1, 0, category_name,
+                                outletTableList.add(BusinessTable(1, 0, category_name,
                                     category_key, selectedDate, timeInMillis))
                             }
 
                             else -> {
-                                businessTableList.add(BusinessTable(outletCount, 0, category_name,
+                                outletTableList.add(BusinessTable(outletCount, 0, category_name,
                                     category_key, selectedDate, timeInMillis))
                                 outletCount++
                             }
@@ -170,13 +184,13 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                     }
 
                     FireBaseConstants.PAYMENT_CATEGORY -> {
-                        businessTableList.add(BusinessTable(paymentCount, 0, category_name,
+                        paymentTableList.add(BusinessTable(paymentCount, 0, category_name,
                             category_key, selectedDate, timeInMillis))
                         paymentCount++
                     }
 
                     FireBaseConstants.EXPENSES_CATEGORY -> {
-                        businessTableList.add(BusinessTable(expensesCount, 0, category_name,
+                        expensesTableList.add(BusinessTable(expensesCount, 0, category_name,
                             category_key, selectedDate, timeInMillis))
                         expensesCount++
                     }
@@ -190,7 +204,9 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
             o1.ascOrder.compareTo(o2.ascOrder)
         }
 
-        Collections.sort(businessTableList, compareAsc)
+        Collections.sort(outletTableList, compareAsc)
+        Collections.sort(paymentTableList, compareAsc)
+        Collections.sort(expensesTableList, compareAsc)
     }
 
     private fun setupRecyclerView(tableList : ArrayList<BusinessTable>) {
@@ -229,43 +245,130 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
         datePicker.show()
     }
 
-    private fun launchRecyclerView() {
-        val businessList = ArrayList<BusinessTable>()
+    private fun launchRecyclerView(status: Boolean) {
+        progressBox.dismiss()
+        parentLayout.animation = if (status) {
+            AnimationUtils.loadAnimation(activity, R.anim.left_side)
+        } else {
+            AnimationUtils.loadAnimation(activity, R.anim.right_side)
+        }
+        nextBtn.setText(R.string.next)
+        previousBtn.visibility = View.VISIBLE
+        nextBtn.visibility = View.VISIBLE
         when(clickCount) {
             1 -> {
-                for (element in businessTableList) {
-                    with(element){
-                        if (businessCategory == FireBaseConstants.OUTLET_CATEGORY) {
-                            businessList.add(element)
-                        }
-                    }
-                }
+                previousBtn.visibility = View.INVISIBLE
+                setupRecyclerView(outletTableList)
             }
 
             2 -> {
-                for (element in businessTableList) {
-                    with(element){
-                        if (businessCategory == FireBaseConstants.PAYMENT_CATEGORY) {
-                            businessList.add(element)
-                        }
-                    }
-                }
+                setupRecyclerView(paymentTableList)
             }
 
             3 -> {
-                for (element in businessTableList) {
-                    with(element){
-                        if (businessCategory == FireBaseConstants.EXPENSES_CATEGORY) {
-                            businessList.add(element)
+                nextBtn.setText(R.string.done)
+                setupRecyclerView(expensesTableList)
+            }
+
+            4 -> {
+                saveDataToServer()
+            }
+        }
+    }
+
+    private fun saveDataToServer() {
+        progressBox.show()
+        val finalBusinessList = ArrayList<BusinessTable>()
+        finalBusinessList.addAll(outletTableList)
+        finalBusinessList.addAll(paymentTableList)
+        finalBusinessList.addAll(expensesTableList)
+
+        outletTableList.clear()
+        paymentTableList.clear()
+        expensesTableList.clear()
+
+        val fireBaseReference = FirebaseDatabase.getInstance()
+            .getReference(AppUtils.OUTLET_NAME)
+            .child(FireBaseConstants.BUSINESS)
+            .child(selectedDate)
+        fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                progressBox.dismiss()
+                writeBusinessToFireBase(finalBusinessList)
+            }
+
+            override fun onDataChange(dataSnapShot: DataSnapshot) {
+                if (dataSnapShot.exists()) {
+                    dataSnapShot.ref.removeValue()
+                }
+                BusinessRepository(activity).deleteBusiness(selectedDate)
+                Handler().postDelayed({
+                    progressBox.dismiss()
+                    writeBusinessToFireBase(finalBusinessList)
+                },4000)
+            }
+        })
+    }
+
+    private fun writeBusinessToFireBase(businessList : ArrayList<BusinessTable>) {
+        if (AppUtils.networkConnectivityCheck(context!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            progressBox.show()
+            val businessRepository = BusinessRepository(activity)
+            for (count in 0 until businessList.size) {
+                val businessTable = businessList[count]
+                with(businessTable) {
+                    val businessModel = BusinessModel(ascOrder, amount, businessName, businessCategory, selectedDate, timeInMillis)
+                    FirebaseDatabase.getInstance()
+                        .getReference(AppUtils.OUTLET_NAME)
+                        .child(FireBaseConstants.BUSINESS)
+                        .child(selectedDate)
+                        .child(count.toString())
+                        .setValue(businessModel) { error, _ ->
+                            if (error == null) {
+                                businessRepository.insertBusiness(businessTable)
+                                readVersionOfChildFromFireBase()
+                            }
+                            if (count == (businessList.size - 1)) {
+                                progressBox.dismiss()
+                            }
                         }
-                    }
                 }
             }
         }
-        progressBox.dismiss()
-        setupRecyclerView(businessList)
     }
 
+    private fun readVersionOfChildFromFireBase() {
+        if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
+            progressBox.show()
+            val fireBaseReference = FirebaseDatabase.getInstance()
+                .getReference(AppUtils.OUTLET_NAME)
+                .child(FireBaseConstants.VERSION)
+                .child(FireBaseConstants.BUSINESS_VERSION)
+
+            fireBaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    progressBox.dismiss()
+                    Toast.makeText(
+                        activity!!,
+                        "Server connection failed. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onDataChange(dataSnapShot: DataSnapshot) {
+                    if (dataSnapShot.exists()) {
+                        var version = dataSnapShot.getValue(Double::class.java)!!
+                        version += 0.001
+                        val bigDecimal = BigDecimal(version).setScale(3, BigDecimal.ROUND_HALF_UP)
+
+                        fireBaseReference
+                            .setValue(bigDecimal.toDouble())
+                    }
+                    progressBox.dismiss()
+                }
+            })
+        }
+    }
 
     override fun onClick(v: View?) {
         when(v?.id) {
@@ -275,7 +378,7 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
             R.id.outlet_business_previous_id -> {
                 clickCount--
-                launchRecyclerView()
+                launchRecyclerView(false)
             }
 
             R.id.outlet_business_next_id -> {
@@ -285,13 +388,14 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                     2 -> {
                         outletAmount.clear()
                         outletAmount = adapter.getTextValues()
-                        for (element in businessTableList) {
-                            if (element.businessCategory == FireBaseConstants.OUTLET_CATEGORY) {
-                                for (amount in outletAmount) {
-                                    if (element.businessName == amount.title) {
-                                        element.amount = amount.total
-                                        break
-                                    }
+                        if (outletAmount.size == outletTableList.size) {
+                            for (i in 0 until outletTableList.size) {
+                                val outletList = outletAmount[i]
+                                val outletTable = outletTableList[i]
+                                if (outletList.title == outletTable.businessName) {
+                                    outletTableList[i] =
+                                        BusinessTable(outletTable.ascOrder, outletList.total, outletTable.businessName,
+                                            outletTable.businessCategory, outletTable.selectedDate, outletTable.timeInMillis)
                                 }
                             }
                         }
@@ -299,13 +403,14 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                     3 -> {
                         paymentAmount.clear()
                         paymentAmount = adapter.getTextValues()
-                        for (element in businessTableList) {
-                            if (element.businessCategory == FireBaseConstants.PAYMENT_CATEGORY) {
-                                for (amount in paymentAmount) {
-                                    if (element.businessName == amount.title) {
-                                        element.amount = amount.total
-                                        break
-                                    }
+                        if (paymentAmount.size == paymentTableList.size) {
+                            for (i in 0 until paymentTableList.size) {
+                                val paymentList = paymentAmount[i]
+                                val paymentTable = paymentTableList[i]
+                                if (paymentList.title == paymentTable.businessName) {
+                                    paymentTableList[i] =
+                                        BusinessTable(paymentTable.ascOrder, paymentList.total, paymentTable.businessName,
+                                            paymentTable.businessCategory, paymentTable.selectedDate, paymentTable.timeInMillis)
                                 }
                             }
                         }
@@ -313,19 +418,20 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                     4 -> {
                         expensesAmount.clear()
                         expensesAmount = adapter.getTextValues()
-                        for (element in businessTableList) {
-                            if (element.businessCategory == FireBaseConstants.EXPENSES_CATEGORY) {
-                                for (amount in expensesAmount) {
-                                    if (element.businessName == amount.title) {
-                                        element.amount = amount.total
-                                        break
-                                    }
+                        if (expensesAmount.size == expensesTableList.size) {
+                            for (i in 0 until expensesTableList.size) {
+                                val expensesList = expensesAmount[i]
+                                val expensesTable = expensesTableList[i]
+                                if (expensesList.title == expensesTable.businessName) {
+                                    expensesTableList[i] =
+                                        BusinessTable(expensesTable.ascOrder, expensesList.total, expensesTable.businessName,
+                                            expensesTable.businessCategory, expensesTable.selectedDate, expensesTable.timeInMillis)
                                 }
                             }
                         }
                     }
                 }
-                launchRecyclerView()
+                launchRecyclerView(true)
             }
         }
     }

@@ -22,7 +22,7 @@ class AddBusinessAdapter(val context : Context, private val businessTableList : 
     init {
         for (i in 0 until businessTableList.size) {
             textValue.add("")
-            textName.add(businessTableList[i].businessCategory)
+            textName.add(businessTableList[i].businessName)
         }
     }
 
@@ -38,13 +38,16 @@ class AddBusinessAdapter(val context : Context, private val businessTableList : 
     override fun onBindViewHolder(holder: AddBusinessAdapter.AddBusinessHolder, position: Int) {
         with(businessTableList[position]) {
             holder.nameEdit.setText(businessName)
+            if (amount > 0) {
+                holder.amountEdit.setText(amount.toString())
+            }
         }
         holder.amountEdit.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                textValue.add(position, s.toString())
+            override fun afterTextChanged(s: Editable?) {
+                textValue.set(position, s.toString())
             }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 

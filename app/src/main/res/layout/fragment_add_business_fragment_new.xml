@@ -5,7 +5,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/green"
         tools:context=".ui.fragments.AddBusinessFragmentNew">
 
     <FrameLayout
@@ -49,6 +48,7 @@
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/outlet_business_recyclerview"
                     android:layout_below="@+id/outlet_business_title"
+                    android:background="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
         </RelativeLayout>
@@ -68,6 +68,7 @@
             android:layout_width="match_parent"
             android:gravity="center"
             android:weightSum="3"
+            android:background="@color/green"
             android:layout_height="?android:actionBarSize">
         <TextView
                 android:id="@+id/outlet_business_previous_id"
