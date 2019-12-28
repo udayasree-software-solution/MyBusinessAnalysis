@@ -19,16 +19,20 @@ public class BusinessTable {
     @ColumnInfo(name = "business_name")
     private String businessName;
 
+    @ColumnInfo(name = "business_category")
+    private String businessCategory;
+
     @ColumnInfo(name = "selected_date")
     private String selectedDate;
 
     @ColumnInfo(name = "time_in_millis")
     private long timeInMillis;
 
-    public BusinessTable(int ascOrder, int amount, String businessName, String selectedDate, long timeInMillis) {
+    public BusinessTable(int ascOrder, int amount, String businessName, String businessCategory, String selectedDate, long timeInMillis) {
         this.ascOrder = ascOrder;
         this.amount = amount;
         this.businessName = businessName;
+        this.businessCategory = businessCategory;
         this.selectedDate = selectedDate;
         this.timeInMillis = timeInMillis;
     }
@@ -63,6 +67,14 @@ public class BusinessTable {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public String getBusinessCategory() {
+        return businessCategory;
+    }
+
+    public void setBusinessCategory(String businessCategory) {
+        this.businessCategory = businessCategory;
     }
 
     public String getSelectedDate() {

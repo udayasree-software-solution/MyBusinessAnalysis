@@ -256,7 +256,7 @@ class SplashActivity : AppCompatActivity(), FireBaseInterface {
                         val businessModel = element.child(i.toString()).getValue(BusinessModel::class.java)
                         if (businessModel != null) {
                             with(businessModel){
-                                businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, selectedDate, timeInMillis))
+                                businessRepository.insertBusiness(BusinessTable(ascOrder, amount, businessName, businessCategory, selectedDate, timeInMillis))
                             }
                         }
                     }

@@ -327,6 +327,7 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                                         count,
                                         amount.toInt(),
                                         businessName,
+                                        "",
                                         selectedDate,
                                         timeInMillis
                                     )
@@ -386,8 +387,9 @@ class AddBusinessFragment : Fragment(), View.OnClickListener {
                                 businessModelList.add(
                                     BusinessModel(
                                         count,
-                                        name,
                                         amount.toInt(),
+                                        "",
+                                        name,
                                         selectedDate,
                                         timeInMillis
                                     )

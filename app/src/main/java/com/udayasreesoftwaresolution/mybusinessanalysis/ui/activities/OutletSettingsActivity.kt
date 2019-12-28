@@ -222,7 +222,7 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 4 -> {
-                    /*0TODO: Save all the data to server*/
+                    /*TODO: Save all the data to server*/
                     saveDataToServer()
                 }
             }
@@ -234,7 +234,6 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
     private fun saveDataToServer() {
         progressBox.show()
         val categoryModelList: ArrayList<CategoryModel> = ArrayList()
-
         for (outlet in outletList) {
             categoryModelList.add(CategoryModel(FireBaseConstants.OUTLET_CATEGORY, outlet))
         }

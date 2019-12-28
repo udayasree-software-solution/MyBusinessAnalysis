@@ -362,7 +362,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
     override fun addBusinessFragmentListener() {
         supportActionBar?.title = "New Business Details"
         mFragmentPosition = 102
-        launchFragment(AddBusinessFragment.newInstance())
+        launchFragment(AddBusinessFragmentNew.newInstance())
     }
 
     override fun addPurchaseListener(clientsName: ArrayList<String>) {
