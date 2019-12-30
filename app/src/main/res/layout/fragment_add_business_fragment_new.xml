@@ -5,6 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="6dp"
+        android:background="@color/window_background"
         tools:context=".ui.fragments.AddBusinessFragmentNew">
 
     <FrameLayout
@@ -48,7 +50,7 @@
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/outlet_business_recyclerview"
                     android:layout_below="@+id/outlet_business_title"
-                    android:background="@android:color/transparent"
+                    android:background="@color/window_background"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
         </RelativeLayout>
@@ -59,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:alpha="0.5"
-            android:background="@android:color/white"/>
+            android:background="@android:color/black"/>
 
     <LinearLayout
             android:id="@+id/outlet_business_bottom_layout"

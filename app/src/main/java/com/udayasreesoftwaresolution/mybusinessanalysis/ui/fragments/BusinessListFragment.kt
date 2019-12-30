@@ -2,8 +2,10 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants
 import com.udayasreesoftwaresolution.mybusinessanalysis.progresspackage.ProgressBox
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.BusinessRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable
@@ -41,9 +44,13 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
     private lateinit var netAmountText: TextView
     private lateinit var expensesAmountText: TextView
     private lateinit var grossAmountText: TextView
+    private lateinit var infoBtn : ImageView
     private lateinit var addBusinessFab: FloatingActionButton
     private lateinit var progressBox: ProgressBox
 
+    private lateinit var businessTableList : ArrayList<BusinessTable>
+    private var onlinePayments = 0
+    private var netAmount = 0
     private lateinit var businessListInterface : BusinessListInterface
 
     companion object {
@@ -81,8 +88,12 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         expensesAmountText = view.findViewById(R.id.business_expenses_amount_id)
         grossAmountText = view.findViewById(R.id.business_gross_amount_id)
 
+        infoBtn = view.findViewById(R.id.business_info_id)
+        businessTableList = ArrayList()
+
         addBusinessFab.setOnClickListener(this)
         calendarLayout.setOnClickListener(this)
+        infoBtn.setOnClickListener(this)
         progressBox = ProgressBox(activity)
 
         calenderText.setText(AppUtils.getCurrentDate(true))
@@ -103,35 +114,48 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         grossAmountText.text = "₹ $grossBusiness/-"
     }
 
-    private inner class BusinessListByDateTask(val dateFormat : String) : AsyncTask<Void, Void, ArrayList<BusinessTable>>() {
+    private inner class BusinessListByDateTask(val dateFormat : String) : AsyncTask<Void, Void, Boolean>() {
         override fun onPreExecute() {
             super.onPreExecute()
             progressBox.show()
+            businessTableList.clear()
         }
-        override fun doInBackground(vararg p0: Void?): ArrayList<BusinessTable> {
-            return BusinessRepository(activity).queryBusinessByDate(dateFormat) as ArrayList<BusinessTable>
+        override fun doInBackground(vararg p0: Void?): Boolean {
+            businessTableList.addAll(BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.OUTLET_CATEGORY) as ArrayList<BusinessTable>)
+            businessTableList.addAll(BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.PAYMENT_CATEGORY) as ArrayList<BusinessTable>)
+            businessTableList.addAll(BusinessRepository(activity).queryBusinessListByDateCategory(dateFormat, FireBaseConstants.EXPENSES_CATEGORY) as ArrayList<BusinessTable>)
+            return true
         }
 
-        override fun onPostExecute(result: ArrayList<BusinessTable>?) {
+        override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
-            if (result != null && result.isNotEmpty()) {
+            if (businessTableList.isNotEmpty()) {
                 var expense = 0
-                var netAmount = 0
-                for (element in result) {
-                    if (element.businessName.equals("Expenses", ignoreCase = true)) {
-                        expense += element.amount
-                    } else {
-                        netAmount += element.amount
+                netAmount = 0
+                onlinePayments = 0
+                for (element in businessTableList) {
+                    when(element.businessCategory) {
+                        FireBaseConstants.OUTLET_CATEGORY -> {
+                            netAmount += element.amount
+                        }
+
+                        FireBaseConstants.EXPENSES_CATEGORY -> {
+                            expense += element.amount
+                        }
+
+                        FireBaseConstants.PAYMENT_CATEGORY -> {
+                            onlinePayments += element.amount
+                        }
                     }
                 }
                 recyclerView.visibility = View.VISIBLE
                 emptyData.visibility = View.GONE
-                val businessAdapter = BusinessAdapter(activity!!, result)
+                val businessAdapter = BusinessAdapter(activity!!, businessTableList, netAmount, expense, onlinePayments)
                 recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
                 recyclerView.adapter = businessAdapter
                 businessAdapter.notifyDataSetChanged()
                 setTotal(
-                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(netAmount),
+                    NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(netAmount + onlinePayments),
                     NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format(expense),
                     NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(resources.configuration)[0]).format((netAmount - expense))
                 )
@@ -176,6 +200,16 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
 
             R.id.business_list_date_layout -> {
                 calendarViewDialog()
+            }
+
+            R.id.business_info_id -> {
+                val build = AlertDialog.Builder(activity)
+                build.setMessage("Cash In Hands : ${netAmount - onlinePayments}\nOnline Payments: $onlinePayments")
+                build.setCancelable(false)
+                build.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                })
+                build.create().show()
             }
         }
     }

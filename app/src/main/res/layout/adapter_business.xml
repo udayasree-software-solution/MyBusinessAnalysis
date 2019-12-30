@@ -13,31 +13,40 @@
             app:cardBackgroundColor="@color/colorAccent"
             app:cardCornerRadius="10dp"
             app:cardElevation="6dp">
-
         <LinearLayout
-                android:id="@+id/row_home_layout_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
                 android:orientation="vertical"
-                android:padding="5dp">
-
-            <TextView
-                    android:id="@+id/row_home_title_id"
-                    android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                    android:id="@+id/row_home_layout_id"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/white"/>
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
-            <TextView
-                    android:id="@+id/row_home_total_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@android:color/white"/>
+                <TextView
+                        android:id="@+id/row_home_title_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@android:color/white"/>
+
+                <TextView
+                        android:id="@+id/row_home_total_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:textColor="@android:color/white"/>
+            </LinearLayout>
+            <ImageView
+                    android:src="@drawable/ic_slide"
+                    android:tint="@android:color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

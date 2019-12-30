@@ -15,8 +15,10 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
+import kotlin.math.exp
 
-class BusinessAdapter(val context: Context, val businessTable: ArrayList<BusinessTable>) :
+class BusinessAdapter(val context: Context, val businessTable: ArrayList<BusinessTable>, val netAmount : Int,
+                      val expenses : Int, val onlinePayment : Int) :
     RecyclerView.Adapter<BusinessAdapter.BusinessHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusinessAdapter.BusinessHolder {
@@ -24,12 +26,45 @@ class BusinessAdapter(val context: Context, val businessTable: ArrayList<Busines
     }
 
     override fun getItemCount(): Int {
-        return businessTable.size
+        return 3//businessTable.size
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: BusinessAdapter.BusinessHolder, position: Int) {
-        with(businessTable[position]) {
+
+        holder.homeTitle.text = when(position) {
+            0 -> {
+                "Total Business"
+            }
+            1 -> {
+                "Online Payment"
+            }
+            2 -> {
+                "Expenses"
+            }
+            else -> {
+                ""
+            }
+        }
+        holder.homeTotal.text =
+            "₹ ${java.text.NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(
+                when (position){
+                    0 -> {
+                        netAmount
+                    }
+                    1 -> {
+                        onlinePayment
+                    }
+                    2 -> {
+                        expenses
+                    }
+                    else -> {
+                        0
+                    }
+                }
+            )}/-"
+
+        /*with(businessTable[position]) {
             holder.homeTitle.text = businessName.toUpperCase()
             holder.homeTotal.text =
                 "₹ ${java.text.NumberFormat.getNumberInstance(ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(
@@ -43,7 +78,7 @@ class BusinessAdapter(val context: Context, val businessTable: ArrayList<Busines
                     )
                 )
             }
-        }
+        }*/
     }
 
     inner class BusinessHolder(view: View) : RecyclerView.ViewHolder(view) {
