@@ -39,22 +39,11 @@
                 android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/business_list_recycler_id"
+    <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/business_list_barchart_id"
             android:layout_above="@+id/business_list_layout"
             android:layout_below="@+id/business_list_date_layout"
             android:layout_margin="6dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    <TextView
-            android:id="@+id/business_list_empty_id"
-            android:layout_above="@+id/business_list_layout"
-            android:layout_below="@+id/business_list_date_layout"
-            android:gravity="center"
-            android:layout_margin="6dp"
-            android:text="@string/data_is_empty"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@android:color/holo_red_light"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     <LinearLayout
