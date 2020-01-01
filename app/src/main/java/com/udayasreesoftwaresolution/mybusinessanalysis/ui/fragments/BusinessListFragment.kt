@@ -17,9 +17,14 @@ import androidx.core.os.ConfigurationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
@@ -40,7 +45,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 @SuppressLint("StaticFieldLeak")
-class BusinessListFragment : Fragment(), View.OnClickListener {
+class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelectedListener {
 
     private lateinit var calenderText: EditText
     private lateinit var calendarLayout : LinearLayout
@@ -101,6 +106,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
         addBusinessFab.setOnClickListener(this)
         calendarLayout.setOnClickListener(this)
         infoBtn.setOnClickListener(this)
+        barChart.setOnChartValueSelectedListener(this)
         progressBox = ProgressBox(activity)
 
         calenderText.setText(AppUtils.getCurrentDate(true))
@@ -155,20 +161,26 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
             if (netAmount > 0 || onlinePayments > 0 || expense > 0) {
 
                 val barEntityList = ArrayList<BarEntry>()
-                barEntityList.add(BarEntry(netAmount.toFloat(), 0f))
-                barEntityList.add(BarEntry(onlinePayments.toFloat(), 1f))
-                barEntityList.add(BarEntry(expense.toFloat(), 2f))
+                barEntityList.add(BarEntry(0f,netAmount.toFloat()))
+                barEntityList.add(BarEntry(1f,onlinePayments.toFloat()))
+                barEntityList.add(BarEntry(2f,expense.toFloat()))
 
-                val yAxisName = ArrayList<String>()
-                yAxisName.add(FireBaseConstants.OUTLET_CATEGORY)
-                yAxisName.add(FireBaseConstants.PAYMENT_CATEGORY)
-                yAxisName.add(FireBaseConstants.EXPENSES_CATEGORY)
+                val xAxisName = arrayOf("Outlet", "Online Payment","Expenses")
+                val formatter = IndexAxisValueFormatter(xAxisName)
+
+                val xAxis = barChart.xAxis
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                xAxis.granularity = 1f
+                xAxis.valueFormatter = formatter
+
 
                 val barDataSet = BarDataSet(barEntityList, "")
                 val barData = BarData(barDataSet)
+                barData.barWidth = 0.9f
                 barDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
                 barDataSet.valueTextSize = 15f
-                barChart.animateY(5000)
+                barChart.animateY(3000)
+                barChart.setFitBars(true)
                 barChart.data = barData
                 barChart.invalidate()
                 setTotal(
@@ -217,6 +229,15 @@ class BusinessListFragment : Fragment(), View.OnClickListener {
                 calendarViewDialog()
             }
         }
+    }
+
+    override fun onValueSelected(e: Entry?, h: Highlight?) {
+        Toast.makeText(activity, "${e.toString()}", Toast.LENGTH_LONG).show()
+        // e.x 0.0, 1.0,2.0
+    }
+
+    override fun onNothingSelected() {
+
     }
 
     interface BusinessListInterface {
