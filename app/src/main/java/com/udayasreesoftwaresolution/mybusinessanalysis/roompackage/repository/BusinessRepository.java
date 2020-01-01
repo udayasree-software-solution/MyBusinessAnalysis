@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import androidx.room.Room;
+import com.udayasreesoftwaresolution.mybusinessanalysis.firebasepackage.FireBaseConstants;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.persistence.BusinessDataBasePersistence;
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.BusinessTable;
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils;
@@ -80,12 +81,17 @@ public class BusinessRepository {
         int total = 0;
         List<BusinessTable> amount = businessDataBasePersistence.businessDaoAccess().queryBusinessList();
         for (BusinessTable element : amount) {
-            switch (element.getBusinessName()) {
-                case ConstantUtils.EXPENSES:
+            switch (element.getBusinessCategory()) {
+                case "Outlet Category":
+                    total += element.getAmount();
+                    break;
+                case "Payment Category" :
+                    total += element.getAmount();
+                    break;
+                case "Expenses Category" :
                     expenses += element.getAmount();
                     break;
                 default:
-                        total += element.getAmount();
                         break;
             }
         }

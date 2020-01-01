@@ -26,8 +26,11 @@ class FireBaseConstants {
         val PURCHASE = "Purchase"
 
         val BUSINESS_CATEGORY = "Business Category"
+        @JvmField
         val OUTLET_CATEGORY = "Outlet Category"
+        @JvmField
         val PAYMENT_CATEGORY = "Payment Category"
+        @JvmField
         val EXPENSES_CATEGORY = "Expenses Category"
 
         val OUTLET_PROFILE = "Outlet Profile"

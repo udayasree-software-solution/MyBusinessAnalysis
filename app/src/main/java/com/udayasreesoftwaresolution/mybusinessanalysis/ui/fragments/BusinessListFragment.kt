@@ -219,6 +219,24 @@ class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelec
         datePicker.show()
     }
 
+    private fun recyclerDialog(businessTable : ArrayList<BusinessTable>, category : String) {
+        val builder = AlertDialog.Builder(activity)
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.custom_recycler_view, null)
+        builder.setView(view)
+        val recyclerView : RecyclerView = view.findViewById(R.id.custom_recycler_view_id)
+        val textView : TextView = view.findViewById(R.id.custom_recycler_text_id)
+        textView.setText(category)
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        val adapter = BusinessAdapter(activity?.applicationContext!!, businessTable)
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+        builder.setPositiveButton("Ok") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.business_add_fab_id -> {
@@ -232,8 +250,17 @@ class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelec
     }
 
     override fun onValueSelected(e: Entry?, h: Highlight?) {
-        Toast.makeText(activity, "${e.toString()}", Toast.LENGTH_LONG).show()
-        // e.x 0.0, 1.0,2.0
+        when(e?.x) {
+            0.0f -> {
+                recyclerDialog(outletTableList, FireBaseConstants.OUTLET_CATEGORY)
+            }
+            1.0f -> {
+                recyclerDialog(paymentTableList, FireBaseConstants.PAYMENT_CATEGORY)
+            }
+            2.0f -> {
+                recyclerDialog(expensesTableList, FireBaseConstants.EXPENSES_CATEGORY)
+            }
+        }
     }
 
     override fun onNothingSelected() {

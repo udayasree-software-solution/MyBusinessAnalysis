@@ -4,49 +4,42 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:orientation="vertical"
-             android:padding="2dp">
+             android:padding="1dp">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/row_home_card_layout_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/colorAccent"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="6dp">
+            app:cardElevation="3dp">
         <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/row_home_layout_id"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <LinearLayout
-                    android:id="@+id/row_home_layout_id"
-                    android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:weightSum="2"
+                android:background="@color/window_background"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:id="@+id/row_home_title_id"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:textAlignment="textStart"
+                    android:padding="1dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/darker_gray"/>
 
-                <TextView
-                        android:id="@+id/row_home_title_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/white"/>
-
-                <TextView
-                        android:id="@+id/row_home_total_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/white"/>
-            </LinearLayout>
-            <ImageView
-                    android:src="@drawable/ic_slide"
-                    android:tint="@android:color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:id="@+id/row_home_total_id"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textEnd"
+                    android:padding="1dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/darker_gray"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
