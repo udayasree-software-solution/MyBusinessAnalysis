@@ -211,6 +211,7 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
     private fun setupRecyclerView(tableList : ArrayList<BusinessTable>) {
         if (tableList.isNotEmpty()) {
+            recyclerView.setHasFixedSize(true)
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             adapter = AddBusinessAdapter(activity?.applicationContext!!, tableList)
             recyclerView.layoutManager = layoutManager
@@ -383,54 +384,6 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
             R.id.outlet_business_next_id -> {
                 clickCount++
-                progressBox.show()
-                when(clickCount) {
-                    2 -> {
-                        outletAmount.clear()
-                        outletAmount = adapter.getTextValues()
-                        if (outletAmount.size == outletTableList.size) {
-                            for (i in 0 until outletTableList.size) {
-                                val outletList = outletAmount[i]
-                                val outletTable = outletTableList[i]
-                                if (outletList.title == outletTable.businessName) {
-                                    outletTableList[i] =
-                                        BusinessTable(outletTable.ascOrder, outletList.total, outletTable.businessName,
-                                            outletTable.businessCategory, outletTable.selectedDate, outletTable.timeInMillis)
-                                }
-                            }
-                        }
-                    }
-                    3 -> {
-                        paymentAmount.clear()
-                        paymentAmount = adapter.getTextValues()
-                        if (paymentAmount.size == paymentTableList.size) {
-                            for (i in 0 until paymentTableList.size) {
-                                val paymentList = paymentAmount[i]
-                                val paymentTable = paymentTableList[i]
-                                if (paymentList.title == paymentTable.businessName) {
-                                    paymentTableList[i] =
-                                        BusinessTable(paymentTable.ascOrder, paymentList.total, paymentTable.businessName,
-                                            paymentTable.businessCategory, paymentTable.selectedDate, paymentTable.timeInMillis)
-                                }
-                            }
-                        }
-                    }
-                    4 -> {
-                        expensesAmount.clear()
-                        expensesAmount = adapter.getTextValues()
-                        if (expensesAmount.size == expensesTableList.size) {
-                            for (i in 0 until expensesTableList.size) {
-                                val expensesList = expensesAmount[i]
-                                val expensesTable = expensesTableList[i]
-                                if (expensesList.title == expensesTable.businessName) {
-                                    expensesTableList[i] =
-                                        BusinessTable(expensesTable.ascOrder, expensesList.total, expensesTable.businessName,
-                                            expensesTable.businessCategory, expensesTable.selectedDate, expensesTable.timeInMillis)
-                                }
-                            }
-                        }
-                    }
-                }
                 launchRecyclerView(true)
             }
         }

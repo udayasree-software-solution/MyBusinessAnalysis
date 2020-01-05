@@ -16,16 +16,6 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 class AddBusinessAdapter(val context : Context, private val businessTableList : ArrayList<BusinessTable>)
     : RecyclerView.Adapter<AddBusinessAdapter.AddBusinessHolder>() {
 
-    private var textValue : ArrayList<String> = ArrayList()
-    private var textName : ArrayList<String> = ArrayList()
-
-    init {
-        for (i in 0 until businessTableList.size) {
-            textValue.add("")
-            textName.add(businessTableList[i].businessName)
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddBusinessAdapter.AddBusinessHolder {
         return AddBusinessHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_add_business,
             parent, false))
@@ -43,25 +33,13 @@ class AddBusinessAdapter(val context : Context, private val businessTableList : 
             }
         }
         holder.amountEdit.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                textValue.set(position, s.toString())
-            }
+            override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-    }
-
-    public fun getTextValues() : ArrayList<AmountModel> {
-        val amountList : ArrayList<AmountModel> = ArrayList()
-        if (textName.size == textValue.size) {
-            for (i in 0 until textName.size) {
-                val amount = if (textValue[i].isEmpty()) {0} else {textValue[i].toInt()}
-                amountList.add(i, AmountModel(textName[i], amount))
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val text = s.toString()
+                businessTableList[position].amount = if (text.isEmpty()){0}else{text.toInt()}
             }
-            textName.clear()
-            textValue.clear()
-        }
-        return amountList
+        })
     }
 
     inner class AddBusinessHolder(view : View) : RecyclerView.ViewHolder(view) {

@@ -102,7 +102,7 @@ class SplashActivity : AppCompatActivity(), FireBaseInterface {
                                 fireBaseUtils.readValidityFromFireBase()
                             } else {
                                 appSharedPreference.clearPreference()
-                                exitDialog("Account already used", "Your account is login in another device. Contact ADMIN", "Okay")
+                                exitDialog("Account already used", "Your account is login in another device. Login Again and Contact Admin", "Okay")
                             }
                         } else {
                             /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/
@@ -115,9 +115,13 @@ class SplashActivity : AppCompatActivity(), FireBaseInterface {
                 }
             })
         } else {
-            startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            signInLauncher()
         }
+    }
+
+    private fun signInLauncher() {
+        startActivityForResult(Intent(this@SplashActivity, SignInActivity::class.java), ConstantUtils.SIGNIN_REQUEST_CODE)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     private fun exitDialog(title: String, message: String, posBtn: String) {
@@ -127,7 +131,11 @@ class SplashActivity : AppCompatActivity(), FireBaseInterface {
             .setCancelable(false)
             .setPositiveButton(posBtn) { dialog, _ ->
                 dialog.dismiss()
-                finishAffinity()
+                if (title == "Account already used") {
+                    signInLauncher()
+                } else {
+                    finishAffinity()
+                }
             }
         builder.create().show()
     }
