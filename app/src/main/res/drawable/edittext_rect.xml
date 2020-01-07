@@ -6,8 +6,8 @@
     <stroke android:color="@color/green"
             android:width="2dp"/>
     <solid android:color="@android:color/transparent"/>
-    <padding android:bottom="@dimen/margin_16dp"
-             android:left="@dimen/margin_16dp"
-             android:right="@dimen/margin_16dp"
-             android:top="@dimen/margin_16dp"/>
+    <padding android:bottom="@dimen/edittext_margin"
+             android:left="@dimen/edittext_margin"
+             android:right="@dimen/edittext_margin"
+             android:top="@dimen/edittext_margin"/>
 </shape>

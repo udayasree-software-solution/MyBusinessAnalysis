@@ -41,7 +41,7 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPre
 
 @SuppressLint("StaticFieldLeak")
 class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddPaymentFragment.AddPaymentInterface,
-    BusinessListFragment.BusinessListInterface, PurchaseFragment.PurchaseInterface {
+    BusinessListFragment.BusinessListInterface, PurchaseFragment.PurchaseInterface, AddBusinessFragmentNew.AddBusinessInterface {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -369,6 +369,11 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
         supportActionBar?.title = "New Purchase Details"
         mFragmentPosition = 103
         launchFragment(AddPurchaseFragment.newInstance(clientsName))
+    }
+
+    override fun addBusinessListener(selectedDate : String) {
+        supportActionBar?.title = "Business"
+        launchFragment(BusinessListFragment.newInstance())
     }
 
     private fun clearBackStack() {

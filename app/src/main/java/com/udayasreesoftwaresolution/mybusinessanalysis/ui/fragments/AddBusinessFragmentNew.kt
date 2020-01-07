@@ -3,6 +3,7 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.ui.fragments
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -49,7 +50,6 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
     private lateinit var calendarLayout : LinearLayout
     private lateinit var calendarText : EditText
-    private lateinit var adapter : AddBusinessAdapter
 
     private lateinit var progressBox : ProgressBox
 
@@ -65,6 +65,17 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
     private lateinit var outletAmount : ArrayList<AmountModel>
     private lateinit var paymentAmount : ArrayList<AmountModel>
     private lateinit var expensesAmount : ArrayList<AmountModel>
+
+    private lateinit var addBusinessInterface: AddBusinessInterface
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            addBusinessInterface = context as AddBusinessInterface
+        } catch (e : Exception) {
+            throw ClassCastException(context.toString().plus(" must implement AddBusinessListFragmentNew Interface"))
+        }
+    }
 
     companion object {
         fun newInstance(): AddBusinessFragmentNew {
@@ -213,7 +224,7 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
         if (tableList.isNotEmpty()) {
             recyclerView.setHasFixedSize(true)
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            adapter = AddBusinessAdapter(activity?.applicationContext!!, tableList)
+            val adapter = AddBusinessAdapter(activity?.applicationContext!!, tableList)
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = adapter
             adapter.notifyDataSetChanged()
@@ -327,10 +338,10 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                         .setValue(businessModel) { error, _ ->
                             if (error == null) {
                                 businessRepository.insertBusiness(businessTable)
-                                readVersionOfChildFromFireBase()
                             }
                             if (count == (businessList.size - 1)) {
-                                progressBox.dismiss()
+                                readVersionOfChildFromFireBase()
+                                //progressBox.dismiss()
                             }
                         }
                 }
@@ -340,7 +351,7 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
 
     private fun readVersionOfChildFromFireBase() {
         if (AppUtils.networkConnectivityCheck(activity!!) && AppUtils.OUTLET_NAME.isNotEmpty()) {
-            progressBox.show()
+            //progressBox.show()
             val fireBaseReference = FirebaseDatabase.getInstance()
                 .getReference(AppUtils.OUTLET_NAME)
                 .child(FireBaseConstants.VERSION)
@@ -365,7 +376,10 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                         fireBaseReference
                             .setValue(bigDecimal.toDouble())
                     }
-                    progressBox.dismiss()
+                    Handler().postDelayed({
+                        progressBox.dismiss()
+                        addBusinessInterface.addBusinessListener(selectedDate)
+                    },7000)
                 }
             })
         }
@@ -387,5 +401,9 @@ class AddBusinessFragmentNew : Fragment(), View.OnClickListener {
                 launchRecyclerView(true)
             }
         }
+    }
+
+    interface AddBusinessInterface {
+        fun addBusinessListener(selectedDate : String)
     }
 }

@@ -41,7 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM1 = "selected_date"
 private const val ARG_PARAM2 = "param2"
 
 @SuppressLint("StaticFieldLeak")
@@ -66,6 +66,14 @@ class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelec
     companion object {
         fun newInstance() : BusinessListFragment {
             return BusinessListFragment()
+        }
+
+        fun newInstance(selectedDate : String) : BusinessListFragment {
+            val businessLisFragment = BusinessListFragment()
+            val bundle = Bundle()
+            bundle.putString(ARG_PARAM1,selectedDate)
+            businessLisFragment.arguments = bundle
+            return businessLisFragment
         }
     }
 
@@ -114,7 +122,16 @@ class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelec
         if (!AppUtils.isAdminStatus) {
             addBusinessFab.hide()
         }
-        val currentDateFormat = AppUtils.getCurrentDate(true)
+
+        var currentDateFormat = ""
+        val args: Bundle? = arguments
+        if (args != null) {
+            if (args.containsKey(ARG_PARAM1)) {
+                currentDateFormat = args.getString(ARG_PARAM1)!!
+            }
+        } else {
+            currentDateFormat = AppUtils.getCurrentDate(true)
+        }
         calenderText.setText(currentDateFormat)
         BusinessListByDateTask(currentDateFormat).execute()
     }
@@ -158,6 +175,7 @@ class BusinessListFragment : Fragment(), View.OnClickListener, OnChartValueSelec
 
         override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
+            barChart.clear()
             if (netAmount > 0 || onlinePayments > 0 || expense > 0) {
 
                 val barEntityList = ArrayList<BarEntry>()

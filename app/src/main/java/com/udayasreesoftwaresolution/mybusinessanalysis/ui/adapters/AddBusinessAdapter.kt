@@ -26,10 +26,13 @@ class AddBusinessAdapter(val context : Context, private val businessTableList : 
     }
 
     override fun onBindViewHolder(holder: AddBusinessAdapter.AddBusinessHolder, position: Int) {
+        holder.setIsRecyclable(false)
         with(businessTableList[position]) {
             holder.nameEdit.setText(businessName)
             if (amount > 0) {
                 holder.amountEdit.setText(amount.toString())
+            } else {
+                holder.amountEdit.setText("")
             }
         }
         holder.amountEdit.addTextChangedListener(object : TextWatcher {

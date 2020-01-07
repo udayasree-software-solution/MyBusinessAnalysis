@@ -5,7 +5,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="6dp"
         android:background="@color/window_background"
         tools:context=".ui.fragments.AddBusinessFragmentNew">
 
@@ -23,6 +22,7 @@
             <LinearLayout
                     android:id="@+id/outlet_business_calender_layout"
                     android:weightSum="1"
+                    android:padding="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <EditText
@@ -51,17 +51,11 @@
                     android:id="@+id/outlet_business_recyclerview"
                     android:layout_below="@+id/outlet_business_title"
                     android:background="@color/window_background"
+                    android:padding="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
         </RelativeLayout>
     </FrameLayout>
-
-    <View
-            android:layout_above="@id/outlet_business_bottom_layout"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:alpha="0.5"
-            android:background="@android:color/black"/>
 
     <LinearLayout
             android:id="@+id/outlet_business_bottom_layout"
