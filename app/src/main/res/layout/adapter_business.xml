@@ -17,7 +17,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:weightSum="2"
-                android:background="@color/window_background"
+                android:background="@android:color/white"
                 android:layout_gravity="center"
                 android:orientation="horizontal">
 
@@ -27,9 +27,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:padding="1dp"
+                    android:padding="2dp"
+                    android:maxLines="1"
+                    android:layout_marginEnd="1dp"
+                    android:background="@color/window_background"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/darker_gray"/>
+                    android:textColor="@android:color/white"/>
 
             <TextView
                     android:id="@+id/row_home_total_id"
@@ -37,9 +40,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
-                    android:padding="1dp"
+                    android:padding="2dp"
+                    android:maxLines="1"
+                    android:layout_marginStart="1dp"
+                    android:background="@color/window_background"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/darker_gray"/>
+                    android:textColor="@android:color/white"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

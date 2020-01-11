@@ -373,7 +373,8 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
 
     override fun addBusinessListener(selectedDate : String) {
         supportActionBar?.title = "Business"
-        launchFragment(BusinessListFragment.newInstance())
+        mFragmentPosition = 2
+        launchFragment(BusinessListFragment.newInstance(selectedDate))
     }
 
     private fun clearBackStack() {
