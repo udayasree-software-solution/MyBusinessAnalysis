@@ -25,7 +25,6 @@ allprojects {
     project.ext {
         minSdkVersion = 18
         targetSdkVersion = 28
-        compileSdkVersion = 28
         versionCode = 1
         versionName = "1.0"
     }

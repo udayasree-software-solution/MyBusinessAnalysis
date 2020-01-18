@@ -3,9 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
-    buildToolsVersion "29.0.2"
-
-
     defaultConfig {
         applicationId "com.udayasreesoftwaresolution.admin"
         minSdkVersion project.ext.minSdkVersion

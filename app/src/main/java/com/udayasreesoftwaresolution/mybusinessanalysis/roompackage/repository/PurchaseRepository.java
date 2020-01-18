@@ -60,7 +60,9 @@ public class PurchaseRepository {
         List<String> amount = purchaseDataBasePersistance.purchaseDaoAccess().queryPurchaseAmount();
         int total = 0;
         for (String value : amount) {
-            total += Integer.parseInt(value);
+            if (value != null) {
+                total += Integer.parseInt(value);
+            }
         }
         return total;
     }
