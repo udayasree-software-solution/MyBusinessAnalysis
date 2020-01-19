@@ -69,7 +69,7 @@ class OutletSettingsActivity : AppCompatActivity(), View.OnClickListener {
         doneBtn = findViewById(R.id.outlet_setting_outlet_done)
 
         chipGroup.layoutParams.height = (AppUtils.SCREEN_WIDTH * 0.6).toInt()
-
+        chipGroup.setChipSpacing(15)
         progressBox = ProgressBox(this)
 
         previousBtn.setOnClickListener(this)

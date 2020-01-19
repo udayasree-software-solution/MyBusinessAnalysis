@@ -102,7 +102,7 @@ class SplashActivity : AppCompatActivity(), FireBaseInterface {
                                 fireBaseUtils.readValidityFromFireBase()
                             } else {
                                 appSharedPreference.clearPreference()
-                                exitDialog("Account already used", "Your account is login in another device. Login Again and Contact Admin", "Okay")
+                                exitDialog("Account already used", "Your account is login in another device. Login Again and Contact Admin", "Login")
                             }
                         } else {
                             /*TODO: Launch activity for employees to fill details like - login and logout time, salary date, salary credited etc*/

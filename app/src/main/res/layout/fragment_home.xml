@@ -1,74 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".ui.fragments.HomeFragment">
-
-    <ScrollView
-            android:layout_above="@+id/layout_card_frag_home"
+    <FrameLayout
+            android:visibility="gone"
+            android:id="@+id/frag_home_notification_parent"
+            android:background="@color/green"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            <LinearLayout
-                    android:id="@+id/frag_home_notification_layout"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            <LinearLayout
-                    android:id="@+id/frag_home_piechart_layout"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/frag_home_piechart_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-                <TextView
-                        android:text="@string/chart_data_is_empty"
-                        android:visibility="gone"
-                        android:gravity="center"
-                        android:textColor="@android:color/holo_red_light"
-                        android:id="@+id/frag_home_piechart_empty_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-    <androidx.cardview.widget.CardView
-            android:id="@+id/layout_card_frag_home"
-            android:layout_alignParentBottom="true"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent"
+            android:layout_height="?android:actionBarSize">
+    </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_home_recycler_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <RelativeLayout
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <ImageView
-                    android:id="@+id/frag_home_slide_image"
-                    android:background="@drawable/ic_slide"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            <androidx.cardview.widget.CardView
-                    android:id="@+id/frag_home_bottom_layout"
-                    android:layout_below="@+id/frag_home_slide_image"
-                    app:cardElevation="2dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/frag_home_recycler_id"
-                        android:background="@android:color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-</RelativeLayout>
+            android:layout_height="match_parent"/>
+</LinearLayout>

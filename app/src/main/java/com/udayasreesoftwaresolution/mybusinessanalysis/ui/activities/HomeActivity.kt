@@ -316,6 +316,7 @@ class HomeActivity : AppCompatActivity(), PaymentFragment.PaymentInterface, AddP
             val netBusinessTotal = businessTotal[1]
             val grossBusinessTotal = (netBusinessTotal - expensesTotal)
 
+            //businessTotalList.add(AmountModel("", 0))
             businessTotalList.add(AmountModel("Payable Amount", payableTotal))
             businessTotalList.add(AmountModel("Paid Amount", paidTotal))
             businessTotalList.add(AmountModel("Purchase Amount", purchaseTotal))

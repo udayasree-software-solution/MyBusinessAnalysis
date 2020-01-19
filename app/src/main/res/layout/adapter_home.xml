@@ -4,6 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:orientation="vertical"
+             android:layout_margin="6dp"
              android:padding="1dp">
 
     <androidx.cardview.widget.CardView
@@ -18,29 +19,30 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2"
+                android:orientation="vertical"
+                android:weightSum="3"
                 android:padding="3dp">
 
             <TextView
                     android:id="@+id/row_home_title_id"
                     android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@android:color/darker_gray"/>
 
             <TextView
                     android:id="@+id/row_home_total_id"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="3dp"
+                    android:padding="16dp"
                     android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@android:color/black"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
