@@ -13,6 +13,7 @@ import android.os.Handler
 import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.ShortRunScheduler
 import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.ShortRunService
 import com.udayasreesoftwaresolution.mybusinessanalysis.notificationpackage.TimerAlarmManager
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 
 class ApplicationLifecycleCallback : Application.ActivityLifecycleCallbacks {
@@ -44,24 +45,25 @@ class ApplicationLifecycleCallback : Application.ActivityLifecycleCallbacks {
     }
 
     private fun schedulerService(activity: Activity?) {
-        AppUtils.logMessage("$numStarted")
         if (AppUtils.isServiceRun && numStarted == 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val jobScheduler: JobScheduler =
-                    activity?.applicationContext?.getSystemService(Context.JOB_SCHEDULER_SERVICE)
-                            as JobScheduler
+            val appSharedPreference = AppSharedPreference(activity?.applicationContext!!)
+            if (appSharedPreference.getUserSignInStatus()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val jobScheduler: JobScheduler =
+                        activity?.applicationContext?.getSystemService(Context.JOB_SCHEDULER_SERVICE)
+                                as JobScheduler
 
-                val jobBuilder = JobInfo.Builder(18, ComponentName(activity, ShortRunScheduler::class.java))
-                    .setRequiresBatteryNotLow(true)
-                    .setMinimumLatency(1000)
-                    .setOverrideDeadline(3000)
+                    val jobBuilder = JobInfo.Builder(18, ComponentName(activity, ShortRunScheduler::class.java))
+                        .setRequiresBatteryNotLow(true)
+                        .setMinimumLatency(1000)
+                        .setOverrideDeadline(3000)
 
-                jobScheduler.schedule(jobBuilder.build())
-            } else {
-                AppUtils.logMessage("Service")
-                val intent = Intent(activity, ShortRunService::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                activity?.startService(intent)
+                    jobScheduler.schedule(jobBuilder.build())
+                } else {
+                    val intent = Intent(activity, ShortRunService::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    activity?.startService(intent)
+                }
             }
         }
     }

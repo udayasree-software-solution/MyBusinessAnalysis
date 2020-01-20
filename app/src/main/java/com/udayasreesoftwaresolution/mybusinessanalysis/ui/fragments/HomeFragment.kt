@@ -70,8 +70,8 @@ class HomeFragment : Fragment() {
                 progressBox.show()
                 val totalAmountList  = bundle.getParcelableArrayList<AmountModel>(ARG_AMOUNTS)
                 if (totalAmountList != null && totalAmountList.isNotEmpty()) {
-                    //val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-                    val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                    val layoutManager = LinearLayoutManager(activity?.applicationContext!!, RecyclerView.VERTICAL, false)
+                    //val layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                     val homeAdapter = AmountAdapter(activity!!, totalAmountList)
                     recyclerView.layoutManager = layoutManager
                     recyclerView.adapter = homeAdapter

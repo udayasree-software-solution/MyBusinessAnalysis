@@ -2,6 +2,7 @@ package com.udayasreesoftwaresolution.mybusinessanalysis.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +10,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mikephil.charting.charts.HorizontalBarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.model.AmountModel
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppUtils
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
 import java.text.NumberFormat
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 
 
@@ -32,7 +32,7 @@ class AmountAdapter(val context : Context, val amountModelList : ArrayList<Amoun
 
     override fun getItemViewType(position: Int): Int {
         when(position) {
-            -1 -> {
+            0 -> {
                 return CHART_VIEW
             }
             else -> {
@@ -62,6 +62,8 @@ class AmountAdapter(val context : Context, val amountModelList : ArrayList<Amoun
         when(holders.itemViewType) {
             CHART_VIEW -> {
                 val holder = ChartHolder(holders.itemView)
+
+                setupPieChart(holder.chartView)
             }
             AMOUNT_VIEW -> {
                 val holder = HomeHolder(holders.itemView)
@@ -70,10 +72,10 @@ class AmountAdapter(val context : Context, val amountModelList : ArrayList<Amoun
                     holder.homeTitle.text = title.toUpperCase()
                     holder.homeTotal.text = "₹ ${NumberFormat.getNumberInstance(
                         ConfigurationCompat.getLocales(context.resources.configuration)[0]).format(total)}"
-                    /*if (title == "Expenses Amount") {
+                    if (title == "Expenses Amount") {
                         holder.homeTitle.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
-                        holder.homeTotal.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
-                    }*/
+                        //holder.homeTotal.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light))
+                    }
                 }
             }
         }
@@ -90,9 +92,49 @@ class AmountAdapter(val context : Context, val amountModelList : ArrayList<Amoun
     }
 
     inner class ChartHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val horBarChart = view.findViewById<HorizontalBarChart>(R.id.row_home_bar_chart_id)
+        val chartView = view.findViewById<PieChart>(R.id.row_home_chart_id)
         init {
             //horBarChart.layoutParams.height = (AppUtils.SCREEN_HEIGHT * 0.8).toInt()
         }
+    }
+
+    private fun setupPieChart(pieChartView : PieChart) {
+        val calculatePercentage = ArrayList<PieEntry>()
+
+        for (element in amountModelList) {
+            if (element.total > 0f) {
+                calculatePercentage.add(PieEntry(element.total.toFloat(), element.title))
+            }
+        }
+
+        val pieDataSet = PieDataSet(calculatePercentage, "")
+        pieDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+
+        pieDataSet.sliceSpace = 3f
+        pieDataSet.valueTextSize = 15f
+
+        val pieData = PieData(pieDataSet)
+        pieData.setValueTextSize(13f)
+        pieData.setValueTextColor(Color.DKGRAY)
+        pieData.setValueFormatter(PercentFormatter(pieChartView))
+
+        /*val legend = pieChartView.legend
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        legend.orientation = Legend.LegendOrientation.VERTICAL
+        legend.setDrawInside(false)*/
+
+        pieChartView.setUsePercentValues(true)
+        pieChartView.legend.isEnabled = false
+        pieChartView.data = pieData
+        pieChartView.description.isEnabled = false
+        pieChartView.setExtraOffsets(5f,5f,5f,5f)
+        pieChartView.dragDecelerationFrictionCoef = 0.9f
+        pieChartView.setDrawCenterText(false)
+        pieChartView.isDrawHoleEnabled = false
+        pieChartView.setEntryLabelColor(Color.DKGRAY)
+        pieChartView.setEntryLabelTextSize(13f)
+        pieChartView.animateXY(2000, 2000)
+        pieChartView.invalidate()
     }
 }

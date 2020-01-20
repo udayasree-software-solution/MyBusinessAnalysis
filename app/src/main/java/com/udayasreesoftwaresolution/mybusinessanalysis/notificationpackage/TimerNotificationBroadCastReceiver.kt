@@ -18,7 +18,9 @@ import com.udayasreesoftwaresolution.mybusinessanalysis.R
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.repository.PaymentRepository
 import com.udayasreesoftwaresolution.mybusinessanalysis.roompackage.tables.PaymentTable
 import com.udayasreesoftwaresolution.mybusinessanalysis.ui.activities.HomeActivity
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.AppSharedPreference
 import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.ConstantUtils
+import com.udayasreesoftwaresolution.mybusinessanalysis.utilpackage.VersionSharedPreference
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,16 +32,20 @@ class TimerNotificationBroadCastReceiver : BroadcastReceiver() {
     private lateinit var notificationManagerNotify: NotificationManager
     private val ADMIN_CHANNEL_ID = "admin_channel"
     private var NOTIFICATION_TYPE = ""
+    private lateinit var sharedPreference : AppSharedPreference
 
     override fun onReceive(context: Context?, intent: Intent?) {
         this.context = context
-        val bundle = intent?.extras
-         if (bundle != null) {
-             if (bundle.containsKey(ConstantUtils.TASK_SLNO)) {
-                 NOTIFICATION_TYPE = ConstantNotification.NOTIFY_PAYMENT
-                 GetTodayNotificationData(bundle.getInt(ConstantUtils.TASK_SLNO)).execute()
-             }
-         }
+        sharedPreference = AppSharedPreference(context?.applicationContext!!)
+        if (sharedPreference.getUserSignInStatus()) {
+            val bundle = intent?.extras
+            if (bundle != null) {
+                if (bundle.containsKey(ConstantUtils.TASK_SLNO)) {
+                    NOTIFICATION_TYPE = ConstantNotification.NOTIFY_PAYMENT
+                    GetTodayNotificationData(bundle.getInt(ConstantUtils.TASK_SLNO)).execute()
+                }
+            }
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -55,6 +61,7 @@ class TimerNotificationBroadCastReceiver : BroadcastReceiver() {
                 calendar.timeZone = TimeZone.getTimeZone("Asia/Calcutta")
                 val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.US)
                 val currentDate = dateFormat.format(calendar.timeInMillis)
+                val chequeDate = dateFormat.format(result.dateInMillis)
                 with(result) {
                     for (i in 0..preDays) {
                         calendar.timeInMillis = dateInMillis
@@ -64,7 +71,7 @@ class TimerNotificationBroadCastReceiver : BroadcastReceiver() {
                             simpleOfflineNotification(
                                 "Pay to $clientName",
                                 "Payable amount of Rs.$payAmount",
-                                "Payable amount of Rs.$payAmount/- is to pay on $currentDate with Cheque $chequeNumber."
+                                "Payable amount of Rs.$payAmount/- is to pay on $chequeDate with Cheque $chequeNumber ."
                             )
                         }
                     }

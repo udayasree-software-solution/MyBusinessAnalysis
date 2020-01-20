@@ -28,10 +28,6 @@ class AppUtils {
 
         @JvmField var timeInMillis : Long = 0L
 
-        fun logMessage(message : String) {
-            Log.d("CHECK_DATE", message)
-        }
-
         fun randomNumbers() : Int {
             return Random().nextInt(999999)
         }
